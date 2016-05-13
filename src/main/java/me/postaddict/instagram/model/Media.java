@@ -64,7 +64,9 @@ public class Media {
         instance.code = (String) mediaMap.get("code");
         instance.link = INSTAGRAM_URL + "p/" + instance.code;
         instance.imageStandardResolutionUrl = (String) mediaMap.get("display_src");
-        instance.caption = (String) mediaMap.get("caption");
+        if (mediaMap.get("caption") != null) {
+            instance.caption = (String) mediaMap.get("caption");
+        }
         instance.owner = Account.fromMediaPage((Map) mediaMap.get("owner"));
         return instance;
     }
