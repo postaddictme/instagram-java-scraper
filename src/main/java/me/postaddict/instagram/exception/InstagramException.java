@@ -1,4 +1,4 @@
-package me.postaddict.instagram;
+package me.postaddict.instagram.exception;
 
 public class InstagramException extends Exception {
 

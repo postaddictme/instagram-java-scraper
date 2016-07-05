@@ -1,6 +1,7 @@
 package me.postaddict.instagram;
 
 import com.google.gson.Gson;
+import me.postaddict.instagram.exception.InstagramException;
 import me.postaddict.instagram.model.Account;
 import me.postaddict.instagram.model.Media;
 import okhttp3.OkHttpClient;
