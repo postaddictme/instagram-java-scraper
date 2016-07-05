@@ -30,4 +30,4 @@ System.out.println(media.owner.username);
 ```
 
 ### Other
-PHP library: https://github.com/raiym/instagram-java-scraper
+PHP library: https://github.com/raiym/instagram-php-scraper
