@@ -1,4 +1,4 @@
-group 'me.postaddict.instagram'
+group 'me.postaddict.instagramscraper'
 version '0.0.1'
 
 apply plugin: 'java'
