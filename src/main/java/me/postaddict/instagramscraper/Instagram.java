@@ -2,6 +2,7 @@ package me.postaddict.instagramscraper;
 
 import com.google.gson.Gson;
 import me.postaddict.instagramscraper.exception.InstagramException;
+import me.postaddict.instagramscraper.exception.InstagramNotFoundException;
 import me.postaddict.instagramscraper.model.Account;
 import me.postaddict.instagramscraper.model.Media;
 import okhttp3.OkHttpClient;
@@ -14,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 public class Instagram {
-    private static final String INSTAGRAM_URL = "https://www.instagramscraper.com/";
     private OkHttpClient httpClient;
     private Gson gson;
 
@@ -28,18 +28,35 @@ public class Instagram {
         return parts[1].split(";</script>")[0];
     }
 
-    public Account getAccount(String username) throws IOException, InstagramException {
+    public Account getAccountByUsername(String username) throws IOException, InstagramException {
         Request request = new Request.Builder()
-                .url(INSTAGRAM_URL + username)
+                .url(Endpoint.getAccountJsonInfoLinkByUsername(username))
                 .build();
         Response response = this.httpClient.newCall(request).execute();
         if (response.code() == 404) {
-            throw new InstagramException("Account with given username does not exist.");
+            throw new InstagramNotFoundException("Account with given username does not exist.");
         }
         if (response.code() != 200) {
             throw new InstagramException("Response code is not equal 200. Something went wrong. Please report issue.");
         }
-        String jsonString = getJsonPayload(response.body().string());
+        String jsonString = response.body().string();
+        Map userJson = gson.fromJson(jsonString, Map.class);
+        return Account.fromAccountPage((Map) userJson.get("user"));
+    }
+
+    public Account getAccountById(long id) throws IOException, InstagramException {
+        Request request = new Request.Builder()
+                .url(Endpoint.getAccountJsonInfoLinkByAccountId(id))
+                .build();
+        Response response = this.httpClient.newCall(request).execute();
+        if (response.code() == 404) {
+            throw new InstagramNotFoundException("Account with given user id does not exist.");
+        }
+
+        if (response.code() != 200) {
+            throw new InstagramException("Response code is not equal 200. Something went wrong. Please report issue.");
+        }
+        String jsonString = response.body().string();
         Map userJson = gson.fromJson(jsonString, Map.class);
         return Account.fromAccountPage(userJson);
     }
@@ -51,7 +68,7 @@ public class Instagram {
         boolean isMoreAvailable = true;
         while (index < count && isMoreAvailable) {
             Request request = new Request.Builder()
-                    .url(INSTAGRAM_URL + username + "/media/?max_id=" + maxId)
+                    .url(Endpoint.getAccountMediasJsonLink(username, maxId))
                     .build();
             Response response = this.httpClient.newCall(request).execute();
             if (response.code() != 200) {
@@ -76,12 +93,12 @@ public class Instagram {
     }
 
     public Media getMediaByCode(String code) throws IOException, InstagramException {
-        return getMediaByUrl(INSTAGRAM_URL + "p/" + code);
+        return getMediaByUrl(Endpoint.getMediaPageLinkByCode(code));
     }
 
     public Media getMediaByUrl(String url) throws IOException, InstagramException {
         Request request = new Request.Builder()
-                .url(url)
+                .url(url + "/?__a=1")
                 .build();
         Response response = this.httpClient.newCall(request).execute();
         if (response.code() == 404) {
@@ -90,9 +107,9 @@ public class Instagram {
         if (response.code() != 200) {
             throw new InstagramException("Response code is not equal 200. Something went wrong. Please report issue.");
         }
-        String jsonString = getJsonPayload(response.body().string());
+        String jsonString = response.body().string();
         Map pageMap = gson.fromJson(jsonString, Map.class);
-        
-        return Media.fromMediaPage(pageMap);
+
+        return Media.fromMediaPage((Map) pageMap.get("media"));
     }
 }
