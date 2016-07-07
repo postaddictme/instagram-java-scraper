@@ -22,12 +22,7 @@ public class Instagram {
         this.httpClient = new OkHttpClient();
         this.gson = new Gson();
     }
-
-    private static String getJsonPayload(String pageString) {
-        String[] parts = pageString.split("window._sharedData = ");
-        return parts[1].split(";</script>")[0];
-    }
-
+    
     public Account getAccountByUsername(String username) throws IOException, InstagramException {
         Request request = new Request.Builder()
                 .url(Endpoint.getAccountJsonInfoLinkByUsername(username))
