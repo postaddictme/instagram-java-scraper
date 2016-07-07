@@ -22,6 +22,7 @@ public class Media {
     public String videoLowBandwidthUrl;
     public String code;
     public Account owner;
+    public String locationName;
 
     public Media() {
     }

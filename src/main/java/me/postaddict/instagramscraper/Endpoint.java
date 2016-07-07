@@ -1,18 +1,18 @@
 package me.postaddict.instagramscraper;
 
 public class Endpoint {
-    public static final String BASE_URL = "https://www.instagramscraper.com";
-    public static final String ACCOUNT_PAGE = "https://www.instagramscraper.com/{{username}}";
-    public static final String MEDIA_LINK = "https://www.instagramscraper.com/p/{{code}}";
-    public static final String ACCOUNT_MEDIAS = "https://www.instagramscraper.com/{{username}}/media?max_id={{maxId}}";
-    public static final String ACCOUNT_JSON_INFO = "https://www.instagramscraper.com/{{username}}/?__a=1";
-    public static final String MEDIA_JSON_INFO = "https://www.instagramscraper.com/p/{{code}}/?__a=1";
-    public static final String MEDIA_JSON_BY_LOCATION_ID = "https://www.instagramscraper.com/explore/locations/{{facebookLocationId}}/?__a=1";
-    public static final String MEDIA_JSON_BY_TAG = "https://www.instagramscraper.com/explore/tags/{{tag}}/?__a=1&max_id={{maxId}}";
-    public static final String GENERAL_SEARCH = "https://www.instagramscraper.com/web/search/topsearch/?query={{query}}";
-    public static final String ACCOUNT_JSON_INFO_BY_ID = "https://www.instagramscraper.com/query/?q=ig_user({{userId}}){id,username,external_url,full_name,profile_pic_url,biography,followed_by{count},follows{count},media{count},is_private,is_verified}";
-    public static final String LAST_COMMENTS_BY_CODE = "https://www.instagramscraper.com/query/?q=ig_shortcode({{code}}){comments.last({{count}}){count,nodes{id,created_at,text,user{id,profile_pic_url,username,follows{count},followed_by{count},biography,full_name,media{count},is_private,external_url,is_verified}},page_info}}";
-    public static final String COMMENTS_BEFORE_COMMENT_ID_BY_CODE = "https://www.instagramscraper.com/query/?q=ig_shortcode({{code}}){comments.before({{commentId}},{{count}}){count,nodes{id,created_at,text,user{id,profile_pic_url,username,follows{count},followed_by{count},biography,full_name,media{count},is_private,external_url,is_verified}},page_info}}";
+    public static final String BASE_URL = "https://www.instagram.com";
+    public static final String ACCOUNT_PAGE = "https://www.instagram.com/{{username}}";
+    public static final String MEDIA_LINK = "https://www.instagram.com/p/{{code}}";
+    public static final String ACCOUNT_MEDIAS = "https://www.instagram.com/{{username}}/media?max_id={{maxId}}";
+    public static final String ACCOUNT_JSON_INFO = "https://www.instagram.com/{{username}}/?__a=1";
+    public static final String MEDIA_JSON_INFO = "https://www.instagram.com/p/{{code}}/?__a=1";
+    public static final String MEDIA_JSON_BY_LOCATION_ID = "https://www.instagram.com/explore/locations/{{facebookLocationId}}/?__a=1";
+    public static final String MEDIA_JSON_BY_TAG = "https://www.instagram.com/explore/tags/{{tag}}/?__a=1&max_id={{maxId}}";
+    public static final String GENERAL_SEARCH = "https://www.instagram.com/web/search/topsearch/?query={{query}}";
+    public static final String ACCOUNT_JSON_INFO_BY_ID = "https://www.instagram.com/query/?q=ig_user({{userId}}){id,username,external_url,full_name,profile_pic_url,biography,followed_by{count},follows{count},media{count},is_private,is_verified}";
+    public static final String LAST_COMMENTS_BY_CODE = "https://www.instagram.com/query/?q=ig_shortcode({{code}}){comments.last({{count}}){count,nodes{id,created_at,text,user{id,profile_pic_url,username,follows{count},followed_by{count},biography,full_name,media{count},is_private,external_url,is_verified}},page_info}}";
+    public static final String COMMENTS_BEFORE_COMMENT_ID_BY_CODE = "https://www.instagram.com/query/?q=ig_shortcode({{code}}){comments.before({{commentId}},{{count}}){count,nodes{id,created_at,text,user{id,profile_pic_url,username,follows{count},followed_by{count},biography,full_name,media{count},is_private,external_url,is_verified}},page_info}}";
 
     public static String getAccountPageLink(String username) {
         return ACCOUNT_PAGE.replace("{{username}}", username);
@@ -22,8 +22,8 @@ public class Endpoint {
         return ACCOUNT_JSON_INFO.replace("{{username}}", username);
     }
 
-    public static String getAccountJsonInfoLinkByAccountId(String userId) {
-        return ACCOUNT_JSON_INFO_BY_ID.replace("{{userId}}", userId);
+    public static String getAccountJsonInfoLinkByAccountId(long userId) {
+        return ACCOUNT_JSON_INFO_BY_ID.replace("{{userId}}", "" + userId);
     }
 
     public static String getAccountMediasJsonLink(String username, String maxId) {

@@ -1,6 +1,5 @@
 package me.postaddict.instagramscraper.model;
 
-import java.util.List;
 import java.util.Map;
 
 public class Account {
@@ -14,23 +13,24 @@ public class Account {
     public int mediaCount;
     public boolean isPrivate;
     public String externalUrl;
+    public boolean isVerified;
 
     public Account() {
     }
 
     public static Account fromAccountPage(Map userJson) {
-        Map userMap = (Map) ((Map) ((List) ((Map) userJson.get("entry_data")).get("ProfilePage")).get(0)).get("user");
         Account instance = new Account();
-        instance.username = (String) userMap.get("username");
-        instance.followsCount = ((Double) (((Map) (userMap.get("follows"))).get("count"))).intValue();
-        instance.followedByCount = ((Double) (((Map) (userMap.get("followed_by"))).get("count"))).intValue();
-        instance.profilePicUrl = (String) userMap.get("profile_pic_url");
-        instance.id = Long.parseLong((String) userMap.get("id"));
-        instance.biography = (String) userMap.get("biography");
-        instance.fullName = (String) userMap.get("full_name");
-        instance.mediaCount = ((Double) (((Map) (userMap.get("media"))).get("count"))).intValue();
-        instance.isPrivate = (Boolean) userMap.get("is_private");
-        instance.externalUrl = (String) userMap.get("external_url");
+        instance.username = (String) userJson.get("username");
+        instance.followsCount = ((Double) (((Map) (userJson.get("follows"))).get("count"))).intValue();
+        instance.followedByCount = ((Double) (((Map) (userJson.get("followed_by"))).get("count"))).intValue();
+        instance.profilePicUrl = (String) userJson.get("profile_pic_url");
+        instance.id = Long.parseLong((String) userJson.get("id"));
+        instance.biography = (String) userJson.get("biography");
+        instance.fullName = (String) userJson.get("full_name");
+        instance.mediaCount = ((Double) (((Map) (userJson.get("media"))).get("count"))).intValue();
+        instance.isPrivate = (Boolean) userJson.get("is_private");
+        instance.externalUrl = (String) userJson.get("external_url");
+        instance.isVerified = (Boolean) userJson.get("is_verified");
         return instance;
     }
 
