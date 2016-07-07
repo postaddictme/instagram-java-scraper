@@ -53,22 +53,21 @@ public class Media {
     }
 
     public static Media fromMediaPage(Map pageMap) {
-        Map mediaMap = (Map) ((Map) (((List) (((Map) pageMap.get("entry_data")).get("PostPage"))).get(0))).get("media");
         Media instance = new Media();
-        instance.id = (String) mediaMap.get("id");
+        instance.id = (String) pageMap.get("id");
         instance.type = TYPE_IMAGE;
-        if ((Boolean) mediaMap.get("is_video")) {
+        if ((Boolean) pageMap.get("is_video")) {
             instance.type = TYPE_VIDEO;
-            instance.videoStandardResolutionUrl = (String) mediaMap.get("video_url");
+            instance.videoStandardResolutionUrl = (String) pageMap.get("video_url");
         }
-        instance.createdTime = ((Double) mediaMap.get("date")).longValue();
-        instance.code = (String) mediaMap.get("code");
+        instance.createdTime = ((Double) pageMap.get("date")).longValue();
+        instance.code = (String) pageMap.get("code");
         instance.link = INSTAGRAM_URL + "p/" + instance.code;
-        instance.imageStandardResolutionUrl = (String) mediaMap.get("display_src");
-        if (mediaMap.get("caption") != null) {
-            instance.caption = (String) mediaMap.get("caption");
+        instance.imageStandardResolutionUrl = (String) pageMap.get("display_src");
+        if (pageMap.get("caption") != null) {
+            instance.caption = (String) pageMap.get("caption");
         }
-        instance.owner = Account.fromMediaPage((Map) mediaMap.get("owner"));
+        instance.owner = Account.fromMediaPage((Map) pageMap.get("owner"));
         return instance;
     }
 }

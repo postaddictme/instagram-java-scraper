@@ -22,7 +22,7 @@ public class Instagram {
         this.httpClient = new OkHttpClient();
         this.gson = new Gson();
     }
-    
+
     public Account getAccountByUsername(String username) throws IOException, InstagramException {
         Request request = new Request.Builder()
                 .url(Endpoint.getAccountJsonInfoLinkByUsername(username))
@@ -87,10 +87,6 @@ public class Instagram {
         return medias;
     }
 
-    public Media getMediaByCode(String code) throws IOException, InstagramException {
-        return getMediaByUrl(Endpoint.getMediaPageLinkByCode(code));
-    }
-
     public Media getMediaByUrl(String url) throws IOException, InstagramException {
         Request request = new Request.Builder()
                 .url(url + "/?__a=1")
@@ -107,4 +103,10 @@ public class Instagram {
 
         return Media.fromMediaPage((Map) pageMap.get("media"));
     }
+
+    public Media getMediaByCode(String code) throws IOException, InstagramException {
+        return getMediaByUrl(Endpoint.getMediaPageLinkByCode(code));
+    }
+
+
 }
