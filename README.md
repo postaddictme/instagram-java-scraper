@@ -7,7 +7,14 @@ Instagram Java Scraper. Get account information, photos and videos without any a
 ### Get account by username
 ```java
 Instagram instagram = new Instagram();
-Account account = instagram.getAccount("kevin");
+Account account = instagram.getAccountByUsername("kevin");
+System.out.println(account.mediaCount);
+```
+
+### Get account by account id
+```java
+Instagram instagram = new Instagram();
+Account account = instagram.getAccountById(3);
 System.out.println(account.mediaCount);
 ```
 
