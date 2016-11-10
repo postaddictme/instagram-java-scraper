@@ -7,7 +7,7 @@ public class Endpoint {
     public static final String ACCOUNT_MEDIAS = "https://www.instagram.com/{{username}}/media?max_id={{maxId}}";
     public static final String ACCOUNT_JSON_INFO = "https://www.instagram.com/{{username}}/?__a=1";
     public static final String MEDIA_JSON_INFO = "https://www.instagram.com/p/{{code}}/?__a=1";
-    public static final String MEDIA_JSON_BY_LOCATION_ID = "https://www.instagram.com/explore/locations/{{facebookLocationId}}/?__a=1";
+    public static final String MEDIA_JSON_BY_LOCATION_ID = "https://www.instagram.com/explore/locations/{{facebookLocationId}}/?__a=1&max_id={{maxId}}";
     public static final String MEDIA_JSON_BY_TAG = "https://www.instagram.com/explore/tags/{{tag}}/?__a=1&max_id={{maxId}}";
     public static final String GENERAL_SEARCH = "https://www.instagram.com/web/search/topsearch/?query={{query}}";
     public static final String ACCOUNT_JSON_INFO_BY_ID = "https://www.instagram.com/query/?q=ig_user({{userId}}){id,username,external_url,full_name,profile_pic_url,biography,followed_by{count},follows{count},media{count},is_private,is_verified}";
@@ -41,8 +41,11 @@ public class Endpoint {
         return MEDIA_JSON_INFO.replace("{{code}}", shortcode);
     }
 
-    public static String getMediasJsonByLocationIdLink(String facebookLocationId) {
-        return MEDIA_JSON_BY_LOCATION_ID.replace("{{facebookLocationId}}", facebookLocationId);
+    public static String getMediasJsonByLocationIdLink(String facebookLocationId, String maxId) {
+        if (maxId == null) {
+            maxId = "";
+        }
+        return MEDIA_JSON_BY_LOCATION_ID.replace("{{facebookLocationId}}", facebookLocationId).replace("{{maxId}}", maxId);
     }
 
     public static String getMediasJsonByTagLink(String tag, String maxId) {

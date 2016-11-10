@@ -45,4 +45,11 @@ public class InstagramTest {
         Media media = instagram.getMediaByCode("BHaRdodBouH");
         assertEquals("kevin", media.owner.username);
     }
+
+    @Test
+    public void testGetLocationMediasById() throws IOException, InstagramException {
+        Instagram instagram = new Instagram();
+        List<Media> list = instagram.getLocationMediasById("17326249", 13);
+        assertEquals(13, list.size());
+    }
 }
