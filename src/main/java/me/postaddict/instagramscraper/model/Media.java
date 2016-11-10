@@ -1,5 +1,7 @@
 package me.postaddict.instagramscraper.model;
 
+import me.postaddict.instagramscraper.Endpoint;
+
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +23,10 @@ public class Media {
     public String videoStandardResolutionUrl;
     public String videoLowBandwidthUrl;
     public String code;
+    public int commentsCount;
+    public int likesCount;
+    public int videoViews;
+    public String ownerId;
     public Account owner;
     public String locationName;
 
@@ -68,6 +74,28 @@ public class Media {
             instance.caption = (String) pageMap.get("caption");
         }
         instance.owner = Account.fromMediaPage((Map) pageMap.get("owner"));
+        return instance;
+    }
+
+    public static Media fromTagPage(Map mediaMap) {
+        Media instance = new Media();
+        instance.code = (String) mediaMap.get("code");
+        instance.link = Endpoint.getMediaPageLinkByCode(instance.code);
+        instance.commentsCount = ((Double) ((Map) mediaMap.get("comments")).get("count")).intValue();
+        instance.likesCount = ((Double) ((Map) mediaMap.get("likes")).get("count")).intValue();
+        instance.ownerId = (String) ((Map) mediaMap.get("owner")).get("id");
+        if (mediaMap.get("caption") != null) {
+            instance.caption = (String) mediaMap.get("caption");
+        }
+        instance.createdTime = ((Double) mediaMap.get("date")).longValue();
+        instance.imageThumbnailUrl = (String) mediaMap.get("thumbnail_src");
+        instance.imageStandardResolutionUrl = (String) mediaMap.get("display_src");
+        instance.type = TYPE_IMAGE;
+        if((Boolean) mediaMap.get("is_video")) {
+            instance.type = TYPE_VIDEO;
+            instance.videoViews = ((Double) mediaMap.get("video_views")).intValue();
+        }
+        instance.id = (String) mediaMap.get("id");
         return instance;
     }
 }
