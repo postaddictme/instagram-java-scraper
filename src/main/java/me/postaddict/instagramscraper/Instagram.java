@@ -5,14 +5,18 @@ import me.postaddict.instagramscraper.exception.InstagramException;
 import me.postaddict.instagramscraper.exception.InstagramNotFoundException;
 import me.postaddict.instagramscraper.model.Account;
 import me.postaddict.instagramscraper.model.Media;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class Instagram {
     private OkHttpClient httpClient;
@@ -40,8 +44,17 @@ public class Instagram {
     }
 
     public Account getAccountById(long id) throws IOException, InstagramException {
+        String parameters = Endpoint.getAccountJsonInfoLinkByAccountId(id);
+        String random = generateRandomString(10);
+        RequestBody formBody = new FormBody.Builder()
+                .add("q", parameters)
+                .build();
         Request request = new Request.Builder()
-                .url(Endpoint.getAccountJsonInfoLinkByAccountId(id))
+                .url(Endpoint.INSTAGRAM_QUERY_URL)
+                .post(formBody)
+                .header("Cookie", String.format("csrftoken=%s;", random))
+                .header("X-Csrftoken", random)
+                .header("Referer", "https://www.instagram.com/")
                 .build();
         Response response = this.httpClient.newCall(request).execute();
         if (response.code() == 404) {
@@ -55,6 +68,18 @@ public class Instagram {
         Map userJson = gson.fromJson(jsonString, Map.class);
         return Account.fromAccountPage(userJson);
     }
+
+    private String generateRandomString(int length) {
+        char[] characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
+        Random random = new SecureRandom();
+        int charactersLength = characters.length;
+        StringBuilder randomString = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            randomString.append(characters[random.nextInt(charactersLength)]);
+        }
+        return randomString.toString();
+    }
+
 
     public List<Media> getMedias(String username, int count) throws IOException, InstagramException {
         int index = 0;
