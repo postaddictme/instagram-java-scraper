@@ -1,6 +1,7 @@
 import me.postaddict.instagramscraper.Instagram;
 import me.postaddict.instagramscraper.exception.InstagramException;
 import me.postaddict.instagramscraper.model.Account;
+import me.postaddict.instagramscraper.model.Comment;
 import me.postaddict.instagramscraper.model.Media;
 import org.junit.Test;
 
@@ -51,5 +52,13 @@ public class InstagramTest {
         Instagram instagram = new Instagram();
         List<Media> list = instagram.getLocationMediasById("17326249", 13);
         assertEquals(13, list.size());
+    }
+
+    @Test
+    public void testGetCommentsByMediaCode() throws Exception {
+        Instagram instagram = new Instagram();
+        List<Comment> list = instagram.getCommentsByMediaCode("BHaRdodBouH", 13);
+        assertEquals(13, list.size());
+        assertEquals("Beautiful dog xx", list.get(0).text);
     }
 }

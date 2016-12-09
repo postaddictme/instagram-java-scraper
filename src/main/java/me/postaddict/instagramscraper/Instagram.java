@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import me.postaddict.instagramscraper.exception.InstagramException;
 import me.postaddict.instagramscraper.exception.InstagramNotFoundException;
 import me.postaddict.instagramscraper.model.Account;
+import me.postaddict.instagramscraper.model.Comment;
 import me.postaddict.instagramscraper.model.Media;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -44,18 +45,7 @@ public class Instagram {
     }
 
     public Account getAccountById(long id) throws IOException, InstagramException {
-        String parameters = Endpoint.getAccountJsonInfoLinkByAccountId(id);
-        String random = generateRandomString(10);
-        RequestBody formBody = new FormBody.Builder()
-                .add("q", parameters)
-                .build();
-        Request request = new Request.Builder()
-                .url(Endpoint.INSTAGRAM_QUERY_URL)
-                .post(formBody)
-                .header("Cookie", String.format("csrftoken=%s;", random))
-                .header("X-Csrftoken", random)
-                .header("Referer", "https://www.instagram.com/")
-                .build();
+        Request request = getApiRequest(Endpoint.getAccountJsonInfoLinkByAccountId(id));
         Response response = this.httpClient.newCall(request).execute();
         if (response.code() == 404) {
             throw new InstagramNotFoundException("Account with given user id does not exist.");
@@ -162,6 +152,49 @@ public class Instagram {
             offset = (String) ((Map) ((Map) ((Map) locationMap.get("location")).get("media")).get("page_info")).get("end_cursor");
         }
         return medias;
+    }
+
+    public List<Comment> getCommentsByMediaCode(String code, int count) throws IOException, InstagramException {
+        List<Comment> comments = new ArrayList<Comment>();
+        int index = 0;
+        String commentId = "0";
+        boolean hasNext = true;
+        while(index < count && hasNext) {
+            Request request = getApiRequest(Endpoint.getCommentsBeforeCommentIdByCode(code, count, commentId));
+            Response response = this.httpClient.newCall(request).execute();
+            if (response.code() != 200) {
+                throw new InstagramException("Response code is not equal 200. Something went wrong. Please report issue.");
+            }
+            String jsonString = response.body().string();
+            Map commentsMap = gson.fromJson(jsonString, Map.class);
+            List nodes = (List) ((Map) commentsMap.get("comments")).get("nodes");
+            for (Object node : nodes) {
+                if(index == count) {
+                    return comments;
+                }
+                index++;
+                Map commentMap = (Map) node;
+                Comment comment = Comment.fromApi(commentMap);
+                comments.add(comment);
+            }
+            hasNext = (Boolean) ((Map) ((Map) commentsMap.get("comments")).get("page_info")).get("has_previous_page");
+            commentId = (String) ((Map) ((Map) commentsMap.get("comments")).get("page_info")).get("start_cursor");
+        }
+        return comments;
+    }
+
+    private Request getApiRequest(String params) {
+        String random = generateRandomString(10);
+        RequestBody formBody = new FormBody.Builder()
+                .add("q", params)
+                .build();
+        return new Request.Builder()
+                .url(Endpoint.INSTAGRAM_QUERY_URL)
+                .post(formBody)
+                .header("Cookie", String.format("csrftoken=%s;", random))
+                .header("X-Csrftoken", random)
+                .header("Referer", "https://www.instagram.com/")
+                .build();
     }
 
 }
