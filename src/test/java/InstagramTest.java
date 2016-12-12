@@ -60,4 +60,18 @@ public class InstagramTest {
         List<Comment> list = instagram.getCommentsByMediaCode("BHaRdodBouH", 50);
         assertEquals(50, list.size());
     }
+
+    @Test
+    public void testGetIdFromCode() throws Exception {
+        String code = Media.getCodeFromId("1270593720437182847");
+        assertEquals("BGiDkHAgBF_", code);
+        code = Media.getCodeFromId("1270593720437182847_3");
+        assertEquals("BGiDkHAgBF_", code);
+    }
+
+    @Test
+    public void testGetCodeFromId() throws Exception {
+        String id = Media.getIdFromCode("BGiDkHAgBF_");
+        assertEquals("1270593720437182847", id);
+    }
 }
