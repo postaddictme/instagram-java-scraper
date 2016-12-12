@@ -15,6 +15,7 @@ public class Endpoint {
     public static final String COMMENTS_BEFORE_COMMENT_ID_BY_CODE = "ig_shortcode({{code}}){comments.before({{commentId}},{{count}}){count,nodes{id,created_at,text,user{id,profile_pic_url,username,follows{count},followed_by{count},biography,full_name,media{count},is_private,external_url,is_verified}},page_info}}";
 
     public static final String INSTAGRAM_QUERY_URL = "https://www.instagram.com/query/";
+    public static final String INSTAGRAM_CDN_URL = "https://scontent.cdninstagram.com/";
 
     public static String getAccountPageLink(String username) {
         return ACCOUNT_PAGE.replace("{{username}}", username);
