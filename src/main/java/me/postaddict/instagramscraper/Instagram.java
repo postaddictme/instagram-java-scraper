@@ -6,13 +6,11 @@ import me.postaddict.instagramscraper.exception.InstagramNotFoundException;
 import me.postaddict.instagramscraper.model.Account;
 import me.postaddict.instagramscraper.model.Comment;
 import me.postaddict.instagramscraper.model.Media;
-import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import okhttp3.*;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +22,37 @@ public class Instagram {
     private Gson gson;
 
     public Instagram() {
-        this.httpClient = new OkHttpClient();
+        this(new OkHttpClient());
+    }
+
+    public Instagram(OkHttpClient httpClient) {
+        this.httpClient = httpClient;
         this.gson = new Gson();
     }
+
+    public Instagram(String proxyHost, int proxyPort) {
+        this(new OkHttpClient.Builder()
+                .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort)))
+                .build());
+
+    }
+
+    public Instagram(String proxyHost, int proxyPort, final String username, final String password) {
+        Authenticator proxyAuthenticator = new Authenticator() {
+            public Request authenticate(Route route, Response response) throws IOException {
+                String credential = Credentials.basic(username, password);
+                return response.request().newBuilder()
+                        .header("Proxy-Authorization", credential)
+                        .build();
+            }
+        };
+        this.httpClient = new OkHttpClient.Builder()
+                .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort)))
+                .proxyAuthenticator(proxyAuthenticator)
+                .build();
+        this.gson = new Gson();
+    }
+
 
     public Account getAccountByUsername(String username) throws IOException, InstagramException {
         Request request = new Request.Builder()
@@ -128,7 +154,7 @@ public class Instagram {
         ArrayList<Media> medias = new ArrayList<Media>();
         String offset = "";
         boolean hasNext = true;
-        while(index < quantity && hasNext) {
+        while (index < quantity && hasNext) {
             Request request = new Request.Builder()
                     .url(Endpoint.getMediasJsonByLocationIdLink(facebookLocationId, offset))
                     .build();
@@ -138,9 +164,9 @@ public class Instagram {
             }
             String jsonString = response.body().string();
             Map locationMap = gson.fromJson(jsonString, Map.class);
-            List nodes = (List) ((Map)((Map) locationMap.get("location")).get("media")).get("nodes");
+            List nodes = (List) ((Map) ((Map) locationMap.get("location")).get("media")).get("nodes");
             for (Object node : nodes) {
-                if(index == quantity) {
+                if (index == quantity) {
                     return medias;
                 }
                 index++;
@@ -159,8 +185,8 @@ public class Instagram {
         int index = 0;
         String commentId = "0";
         boolean hasNext = true;
-        while(index < count && hasNext) {
-            Request request = getApiRequest(Endpoint.getCommentsBeforeCommentIdByCode(code, count, commentId));
+        while (index < count && hasNext) {
+            Request request = getApiRequest(Endpoint.getCommentsBeforeCommentIdByCode(code, 20, commentId));
             Response response = this.httpClient.newCall(request).execute();
             if (response.code() != 200) {
                 throw new InstagramException("Response code is not equal 200. Something went wrong. Please report issue.");
@@ -169,7 +195,7 @@ public class Instagram {
             Map commentsMap = gson.fromJson(jsonString, Map.class);
             List nodes = (List) ((Map) commentsMap.get("comments")).get("nodes");
             for (Object node : nodes) {
-                if(index == count) {
+                if (index == count) {
                     return comments;
                 }
                 index++;
