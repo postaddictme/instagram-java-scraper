@@ -57,8 +57,7 @@ public class InstagramTest {
 
     @Test
     public void testGetCommentsByMediaCode() throws Exception {
-        List<Comment> list = instagram.getCommentsByMediaCode("BHaRdodBouH", 13);
-        assertEquals(13, list.size());
-        assertEquals("Beautiful dog xx", list.get(0).text);
+        List<Comment> list = instagram.getCommentsByMediaCode("BHaRdodBouH", 50);
+        assertEquals(50, list.size());
     }
 }

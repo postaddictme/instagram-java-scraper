@@ -186,7 +186,7 @@ public class Instagram {
         String commentId = "0";
         boolean hasNext = true;
         while (index < count && hasNext) {
-            Request request = getApiRequest(Endpoint.getCommentsBeforeCommentIdByCode(code, count, commentId));
+            Request request = getApiRequest(Endpoint.getCommentsBeforeCommentIdByCode(code, 20, commentId));
             Response response = this.httpClient.newCall(request).execute();
             if (response.code() != 200) {
                 throw new InstagramException("Response code is not equal 200. Something went wrong. Please report issue.");
