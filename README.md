@@ -51,4 +51,4 @@ Media.getIdFromCode('BGiDkHAgBF_');
 ```
 
 ### Other
-Java library: https://github.com/postaddictme/instagram-java-scraper
+PHP library: https://github.com/postaddictme/instagram-php-scraper
