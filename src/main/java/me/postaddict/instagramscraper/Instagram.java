@@ -149,12 +149,12 @@ public class Instagram {
         return getMediaByUrl(Endpoint.getMediaPageLinkByCode(code));
     }
 
-    public List<Media> getLocationMediasById(String facebookLocationId, int quantity) throws IOException, InstagramException {
+    public List<Media> getLocationMediasById(String facebookLocationId, int count) throws IOException, InstagramException {
         int index = 0;
         ArrayList<Media> medias = new ArrayList<Media>();
         String offset = "";
         boolean hasNext = true;
-        while (index < quantity && hasNext) {
+        while (index < count && hasNext) {
             Request request = new Request.Builder()
                     .url(Endpoint.getMediasJsonByLocationIdLink(facebookLocationId, offset))
                     .build();
@@ -166,7 +166,7 @@ public class Instagram {
             Map locationMap = gson.fromJson(jsonString, Map.class);
             List nodes = (List) ((Map) ((Map) locationMap.get("location")).get("media")).get("nodes");
             for (Object node : nodes) {
-                if (index == quantity) {
+                if (index == count) {
                     return medias;
                 }
                 index++;
@@ -176,6 +176,37 @@ public class Instagram {
             }
             hasNext = (Boolean) ((Map) ((Map) ((Map) locationMap.get("location")).get("media")).get("page_info")).get("has_next_page");
             offset = (String) ((Map) ((Map) ((Map) locationMap.get("location")).get("media")).get("page_info")).get("end_cursor");
+        }
+        return medias;
+    }
+
+    public List<Media> getMediasByTag(String tag, int count) throws IOException, InstagramException {
+        int index = 0;
+        ArrayList<Media> medias = new ArrayList<Media>();
+        String maxId = "";
+        boolean hasNext = true;
+        while (index < count && hasNext) {
+            Request request = new Request.Builder()
+                    .url(Endpoint.getMediasJsonByTagLink(tag, maxId))
+                    .build();
+            Response response = this.httpClient.newCall(request).execute();
+            if (response.code() != 200) {
+                throw new InstagramException("Response code is not equal 200. Something went wrong. Please report issue.");
+            }
+            String jsonString = response.body().string();
+            Map tagMap = gson.fromJson(jsonString, Map.class);
+            List nodes = (List) ((Map) ((Map) tagMap.get("tag")).get("media")).get("nodes");
+            for (Object node : nodes) {
+                if (index == count) {
+                    return medias;
+                }
+                index++;
+                Map mediaMap = (Map) node;
+                Media media = Media.fromTagPage(mediaMap);
+                medias.add(media);
+            }
+            hasNext = (Boolean) ((Map) ((Map) ((Map) tagMap.get("tag")).get("media")).get("page_info")).get("has_next_page");
+            maxId = (String) ((Map) ((Map) ((Map) tagMap.get("tag")).get("media")).get("page_info")).get("end_cursor");
         }
         return medias;
     }
@@ -222,5 +253,4 @@ public class Instagram {
                 .header("Referer", "https://www.instagram.com/")
                 .build();
     }
-
 }
