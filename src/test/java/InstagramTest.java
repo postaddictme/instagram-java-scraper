@@ -56,6 +56,12 @@ public class InstagramTest {
     }
 
     @Test
+    public void testGetMediasByTag() throws Exception {
+        List<Media> list = instagram.getMediasByTag("Moscow", 50);
+        assertEquals(50, list.size());
+    }
+
+    @Test
     public void testGetCommentsByMediaCode() throws Exception {
         List<Comment> list = instagram.getCommentsByMediaCode("BHaRdodBouH", 50);
         assertEquals(50, list.size());
