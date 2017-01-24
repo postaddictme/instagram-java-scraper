@@ -211,6 +211,27 @@ public class Instagram {
         return medias;
     }
 
+    public List<Media> getTopMediasByTag(String tag) throws IOException, InstagramException {
+        ArrayList<Media> medias = new ArrayList<Media>();
+        String maxId = "";
+        Request request = new Request.Builder()
+                .url(Endpoint.getMediasJsonByTagLink(tag, maxId))
+                .build();
+        Response response = this.httpClient.newCall(request).execute();
+        if (response.code() != 200) {
+            throw new InstagramException("Response code is not equal 200. Something went wrong. Please report issue.");
+        }
+        String jsonString = response.body().string();
+        Map tagMap = gson.fromJson(jsonString, Map.class);
+        List nodes = (List) ((Map) ((Map) tagMap.get("tag")).get("top_posts")).get("nodes");
+        for (Object node : nodes) {
+            Map mediaMap = (Map) node;
+            Media media = Media.fromTagPage(mediaMap);
+            medias.add(media);
+        }
+        return medias;
+    }
+
     public List<Comment> getCommentsByMediaCode(String code, int count) throws IOException, InstagramException {
         List<Comment> comments = new ArrayList<Comment>();
         int index = 0;
