@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class InstagramTest {
     Instagram instagram;
@@ -79,5 +81,15 @@ public class InstagramTest {
     public void testGetCodeFromId() throws Exception {
         String id = Media.getIdFromCode("BGiDkHAgBF_");
         assertEquals("1270593720437182847", id);
+    }
+
+    @Test
+    public void testPreviewComments() throws Exception {
+        Media media = instagram.getMedias("kevin", 1).get(0);
+        if (media.commentsCount > 0){
+            assertTrue(media.previewCommentsList.size() > 0);
+        } else {
+            assertFalse(media.previewCommentsList.size() > 0);
+        }
     }
 }
