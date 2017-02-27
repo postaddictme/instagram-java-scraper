@@ -52,7 +52,7 @@ public class Media {
         instance.imageStandardResolutionUrl = imageUrls[2];
         instance.imageHighResolutionUrl = imageUrls[3];
 
-        if (instance.type.equals(TYPE_VIDEO)) {
+        if (instance.type.equals(TYPE_VIDEO) && mediaMap.containsKey("videos")) {
             Map videos = (Map) mediaMap.get("videos");
             instance.videoLowResolutionUrl = (String) ((Map) videos.get("low_resolution")).get("url");
             instance.videoStandardResolutionUrl = (String) ((Map) videos.get("standard_resolution")).get("url");
