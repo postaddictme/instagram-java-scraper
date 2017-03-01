@@ -57,7 +57,7 @@ public class Media {
         instance.commentsCount = (new Double(((Map) mediaMap.get("comments")).get("count").toString())).intValue();
         instance.likesCount = (new Double(((Map) mediaMap.get("likes")).get("count").toString())).intValue();
 
-        if (instance.type.equals(TYPE_VIDEO)) {
+        if (instance.type.equals(TYPE_VIDEO) && mediaMap.containsKey("videos")) {
             Map videos = (Map) mediaMap.get("videos");
             instance.videoLowResolutionUrl = (String) ((Map) videos.get("low_resolution")).get("url");
             instance.videoStandardResolutionUrl = (String) ((Map) videos.get("standard_resolution")).get("url");
