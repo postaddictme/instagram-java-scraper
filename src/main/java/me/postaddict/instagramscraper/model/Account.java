@@ -43,4 +43,13 @@ public class Account {
         instance.isPrivate = (Boolean) userMap.get("is_private");
         return instance;
     }
+
+    public static Account fromComments(Map userMap) {
+        Account instance = new Account();
+        instance.id = Long.parseLong((String) userMap.get("id"));
+        instance.username = (String) userMap.get("username");
+        instance.profilePicUrl = (String) userMap.get("profile_picture");
+        instance.fullName = (String) userMap.get("full_name");
+        return instance;
+    }
 }

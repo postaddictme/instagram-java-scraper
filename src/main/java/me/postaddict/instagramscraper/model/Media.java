@@ -4,6 +4,8 @@ import me.postaddict.instagramscraper.Endpoint;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class Media {
@@ -25,6 +27,7 @@ public class Media {
     public String videoLowBandwidthUrl;
     public String code;
     public int commentsCount;
+    public List<Comment> previewCommentsList;
     public int likesCount;
     public int videoViews;
     public String ownerId;
@@ -51,6 +54,8 @@ public class Media {
         instance.imageThumbnailUrl = imageUrls[1];
         instance.imageStandardResolutionUrl = imageUrls[2];
         instance.imageHighResolutionUrl = imageUrls[3];
+        instance.commentsCount = (new Double(((Map) mediaMap.get("comments")).get("count").toString())).intValue();
+        instance.likesCount = (new Double(((Map) mediaMap.get("likes")).get("count").toString())).intValue();
 
         if (instance.type.equals(TYPE_VIDEO)) {
             Map videos = (Map) mediaMap.get("videos");
@@ -58,6 +63,14 @@ public class Media {
             instance.videoStandardResolutionUrl = (String) ((Map) videos.get("standard_resolution")).get("url");
             instance.videoLowBandwidthUrl = (String) ((Map) videos.get("low_bandwidth")).get("url");
         }
+
+        instance.previewCommentsList = new ArrayList<Comment>();
+        if (instance.commentsCount > 0){
+            for (Object o: (List)((Map)mediaMap.get("comments")).get("data")){
+                instance.previewCommentsList.add(Comment.fromApi((Map)o));
+            }
+        }
+
         return instance;
     }
 
