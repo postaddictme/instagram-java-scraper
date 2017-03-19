@@ -4,6 +4,7 @@ import me.postaddict.instagramscraper.model.Account;
 import me.postaddict.instagramscraper.model.Comment;
 import me.postaddict.instagramscraper.model.Media;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -14,11 +15,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class InstagramTest {
-    Instagram instagram;
+    private static Instagram instagram;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         instagram = new Instagram();
+        instagram.withCredentials("PASTE_YOUR_USERNAME", "PASTE_YOUR_PASSWORD");
+        instagram.login();
     }
 
     @Test
