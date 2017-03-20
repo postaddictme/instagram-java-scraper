@@ -44,7 +44,6 @@ public class Media {
         instance.type = (String) mediaMap.get("type");
         instance.link = (String) mediaMap.get("link");
         instance.code = (String) mediaMap.get("code");
-        instance.likesCount = ((Double) ((Map) mediaMap.get("likes")).get("count")).intValue();
         if (mediaMap.get("caption") != null) {
             instance.caption = (String) ((Map) mediaMap.get("caption")).get("text");
         }
