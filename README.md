@@ -35,6 +35,20 @@ System.out.println(media.owner.username);
 Media media = instagram.getMediaByUrl("https://www.instagram.com/p/BGY0zB4r7X2/");
 System.out.println(media.owner.username);
 ```
+### Convert media id to shortcode
+```java
+Media.getCodeFromId("1270593720437182847_3");
+// OR
+Media.getCodeFromId("1270593720437182847");
+// Output: BGiDkHAgBF_
+// So you can do like this: instagram.com/p/BGiDkHAgBF_
+```
+
+### Convert shortcode to media id
+```java
+Media.getIdFromCode('BGiDkHAgBF_');
+// Output: 1270593720437182847
+```
 
 ### Other
-PHP library: https://github.com/raiym/instagram-php-scraper
+PHP library: https://github.com/postaddictme/instagram-php-scraper

@@ -15,9 +15,21 @@ public class Comment {
     public static Comment fromApi(Map commentMap) {
         Comment instance = new Comment();
         instance.text = (String) commentMap.get("text");
-        instance.createdAt = (long) (0d +(Double)commentMap.get("created_at"));
+
+        try {
+            instance.createdAt = (long) (0d + (Double) commentMap.get("created_at"));
+        } catch (NullPointerException e) {
+            instance.createdAt = new Long((String) commentMap.get("created_time"));
+        }
+
         instance.id = (String) commentMap.get("id");
-        instance.user = Account.fromAccountPage((Map) commentMap.get("user"));
+
+        try {
+            instance.user = Account.fromAccountPage((Map) commentMap.get("user"));
+        } catch (NullPointerException e) {
+            instance.user = Account.fromComments((Map) commentMap.get("from"));
+        }
+
         return instance;
     }
 }

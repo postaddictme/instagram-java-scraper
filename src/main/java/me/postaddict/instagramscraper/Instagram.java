@@ -1,6 +1,7 @@
 package me.postaddict.instagramscraper;
 
 import com.google.gson.Gson;
+import me.postaddict.instagramscraper.exception.InstagramAuthException;
 import me.postaddict.instagramscraper.exception.InstagramException;
 import me.postaddict.instagramscraper.exception.InstagramNotFoundException;
 import me.postaddict.instagramscraper.model.Account;
@@ -12,12 +13,14 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class Instagram {
+    public String sessionUsername;
+    public String sessionPassword;
+    public String sessionId;
+    public String mid;
+    public String csrfToken;
     private OkHttpClient httpClient;
     private Gson gson;
 
@@ -53,6 +56,58 @@ public class Instagram {
         this.gson = new Gson();
     }
 
+    public void withCredentials(String instagramUsername, String instagramPassword) {
+        this.sessionUsername = instagramUsername;
+        this.sessionPassword = instagramPassword;
+    }
+
+    public void login() throws InstagramAuthException, IOException, InstagramException {
+        if (this.sessionUsername == null || this.sessionPassword == null) {
+            throw new InstagramAuthException("Specify username and password");
+        }
+        Request request = new Request.Builder()
+                .url(Endpoint.BASE_URL)
+                .build();
+        Response response = this.httpClient.newCall(request).execute();
+        if (response.code() != 200) {
+            throw new InstagramException("Response code is not equal 200. Something went wrong. Please report issue.");
+        }
+        parseCookies(response.headers("Set-Cookie"));
+        RequestBody formBody = new FormBody.Builder()
+                .add("username", this.sessionUsername)
+                .add("password", this.sessionPassword)
+                .build();
+        Request request1 = new Request.Builder()
+                .url(Endpoint.LOGIN_URL)
+                .header("referer", Endpoint.BASE_URL + "/")
+                .addHeader("x-csrftoken", this.csrfToken)
+                .addHeader("cookie", String.format("csrftoken=%s; mid=%s; ", this.csrfToken, this.mid))
+                .post(formBody)
+                .build();
+        Response response1 = this.httpClient.newCall(request1).execute();
+        if (response1.code() != 200) {
+            throw new InstagramAuthException("Something went wrong");
+        }
+        Map<String, String> cookies = parseCookies(response1.headers("Set-Cookie"));
+        this.csrfToken = cookies.get("csrftoken");
+        this.sessionId = cookies.get("sessionid");
+        this.mid = cookies.get("mid");
+    }
+
+    private Map<String, String> parseCookies(List<String> rawCookies) {
+        Map<String, String> map = new HashMap<String, String>();
+        for (String s : rawCookies) {
+            String[] parts = s.split(";");
+            String[] p = parts[0].split("=");
+            if (p.length == 2) {
+                map.put(p[0].trim(), p[1].trim());
+            }
+        }
+        this.csrfToken = map.get("csrftoken");
+        this.mid = map.get("mid");
+        return map;
+    }
+
 
     public Account getAccountByUsername(String username) throws IOException, InstagramException {
         Request request = new Request.Builder()
@@ -71,7 +126,16 @@ public class Instagram {
     }
 
     public Account getAccountById(long id) throws IOException, InstagramException {
-        Request request = getApiRequest(Endpoint.getAccountJsonInfoLinkByAccountId(id));
+        RequestBody formBody = new FormBody.Builder()
+                .add("q", Endpoint.getAccountJsonInfoLinkByAccountId(id))
+                .build();
+        Request request = new Request.Builder()
+                .url(Endpoint.INSTAGRAM_QUERY_URL)
+                .header("referer", Endpoint.BASE_URL + "/")
+                .addHeader("x-csrftoken", this.csrfToken)
+                .addHeader("cookie", String.format("csrftoken=%s; sessionid=%s; ", this.csrfToken, this.sessionId))
+                .post(formBody)
+                .build();
         Response response = this.httpClient.newCall(request).execute();
         if (response.code() == 404) {
             throw new InstagramNotFoundException("Account with given user id does not exist.");
@@ -157,6 +221,9 @@ public class Instagram {
         while (index < count && hasNext) {
             Request request = new Request.Builder()
                     .url(Endpoint.getMediasJsonByLocationIdLink(facebookLocationId, offset))
+                    .header("referer", Endpoint.BASE_URL + "/")
+                    .addHeader("x-csrftoken", this.csrfToken)
+                    .addHeader("cookie", String.format("csrftoken=%s; sessionid=%s; ", this.csrfToken, this.sessionId))
                     .build();
             Response response = this.httpClient.newCall(request).execute();
             if (response.code() != 200) {
@@ -188,6 +255,9 @@ public class Instagram {
         while (index < count && hasNext) {
             Request request = new Request.Builder()
                     .url(Endpoint.getMediasJsonByTagLink(tag, maxId))
+                    .header("referer", Endpoint.BASE_URL + "/")
+                    .addHeader("x-csrftoken", this.csrfToken)
+                    .addHeader("cookie", String.format("csrftoken=%s; sessionid=%s; ", this.csrfToken, this.sessionId))
                     .build();
             Response response = this.httpClient.newCall(request).execute();
             if (response.code() != 200) {

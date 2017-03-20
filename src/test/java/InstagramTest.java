@@ -4,19 +4,24 @@ import me.postaddict.instagramscraper.model.Account;
 import me.postaddict.instagramscraper.model.Comment;
 import me.postaddict.instagramscraper.model.Media;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class InstagramTest {
-    Instagram instagram;
+    private static Instagram instagram;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         instagram = new Instagram();
+        instagram.withCredentials("PASTE_YOUR_USERNAME", "PASTE_YOUR_PASSWORD");
+        instagram.login();
     }
 
     @Test
@@ -71,5 +76,29 @@ public class InstagramTest {
     public void testGetCommentsByMediaCode() throws Exception {
         List<Comment> list = instagram.getCommentsByMediaCode("BHaRdodBouH", 50);
         assertEquals(50, list.size());
+    }
+
+    @Test
+    public void testGetIdFromCode() throws Exception {
+        String code = Media.getCodeFromId("1270593720437182847");
+        assertEquals("BGiDkHAgBF_", code);
+        code = Media.getCodeFromId("1270593720437182847_3");
+        assertEquals("BGiDkHAgBF_", code);
+    }
+
+    @Test
+    public void testGetCodeFromId() throws Exception {
+        String id = Media.getIdFromCode("BGiDkHAgBF_");
+        assertEquals("1270593720437182847", id);
+    }
+
+    @Test
+    public void testPreviewComments() throws Exception {
+        Media media = instagram.getMedias("kevin", 1).get(0);
+        if (media.commentsCount > 0){
+            assertTrue(media.previewCommentsList.size() > 0);
+        } else {
+            assertFalse(media.previewCommentsList.size() > 0);
+        }
     }
 }
