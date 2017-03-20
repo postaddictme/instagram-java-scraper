@@ -107,7 +107,7 @@ public class InstagramTest {
     }
 
     @Test
-    public void authMethodsMultiThreadTest() throws InterruptedException {
+    public void testAuthMethodsMultiThread() throws InterruptedException {
         String requests = "trump\n" +
                 "obama\n" +
                 "putin\n" +
