@@ -69,9 +69,7 @@ public class Instagram {
                 .url(Endpoint.BASE_URL)
                 .build();
         Response response = this.httpClient.newCall(request).execute();
-        if (response.code() != 200) {
-            throw new InstagramException("Response code is not equal 200. Something went wrong. Please report issue.");
-        }
+        throwExceptionIfError(response);
         parseCookies(response.headers("Set-Cookie"));
         RequestBody formBody = new FormBody.Builder()
                 .add("username", this.sessionUsername)
@@ -85,9 +83,7 @@ public class Instagram {
                 .post(formBody)
                 .build();
         Response response1 = this.httpClient.newCall(request1).execute();
-        if (response1.code() != 200) {
-            throw new InstagramAuthException("Something went wrong");
-        }
+        throwExceptionIfError(response1);
         Map<String, String> cookies = parseCookies(response1.headers("Set-Cookie"));
         this.csrfToken = cookies.get("csrftoken");
         this.sessionId = cookies.get("sessionid");
@@ -114,12 +110,7 @@ public class Instagram {
                 .url(Endpoint.getAccountJsonInfoLinkByUsername(username))
                 .build();
         Response response = this.httpClient.newCall(request).execute();
-        if (response.code() == 404) {
-            throw new InstagramNotFoundException("Account with given username does not exist.");
-        }
-        if (response.code() != 200) {
-            throw new InstagramException("Response code is not equal 200. Something went wrong. Please report issue.");
-        }
+        throwExceptionIfError(response);
         String jsonString = response.body().string();
         Map userJson = gson.fromJson(jsonString, Map.class);
         return Account.fromAccountPage((Map) userJson.get("user"));
@@ -137,13 +128,7 @@ public class Instagram {
                 .post(formBody)
                 .build();
         Response response = this.httpClient.newCall(request).execute();
-        if (response.code() == 404) {
-            throw new InstagramNotFoundException("Account with given user id does not exist.");
-        }
-
-        if (response.code() != 200) {
-            throw new InstagramException("Response code is not equal 200. Something went wrong. Please report issue.");
-        }
+        throwExceptionIfError(response);
         String jsonString = response.body().string();
         Map userJson = gson.fromJson(jsonString, Map.class);
         return Account.fromAccountPage(userJson);
@@ -171,9 +156,7 @@ public class Instagram {
                     .url(Endpoint.getAccountMediasJsonLink(username, maxId))
                     .build();
             Response response = this.httpClient.newCall(request).execute();
-            if (response.code() != 200) {
-                throw new InstagramException("Response code is not equal 200. Something went wrong. Please report issue.");
-            }
+            throwExceptionIfError(response);
             String jsonString = response.body().string();
             Map mediasMap = gson.fromJson(jsonString, Map.class);
             List items = (List) mediasMap.get("items");
@@ -197,12 +180,7 @@ public class Instagram {
                 .url(url + "/?__a=1")
                 .build();
         Response response = this.httpClient.newCall(request).execute();
-        if (response.code() == 404) {
-            throw new InstagramException("Media with given url does not exist.");
-        }
-        if (response.code() != 200) {
-            throw new InstagramException("Response code is not equal 200. Something went wrong. Please report issue.");
-        }
+        throwExceptionIfError(response);
         String jsonString = response.body().string();
         Map pageMap = gson.fromJson(jsonString, Map.class);
 
@@ -226,9 +204,7 @@ public class Instagram {
                     .addHeader("cookie", String.format("csrftoken=%s; sessionid=%s; ", this.csrfToken, this.sessionId))
                     .build();
             Response response = this.httpClient.newCall(request).execute();
-            if (response.code() != 200) {
-                throw new InstagramException("Response code is not equal 200. Something went wrong. Please report issue.");
-            }
+            throwExceptionIfError(response);
             String jsonString = response.body().string();
             Map locationMap = gson.fromJson(jsonString, Map.class);
             List nodes = (List) ((Map) ((Map) locationMap.get("location")).get("media")).get("nodes");
@@ -260,9 +236,7 @@ public class Instagram {
                     .addHeader("cookie", String.format("csrftoken=%s; sessionid=%s; ", this.csrfToken, this.sessionId))
                     .build();
             Response response = this.httpClient.newCall(request).execute();
-            if (response.code() != 200) {
-                throw new InstagramException("Response code is not equal 200. Something went wrong. Please report issue.");
-            }
+            throwExceptionIfError(response);
             String jsonString = response.body().string();
             Map tagMap = gson.fromJson(jsonString, Map.class);
             List nodes = (List) ((Map) ((Map) tagMap.get("tag")).get("media")).get("nodes");
@@ -291,9 +265,7 @@ public class Instagram {
                 .addHeader("cookie", String.format("csrftoken=%s; sessionid=%s; ", this.csrfToken, this.sessionId))
                 .build();
         Response response = this.httpClient.newCall(request).execute();
-        if (response.code() != 200) {
-            throw new InstagramException("Response code is not equal 200. Something went wrong. Please report issue.");
-        }
+        throwExceptionIfError(response);
         String jsonString = response.body().string();
         Map tagMap = gson.fromJson(jsonString, Map.class);
         List nodes = (List) ((Map) ((Map) tagMap.get("tag")).get("top_posts")).get("nodes");
@@ -313,9 +285,7 @@ public class Instagram {
         while (index < count && hasNext) {
             Request request = getApiRequest(Endpoint.getCommentsBeforeCommentIdByCode(code, 20, commentId));
             Response response = this.httpClient.newCall(request).execute();
-            if (response.code() != 200) {
-                throw new InstagramException("Response code is not equal 200. Something went wrong. Please report issue.");
-            }
+            throwExceptionIfError(response);
             String jsonString = response.body().string();
             Map commentsMap = gson.fromJson(jsonString, Map.class);
             List nodes = (List) ((Map) commentsMap.get("comments")).get("nodes");
@@ -346,5 +316,18 @@ public class Instagram {
                 .header("X-Csrftoken", random)
                 .header("Referer", "https://www.instagram.com/")
                 .build();
+    }
+
+    private void throwExceptionIfError(Response response) throws InstagramException {
+        if (response.code() == 200) {
+            return;
+        } else if (response.code() == 404) {
+            response.body().close();
+            throw new InstagramNotFoundException("Account with given username does not exist.");
+        } else {
+            response.body().close();
+            throw new InstagramException("Response code is not equal 200. Something went wrong. Please report issue.");
+        }
+
     }
 }
