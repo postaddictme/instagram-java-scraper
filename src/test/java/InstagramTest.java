@@ -3,16 +3,20 @@ import me.postaddict.instagramscraper.exception.InstagramException;
 import me.postaddict.instagramscraper.model.Account;
 import me.postaddict.instagramscraper.model.Comment;
 import me.postaddict.instagramscraper.model.Media;
-import org.junit.Before;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class InstagramTest {
     private static Instagram instagram;
@@ -99,6 +103,69 @@ public class InstagramTest {
             assertTrue(media.previewCommentsList.size() > 0);
         } else {
             assertFalse(media.previewCommentsList.size() > 0);
+        }
+    }
+
+    @Test
+    public void authMethodsMultiThreadTest() throws InterruptedException {
+        String requests = "trump\n" +
+                "obama\n" +
+                "putin\n" +
+                "medvedev\n" +
+                "madonna\n" +
+                "hilton\n" +
+                "clinton\n" +
+                "ferrari\n" +
+                "porche\n" +
+                "toyota\n" +
+                "honda\n" +
+                "civic\n" +
+                "boeing\n" +
+                "microsoft\n" +
+                "android\n" +
+                "google\n" +
+                "yahoo\n" +
+                "yandex\n" +
+                "india\n" +
+                "ireland\n" +
+                "police\n" +
+                "school\n" +
+                "usa\n" +
+                "canada\n" +
+                "russia\n" +
+                "sweden\n" +
+                "iraq\n" +
+                "moscow\n" +
+                "london\n" +
+                "washington\n" +
+                "china\n" +
+                "japan";
+        ExecutorService es = Executors.newFixedThreadPool(5);
+        final Map<String, List<Media>> results = new HashMap();
+        for (final String s : requests.split("\\n")) {
+            es.execute(new Runnable() {
+                public void run() {
+                    try {
+                        List<Media> medias = new ArrayList<Media>();
+                        medias.addAll(instagram.getTopMediasByTag(s));
+                        Thread.sleep(1000);
+                        medias.addAll(instagram.getMediasByTag(s, 50));
+                        results.put(s, medias);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (InstagramException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+        while (((ThreadPoolExecutor) es).getActiveCount() > 0){
+            Thread.sleep(3000);
+        }
+        for (List<Media> medias : results.values()) {
+            Assert.assertEquals(59, medias.size());
         }
     }
 }
