@@ -286,6 +286,9 @@ public class Instagram {
         String maxId = "";
         Request request = new Request.Builder()
                 .url(Endpoint.getMediasJsonByTagLink(tag, maxId))
+                .header("referer", Endpoint.BASE_URL + "/")
+                .addHeader("x-csrftoken", this.csrfToken)
+                .addHeader("cookie", String.format("csrftoken=%s; sessionid=%s; ", this.csrfToken, this.sessionId))
                 .build();
         Response response = this.httpClient.newCall(request).execute();
         if (response.code() != 200) {
