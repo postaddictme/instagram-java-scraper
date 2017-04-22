@@ -1,6 +1,6 @@
-package me.postaddict.instagramscraper;
+package me.postaddict.instagram.scraper;
 
-public class Endpoint {
+public abstract class Endpoint {
     public static final String BASE_URL = "https://www.instagram.com";
     public static final String LOGIN_URL = "https://www.instagram.com/accounts/login/ajax/";
     public static final String ACCOUNT_PAGE = "https://www.instagram.com/{{username}}";
