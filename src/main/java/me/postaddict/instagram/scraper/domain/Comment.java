@@ -1,16 +1,13 @@
-package me.postaddict.instagramscraper.model;
+package me.postaddict.instagram.scraper.domain;
 
 import java.util.Map;
 
 public class Comment {
     public String text;
-    public long createdAt;
+    public Long createdAt;
     public String id;
 
     public Account user;
-
-    public Comment() {
-    }
 
     public static Comment fromApi(Map commentMap) {
         Comment instance = new Comment();
@@ -19,7 +16,12 @@ public class Comment {
         try {
             instance.createdAt = (long) (0d + (Double) commentMap.get("created_at"));
         } catch (NullPointerException e) {
-            instance.createdAt = new Long((String) commentMap.get("created_time"));
+            Object time = commentMap.get("created_time");
+            if (time instanceof String) {
+                instance.createdAt = new Long((String) time);
+            } else if (time instanceof Double) {
+                instance.createdAt = ((Double) time).longValue();
+            }
         }
 
         instance.id = (String) commentMap.get("id");
@@ -31,5 +33,15 @@ public class Comment {
         }
 
         return instance;
+    }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "text='" + text + '\'' +
+                ", createdAt=" + createdAt +
+                ", id='" + id + '\'' +
+                ", user=" + user +
+                '}';
     }
 }
