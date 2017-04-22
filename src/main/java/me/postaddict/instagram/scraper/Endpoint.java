@@ -14,6 +14,8 @@ public abstract class Endpoint {
     public static final String ACCOUNT_JSON_INFO_BY_ID = "ig_user({{userId}}){id,username,external_url,full_name,profile_pic_url,biography,followed_by{count},follows{count},media{count},is_private,is_verified}";
     public static final String LAST_COMMENTS_BY_CODE = "ig_shortcode({{code}}){comments.last({{count}}){count,nodes{id,created_at,text,user{id,profile_pic_url,username,follows{count},followed_by{count},biography,full_name,media{count},is_private,external_url,is_verified}},page_info}}";
     public static final String COMMENTS_BEFORE_COMMENT_ID_BY_CODE = "ig_shortcode({{code}}){comments.before({{commentId}},{{count}}){count,nodes{id,created_at,text,user{id,profile_pic_url,username,follows{count},followed_by{count},biography,full_name,media{count},is_private,external_url,is_verified}},page_info}}";
+    public static final String MEDIA_LIKE = "https://www.instagram.com/web/likes/{{mediaId}}/like/";
+    public static final String MEDIA_UNLIKE = "https://www.instagram.com/web/likes/{{mediaId}}/unlike/";
 
     public static final String INSTAGRAM_QUERY_URL = "https://www.instagram.com/query/";
     public static final String INSTAGRAM_CDN_URL = "https://scontent.cdninstagram.com/";
@@ -76,4 +78,11 @@ public abstract class Endpoint {
                 .replace("{{commentId}}", commentId);
     }
 
+    public static String getMediaLikeLink(String mediaId) {
+        return MEDIA_LIKE.replace("{{mediaId}}", mediaId);
+    }
+
+    public static String getMediaUnlikeLink(String mediaId) {
+        return MEDIA_UNLIKE.replace("{{mediaId}}", mediaId);
+    }
 }
