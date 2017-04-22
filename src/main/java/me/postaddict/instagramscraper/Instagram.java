@@ -120,13 +120,12 @@ public class Instagram {
         RequestBody formBody = new FormBody.Builder()
                 .add("q", Endpoint.getAccountJsonInfoLinkByAccountId(id))
                 .build();
-        Request request = new Request.Builder()
+        Request.Builder requestBuilder = new Request.Builder()
                 .url(Endpoint.INSTAGRAM_QUERY_URL)
                 .header("referer", Endpoint.BASE_URL + "/")
-                .addHeader("x-csrftoken", this.csrfToken)
-                .addHeader("cookie", String.format("csrftoken=%s; sessionid=%s; ", this.csrfToken, this.sessionId))
-                .post(formBody)
-                .build();
+                .post(formBody);
+        addCookie(requestBuilder);
+        Request request = requestBuilder.build();
         Response response = this.httpClient.newCall(request).execute();
         throwExceptionIfError(response);
         String jsonString = response.body().string();
@@ -197,12 +196,11 @@ public class Instagram {
         String offset = "";
         boolean hasNext = true;
         while (index < count && hasNext) {
-            Request request = new Request.Builder()
+            Request.Builder requestBuilder = new Request.Builder()
                     .url(Endpoint.getMediasJsonByLocationIdLink(facebookLocationId, offset))
-                    .header("referer", Endpoint.BASE_URL + "/")
-                    .addHeader("x-csrftoken", this.csrfToken)
-                    .addHeader("cookie", String.format("csrftoken=%s; sessionid=%s; ", this.csrfToken, this.sessionId))
-                    .build();
+                    .header("referer", Endpoint.BASE_URL + "/");
+            addCookie(requestBuilder);
+            Request request = requestBuilder.build();
             Response response = this.httpClient.newCall(request).execute();
             throwExceptionIfError(response);
             String jsonString = response.body().string();
@@ -229,12 +227,11 @@ public class Instagram {
         String maxId = "";
         boolean hasNext = true;
         while (index < count && hasNext) {
-            Request request = new Request.Builder()
+            Request.Builder requestBuilder = new Request.Builder()
                     .url(Endpoint.getMediasJsonByTagLink(tag, maxId))
-                    .header("referer", Endpoint.BASE_URL + "/")
-                    .addHeader("x-csrftoken", this.csrfToken)
-                    .addHeader("cookie", String.format("csrftoken=%s; sessionid=%s; ", this.csrfToken, this.sessionId))
-                    .build();
+                    .header("referer", Endpoint.BASE_URL + "/");
+            addCookie(requestBuilder);
+            Request request = requestBuilder.build();
             Response response = this.httpClient.newCall(request).execute();
             throwExceptionIfError(response);
             String jsonString = response.body().string();
@@ -258,12 +255,11 @@ public class Instagram {
     public List<Media> getTopMediasByTag(String tag) throws IOException, InstagramException {
         ArrayList<Media> medias = new ArrayList<Media>();
         String maxId = "";
-        Request request = new Request.Builder()
+        Request.Builder requestBuilder = new Request.Builder()
                 .url(Endpoint.getMediasJsonByTagLink(tag, maxId))
-                .header("referer", Endpoint.BASE_URL + "/")
-                .addHeader("x-csrftoken", this.csrfToken)
-                .addHeader("cookie", String.format("csrftoken=%s; sessionid=%s; ", this.csrfToken, this.sessionId))
-                .build();
+                .header("referer", Endpoint.BASE_URL + "/");
+        addCookie(requestBuilder);
+        Request request = requestBuilder.build();
         Response response = this.httpClient.newCall(request).execute();
         throwExceptionIfError(response);
         String jsonString = response.body().string();
@@ -316,6 +312,15 @@ public class Instagram {
                 .header("X-Csrftoken", random)
                 .header("Referer", "https://www.instagram.com/")
                 .build();
+    }
+
+
+    private void addCookie(Request.Builder requestBuilder) {
+        if(this.csrfToken != null && this.sessionId != null){
+            requestBuilder
+                    .addHeader("x-csrftoken", this.csrfToken)
+                    .addHeader("cookie", String.format("csrftoken=%s; sessionid=%s; ", this.csrfToken, this.sessionId));
+        }
     }
 
     private void throwExceptionIfError(Response response) throws InstagramException {
