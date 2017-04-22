@@ -1,4 +1,4 @@
-package me.postaddict.instagramscraper.exception;
+package me.postaddict.instagram.scraper.exception;
 
 public class InstagramNotFoundException extends InstagramException {
 

@@ -1,6 +1,6 @@
-package me.postaddict.instagramscraper.model;
+package me.postaddict.instagram.scraper.domain;
 
-import me.postaddict.instagramscraper.Endpoint;
+import me.postaddict.instagram.scraper.Endpoint;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Media {
+
     public static final String INSTAGRAM_URL = "https://www.instagram.com/";
     public static final String TYPE_IMAGE = "image";
     public static final String TYPE_VIDEO = "video";
@@ -180,5 +181,26 @@ public class Media {
     public static String getLinkFromId(String id) {
         String code = Media.getCodeFromId(id);
         return Endpoint.getMediaPageLinkByCode(code);
+    }
+
+    @Override
+    public String toString() {
+        return "Media{" +
+                "id='" + id + '\'' +
+                ", createdTime=" + createdTime +
+                ", type='" + type + '\'' +
+                ", link='" + link + '\'' +
+                ", imageUrls=" + imageUrls +
+                ", caption='" + caption + '\'' +
+                ", videoUrls=" + videoUrls +
+                ", shortcode='" + shortcode + '\'' +
+                ", commentsCount=" + commentsCount +
+                ", previewCommentsList=" + previewCommentsList +
+                ", likesCount=" + likesCount +
+                ", videoViews=" + videoViews +
+                ", ownerId='" + ownerId + '\'' +
+                ", owner=" + owner +
+                ", locationName='" + locationName + '\'' +
+                '}';
     }
 }

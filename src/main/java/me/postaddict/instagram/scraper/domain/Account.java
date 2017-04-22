@@ -1,8 +1,9 @@
-package me.postaddict.instagramscraper.model;
+package me.postaddict.instagram.scraper.domain;
 
 import java.util.Map;
 
 public class Account {
+
     public String username;
     public int followsCount;
     public int followedByCount;
@@ -14,9 +15,6 @@ public class Account {
     public boolean isPrivate;
     public String externalUrl;
     public boolean isVerified;
-
-    public Account() {
-    }
 
     public static Account fromAccountPage(Map userJson) {
         Account instance = new Account();
@@ -38,9 +36,15 @@ public class Account {
         Account instance = new Account();
         instance.id = Long.parseLong((String) userMap.get("id"));
         instance.username = (String) userMap.get("username");
-        instance.profilePicUrl = (String) userMap.get("profile_pic_url");
+        if (userMap.containsKey("profile_pic_url")) {
+            instance.profilePicUrl = (String) userMap.get("profile_pic_url");
+        } else if (userMap.containsKey("profile_picture")) {
+            instance.profilePicUrl = (String) userMap.get("profile_picture");
+        }
         instance.fullName = (String) userMap.get("full_name");
-        instance.isPrivate = (Boolean) userMap.get("is_private");
+        if (userMap.containsKey("is_private")) {
+            instance.isPrivate = (Boolean) userMap.get("is_private");
+        }
         return instance;
     }
 
@@ -51,5 +55,22 @@ public class Account {
         instance.profilePicUrl = (String) userMap.get("profile_picture");
         instance.fullName = (String) userMap.get("full_name");
         return instance;
+    }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "username='" + username + '\'' +
+                ", followsCount=" + followsCount +
+                ", followedByCount=" + followedByCount +
+                ", profilePicUrl='" + profilePicUrl + '\'' +
+                ", id=" + id +
+                ", biography='" + biography + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", mediaCount=" + mediaCount +
+                ", isPrivate=" + isPrivate +
+                ", externalUrl='" + externalUrl + '\'' +
+                ", isVerified=" + isVerified +
+                '}';
     }
 }
