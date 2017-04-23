@@ -127,4 +127,14 @@ public class AuthenticatedInstaTest {
         }
     }
 
+    @Test
+    public void testLikeMediaByCode() throws Exception {
+        client.likeMediaByCode("PASTE_HERE_MEDIA_CODE");
+    }
+
+    @Test
+    public void testUnlikeMediaByCode() throws Exception {
+        client.unlikeMediaByCode("PASTE_HERE_MEDIA_CODE");
+    }
+
 }

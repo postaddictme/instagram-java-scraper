@@ -277,4 +277,28 @@ public class Instagram implements AuthenticatedInsta {
         }
         return comments;
     }
+
+  public void likeMediaByCode(String code) throws IOException {
+        String url = Endpoint.getMediaLikeLink(Media.getIdFromCode(code));
+        Request request = new Request.Builder()
+                .url(url)
+                .header("Referer", Endpoint.getMediaPageLinkByCode(code) + "/")
+                .post(new FormBody.Builder().build())
+                .build();
+
+        Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
+        response.body().close();
+    }
+
+    public void unlikeMediaByCode(String code) throws IOException {
+        String url = Endpoint.getMediaUnlikeLink(Media.getIdFromCode(code));
+        Request request = new Request.Builder()
+                .url(url)
+                .header("Referer", Endpoint.getMediaPageLinkByCode(code) + "/")
+                .post(new FormBody.Builder().build())
+                .build();
+
+        Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
+        response.body().close();
+    }
 }
