@@ -278,7 +278,7 @@ public class Instagram implements AuthenticatedInsta {
         return comments;
     }
 
-    public void likeMediaByCode(String code) throws IOException {
+  public void likeMediaByCode(String code) throws IOException {
         String url = Endpoint.getMediaLikeLink(Media.getIdFromCode(code));
         Request request = new Request.Builder()
                 .url(url)
