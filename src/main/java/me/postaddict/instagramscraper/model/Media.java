@@ -1,6 +1,7 @@
 package me.postaddict.instagramscraper.model;
 
 import me.postaddict.instagramscraper.Endpoint;
+import me.postaddict.instagramscraper.exception.InstagramNotFoundException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Media {
-    public static final String INSTAGRAM_URL = "https://www.instagramscraper.com/";
+    public static final String INSTAGRAM_URL = "https://www.instagram.com/";
     public static final String TYPE_IMAGE = "image";
     public static final String TYPE_VIDEO = "video";
 
@@ -65,16 +66,16 @@ public class Media {
         }
 
         instance.previewCommentsList = new ArrayList<Comment>();
-        if (instance.commentsCount > 0){
-            for (Object o: (List)((Map)mediaMap.get("comments")).get("data")){
-                instance.previewCommentsList.add(Comment.fromApi((Map)o));
+        if (instance.commentsCount > 0) {
+            for (Object o : (List) ((Map) mediaMap.get("comments")).get("data")) {
+                instance.previewCommentsList.add(Comment.fromApi((Map) o));
             }
         }
 
         return instance;
     }
 
-    public static Media fromMediaPage(Map pageMap) {
+    public static Media fromMediaPage(Map pageMap) throws InstagramNotFoundException {
         Media instance = new Media();
         instance.id = (String) pageMap.get("id");
         instance.type = TYPE_IMAGE;
@@ -82,16 +83,31 @@ public class Media {
             instance.type = TYPE_VIDEO;
             instance.videoStandardResolutionUrl = (String) pageMap.get("video_url");
         }
-        instance.createdTime = ((Double) pageMap.get("date")).longValue();
-        instance.code = (String) pageMap.get("code");
+        instance.code = (String) (pageMap.get("code") == null? pageMap.get("shortcode") : pageMap.get("code"));
+        if(instance.code == null){
+            throw new InstagramNotFoundException("there is no code");
+        }
+        if (pageMap.get("date") != null) {
+            instance.createdTime = ((Double) pageMap.get("date")).longValue();
+        } else if (pageMap.get("taken_at_timestamp") != null) {
+            instance.createdTime = ((Double) pageMap.get("taken_at_timestamp")).longValue();
+        } else {
+            throw new InstagramNotFoundException("created time not found: " + instance.code);
+        }
+
         instance.link = INSTAGRAM_URL + "p/" + instance.code;
-        String[] imageUrls = getImageUrls((String) pageMap.get("display_src"));
+        String[] imageUrls = getImageUrls((String) (pageMap.get("display_src") == null?  pageMap.get("display_url") : pageMap.get("display_src")));
         instance.imageLowResolutionUrl = imageUrls[0];
         instance.imageThumbnailUrl = imageUrls[1];
         instance.imageStandardResolutionUrl = imageUrls[2];
         instance.imageHighResolutionUrl = imageUrls[3];
-        if (pageMap.get("caption") != null) {
-            instance.caption = (String) pageMap.get("caption");
+        instance.caption = (String) pageMap.get("caption");
+        if(instance.caption == null){
+            try {
+                instance.caption = (String) ((Map)((Map)((List)((Map)pageMap.get("edge_media_to_caption")).get("edges")).get(0)).get("node")).get("text");
+            } catch (Exception ignored){
+
+            }
         }
         instance.owner = Account.fromMediaPage((Map) pageMap.get("owner"));
         return instance;

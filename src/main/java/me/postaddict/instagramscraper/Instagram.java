@@ -182,8 +182,17 @@ public class Instagram {
         throwExceptionIfError(response);
         String jsonString = response.body().string();
         Map pageMap = gson.fromJson(jsonString, Map.class);
-
-        return Media.fromMediaPage((Map) pageMap.get("media"));
+        Map media = (Map) pageMap.get("media");
+        if(media == null){
+            media = (Map) pageMap.get("graphql");
+            if(media != null){
+                media = (Map) media.get("shortcode_media");
+            }
+        }
+        if(media == null){
+            throw new InstagramNotFoundException("data not found");
+        }
+        return Media.fromMediaPage(media);
     }
 
     public Media getMediaByCode(String code) throws IOException, InstagramException {
