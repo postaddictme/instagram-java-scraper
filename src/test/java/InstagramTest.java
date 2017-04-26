@@ -22,7 +22,7 @@ public class InstagramTest {
     @BeforeClass
     public static void setUp() throws Exception {
         instagram = new Instagram();
-        instagram.withCredentials("rozhnikov", "luv4us");
+        instagram.withCredentials("PASTE_YOUR_USERNAME", "PASTE_YOUR_PASSWORD");
         instagram.login();
     }
 
