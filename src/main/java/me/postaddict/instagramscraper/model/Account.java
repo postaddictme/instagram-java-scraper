@@ -52,4 +52,21 @@ public class Account {
         instance.fullName = (String) userMap.get("full_name");
         return instance;
     }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "username='" + username + '\'' +
+                ", followsCount=" + followsCount +
+                ", followedByCount=" + followedByCount +
+                ", profilePicUrl='" + profilePicUrl + '\'' +
+                ", id=" + id +
+                ", biography='" + biography + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", mediaCount=" + mediaCount +
+                ", isPrivate=" + isPrivate +
+                ", externalUrl='" + externalUrl + '\'' +
+                ", isVerified=" + isVerified +
+                '}';
+    }
 }

@@ -71,7 +71,8 @@ public class Media {
                 instance.previewCommentsList.add(Comment.fromApi((Map) o));
             }
         }
-
+        instance.owner = Account.fromComments((Map) mediaMap.get("user"));
+        instance.ownerId = String.valueOf(instance.owner.id);
         return instance;
     }
 
@@ -183,5 +184,31 @@ public class Media {
     public static String getLinkFromId(String id) {
         String code = Media.getCodeFromId(id);
         return Endpoint.getMediaPageLinkByCode(code);
+    }
+
+    @Override
+    public String toString() {
+        return "Media{" +
+                "id='" + id + '\'' +
+                ", createdTime=" + createdTime +
+                ", type='" + type + '\'' +
+                ", link='" + link + '\'' +
+                ", imageLowResolutionUrl='" + imageLowResolutionUrl + '\'' +
+                ", imageThumbnailUrl='" + imageThumbnailUrl + '\'' +
+                ", imageStandardResolutionUrl='" + imageStandardResolutionUrl + '\'' +
+                ", imageHighResolutionUrl='" + imageHighResolutionUrl + '\'' +
+                ", caption='" + caption + '\'' +
+                ", videoLowResolutionUrl='" + videoLowResolutionUrl + '\'' +
+                ", videoStandardResolutionUrl='" + videoStandardResolutionUrl + '\'' +
+                ", videoLowBandwidthUrl='" + videoLowBandwidthUrl + '\'' +
+                ", code='" + code + '\'' +
+                ", commentsCount=" + commentsCount +
+                ", previewCommentsList=" + previewCommentsList +
+                ", likesCount=" + likesCount +
+                ", videoViews=" + videoViews +
+                ", ownerId='" + ownerId + '\'' +
+                ", owner=" + owner.toString() +
+                ", locationName='" + locationName + '\'' +
+                '}';
     }
 }

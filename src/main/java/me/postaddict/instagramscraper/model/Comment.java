@@ -32,4 +32,14 @@ public class Comment {
 
         return instance;
     }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "text='" + text + '\'' +
+                ", createdAt=" + createdAt +
+                ", id='" + id + '\'' +
+                ", user=" + user +
+                '}';
+    }
 }
