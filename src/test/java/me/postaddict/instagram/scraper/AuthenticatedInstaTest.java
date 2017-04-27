@@ -38,7 +38,7 @@ public class AuthenticatedInstaTest {
                 .build();
         client = new Instagram(httpClient);
         client.basePage();
-        client.login("PASTE_YOUR_USERNAME", "PASTE_YOUR_PASSWORD");
+        client.login(Settings.login, Settings.password);
         client.basePage();
     }
 
