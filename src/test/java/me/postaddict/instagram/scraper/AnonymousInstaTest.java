@@ -16,6 +16,9 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static me.postaddict.instagram.scraper.ContentCheck.checkAccount;
+import static me.postaddict.instagram.scraper.ContentCheck.checkComment;
+import static me.postaddict.instagram.scraper.ContentCheck.checkMedia;
 import static org.junit.Assert.*;
 
 @Ignore
@@ -41,6 +44,7 @@ public class AnonymousInstaTest {
     public void testGetAccountByUsername() throws Exception {
         Account account = client.getAccountByUsername("kevin");
         assertEquals("kevin", account.username);
+        assertTrue(checkAccount(account));
         System.out.println(account);
     }
 
@@ -48,6 +52,9 @@ public class AnonymousInstaTest {
     public void testGetMedias() throws Exception {
         List<Media> mediaList = client.getMedias("kevin", 50);
         assertEquals(50, mediaList.size());
+        for (Media media : mediaList) {
+            assertTrue(checkMedia(media));
+        }
         System.out.println(mediaList);
     }
 
@@ -55,6 +62,7 @@ public class AnonymousInstaTest {
     public void testGetMediaByUrl() throws Exception {
         Media media = client.getMediaByUrl("https://www.instagram.com/p/BHaRdodBouH");
         assertEquals("kevin", media.owner.username);
+        assertTrue(checkMedia(media));
         System.out.println(media);
     }
 
@@ -62,6 +70,7 @@ public class AnonymousInstaTest {
     public void testGetMediaByCode() throws Exception {
         Media media = client.getMediaByCode("BHaRdodBouH");
         assertEquals("kevin", media.owner.username);
+        assertTrue(checkMedia(media));
         System.out.println(media);
     }
 
@@ -69,6 +78,9 @@ public class AnonymousInstaTest {
     public void testGetLocationMediasById() throws Exception {
         List<Media> list = client.getLocationMediasById("17326249", 13);
         assertEquals(13, list.size());
+        for (Media media : list) {
+            assertTrue(checkMedia(media));
+        }
         System.out.println(list);
     }
 
@@ -76,6 +88,9 @@ public class AnonymousInstaTest {
     public void testGetMediasByTag() throws Exception {
         List<Media> list = client.getMediasByTag("Moscow", 50);
         assertEquals(50, list.size());
+        for (Media media : list) {
+            assertTrue(checkMedia(media));
+        }
         System.out.println(list);
     }
 
@@ -83,6 +98,9 @@ public class AnonymousInstaTest {
     public void testGetTopMediasByTag() throws Exception {
         List<Media> list = client.getTopMediasByTag("Sheremetyevo");
         assertEquals(9, list.size());
+        for (Media media : list) {
+            assertTrue(checkMedia(media));
+        }
         System.out.println(list);
     }
 
@@ -90,6 +108,9 @@ public class AnonymousInstaTest {
     public void testGetCommentsByMediaCode() throws Exception {
         List<Comment> list = client.getCommentsByMediaCode("BHaRdodBouH", 50);
         assertEquals(50, list.size());
+        for (Comment comment : list) {
+            assertTrue(checkComment(comment));
+        }
         System.out.println(list);
     }
 
@@ -112,6 +133,9 @@ public class AnonymousInstaTest {
         Media media = client.getMedias("kevin", 1).get(0);
         if (media.commentsCount > 0){
             assertTrue(media.previewCommentsList.size() > 0);
+            for (Comment comment : media.previewCommentsList) {
+                assertTrue(checkComment(comment));
+            }
         } else {
             assertFalse(media.previewCommentsList.size() > 0);
         }
