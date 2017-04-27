@@ -13,6 +13,8 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static me.postaddict.instagram.scraper.ContentCheck.checkAccount;
+import static me.postaddict.instagram.scraper.ContentCheck.checkMedia;
 import static org.junit.Assert.*;
 
 @Ignore
@@ -37,6 +39,7 @@ public class StatelessInstaTest {
     public void testGetAccountByUsername() throws Exception {
         Account account = client.getAccountByUsername("kevin");
         assertEquals("kevin", account.username);
+        assertTrue(checkAccount(account));
         System.out.println(account);
     }
 
@@ -44,6 +47,9 @@ public class StatelessInstaTest {
     public void testGetMedias() throws Exception {
         List<Media> mediaList = client.getMedias("kevin", 50);
         assertEquals(50, mediaList.size());
+        for (Media media : mediaList) {
+            assertTrue(checkMedia(media));
+        }
         System.out.println(mediaList);
     }
 
@@ -51,6 +57,7 @@ public class StatelessInstaTest {
     public void testGetMediaByUrl() throws Exception {
         Media media = client.getMediaByUrl("https://www.instagram.com/p/BHaRdodBouH");
         assertEquals("kevin", media.owner.username);
+        assertTrue(checkMedia(media));
         System.out.println(media);
     }
 
@@ -58,6 +65,7 @@ public class StatelessInstaTest {
     public void testGetMediaByCode() throws Exception {
         Media media = client.getMediaByCode("BHaRdodBouH");
         assertEquals("kevin", media.owner.username);
+        assertTrue(checkMedia(media));
         System.out.println(media);
     }
 
