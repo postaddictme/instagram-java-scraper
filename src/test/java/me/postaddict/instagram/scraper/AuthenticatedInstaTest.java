@@ -16,9 +16,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static me.postaddict.instagram.scraper.ContentCheck.checkAccount;
-import static me.postaddict.instagram.scraper.ContentCheck.checkComment;
-import static me.postaddict.instagram.scraper.ContentCheck.checkMedia;
+import static me.postaddict.instagram.scraper.ContentCheck.*;
 import static org.junit.Assert.*;
 
 @Ignore
@@ -28,6 +26,7 @@ public class AuthenticatedInstaTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        Credentials credentials = new Credentials();
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
         OkHttpClient httpClient = new OkHttpClient.Builder()
@@ -38,7 +37,7 @@ public class AuthenticatedInstaTest {
                 .build();
         client = new Instagram(httpClient);
         client.basePage();
-        client.login(Settings.login, Settings.password);
+        client.login(credentials.getLogin(), credentials.getPassword());
         client.basePage();
     }
 
