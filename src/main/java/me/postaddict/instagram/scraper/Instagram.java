@@ -278,7 +278,7 @@ public class Instagram implements AuthenticatedInsta {
         return comments;
     }
 
-  public void likeMediaByCode(String code) throws IOException {
+    public void likeMediaByCode(String code) throws IOException {
         String url = Endpoint.getMediaLikeLink(Media.getIdFromCode(code));
         Request request = new Request.Builder()
                 .url(url)
@@ -292,6 +292,37 @@ public class Instagram implements AuthenticatedInsta {
 
     public void unlikeMediaByCode(String code) throws IOException {
         String url = Endpoint.getMediaUnlikeLink(Media.getIdFromCode(code));
+        Request request = new Request.Builder()
+                .url(url)
+                .header("Referer", Endpoint.getMediaPageLinkByCode(code) + "/")
+                .post(new FormBody.Builder().build())
+                .build();
+
+        Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
+        response.body().close();
+    }
+
+    public Comment addMediaComment(String code, String commentText) throws IOException {
+        String url = Endpoint.addMediaCommentLink(Media.getIdFromCode(code));
+        FormBody formBody = new FormBody.Builder()
+                .add("comment_text", commentText)
+                .build();
+        Request request = new Request.Builder()
+                .url(url)
+                .header("Referer", Endpoint.getMediaPageLinkByCode(code) + "/")
+                .post(formBody)
+                .build();
+
+        Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
+        String jsonString = response.body().string();
+        response.body().close();
+
+        Map commentMap = gson.fromJson(jsonString, Map.class);
+        return Comment.fromApi(commentMap);
+    }
+
+    public void deleteMediaComment(String code, String commentId) throws IOException {
+        String url = Endpoint.deleteMediaCommentLink(Media.getIdFromCode(code), commentId);
         Request request = new Request.Builder()
                 .url(url)
                 .header("Referer", Endpoint.getMediaPageLinkByCode(code) + "/")

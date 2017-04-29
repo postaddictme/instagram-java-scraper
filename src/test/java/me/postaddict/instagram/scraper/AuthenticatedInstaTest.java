@@ -161,4 +161,15 @@ public class AuthenticatedInstaTest {
         client.unlikeMediaByCode("PASTE_HERE_MEDIA_CODE");
     }
 
+    @Test
+    public void testAddMediaComment() throws Exception {
+        Comment comment = client.addMediaComment("PASTE_HERE_MEDIA_CODE", "PASTE_COMMENT_TEXT");
+        System.out.println(comment);
+    }
+
+    @Test
+    public void testDeleteMediaComment() throws Exception {
+        client.deleteMediaComment("PASTE_HERE_MEDIA_CODE", "PASTE_COMMENT_ID");
+    }
+
 }

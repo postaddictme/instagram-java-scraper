@@ -1,6 +1,7 @@
 package me.postaddict.instagram.scraper;
 
 import me.postaddict.instagram.scraper.domain.Account;
+import me.postaddict.instagram.scraper.domain.Comment;
 
 import java.io.IOException;
 
@@ -10,5 +11,9 @@ public interface AuthenticatedInsta extends AnonymousInsta {
     Account getAccountById(long id) throws IOException;
     void likeMediaByCode(String code) throws IOException;
     void unlikeMediaByCode(String code) throws IOException;
+
+    Comment addMediaComment(String code, String commentText) throws IOException;
+
+    void deleteMediaComment(String code, String commentId) throws IOException;
 
 }
