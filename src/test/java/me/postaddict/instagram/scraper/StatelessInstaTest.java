@@ -2,6 +2,7 @@ package me.postaddict.instagram.scraper;
 
 import me.postaddict.instagram.scraper.domain.Account;
 import me.postaddict.instagram.scraper.domain.Media;
+import me.postaddict.instagram.scraper.domain.Tag;
 import me.postaddict.instagram.scraper.interceptor.ErrorInterceptor;
 import me.postaddict.instagram.scraper.interceptor.UserAgentInterceptor;
 import me.postaddict.instagram.scraper.interceptor.UserAgents;
@@ -15,6 +16,7 @@ import java.util.List;
 
 import static me.postaddict.instagram.scraper.ContentCheck.checkAccount;
 import static me.postaddict.instagram.scraper.ContentCheck.checkMedia;
+import static me.postaddict.instagram.scraper.ContentCheck.checkTag;
 import static org.junit.Assert.*;
 
 @Ignore
@@ -41,6 +43,14 @@ public class StatelessInstaTest {
         assertEquals("kevin", account.username);
         assertTrue(checkAccount(account));
         System.out.println(account);
+    }
+
+    @Test
+    public void testGetTagByName() throws Exception {
+        Tag tag = client.getTagByName("corgi");
+        assertEquals("corgi", tag.name);
+        assertTrue(checkTag(tag));
+        System.out.println(tag);
     }
 
     @Test

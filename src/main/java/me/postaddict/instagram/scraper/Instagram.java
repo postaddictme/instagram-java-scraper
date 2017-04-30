@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import me.postaddict.instagram.scraper.domain.Account;
 import me.postaddict.instagram.scraper.domain.Comment;
 import me.postaddict.instagram.scraper.domain.Media;
+import me.postaddict.instagram.scraper.domain.Tag;
 import me.postaddict.instagram.scraper.exception.InstagramAuthException;
 import okhttp3.*;
 
@@ -150,6 +151,20 @@ public class Instagram implements AuthenticatedInsta {
 
     public Media getMediaByCode(String code) throws IOException {
         return getMediaByUrl(Endpoint.getMediaPageLinkByCode(code));
+    }
+
+    public Tag getTagByName(String tagName) throws IOException {
+        Request request = new Request.Builder()
+            .url(Endpoint.getTagJsonByTagName(tagName))
+            .build();
+
+        Response response = this.httpClient.newCall(request).execute();
+        String jsonString = response.body().string();
+        response.body().close();
+
+        Map tagJson = gson.fromJson(jsonString, Map.class);
+        return Tag.fromSearchPage((Map) tagJson.get("tag"));
+
     }
 
     public List<Media> getLocationMediasById(String locationId, int count) throws IOException {

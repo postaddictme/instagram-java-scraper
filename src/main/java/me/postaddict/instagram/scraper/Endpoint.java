@@ -7,6 +7,7 @@ public abstract class Endpoint {
     public static final String MEDIA_LINK = "https://www.instagram.com/p/{{code}}";
     public static final String ACCOUNT_MEDIAS = "https://www.instagram.com/{{username}}/media?max_id={{maxId}}";
     public static final String ACCOUNT_JSON_INFO = "https://www.instagram.com/{{username}}/?__a=1";
+    public static final String TAG_JSON_INFO = "https://www.instagram.com/explore/tags/{{tag_name}}/?__a=1";
     public static final String MEDIA_JSON_INFO = "https://www.instagram.com/p/{{code}}/?__a=1";
     public static final String MEDIA_JSON_BY_LOCATION_ID = "https://www.instagram.com/explore/locations/{{facebookLocationId}}/?__a=1&max_id={{maxId}}";
     public static final String MEDIA_JSON_BY_TAG = "https://www.instagram.com/explore/tags/{{tag}}/?__a=1&max_id={{maxId}}";
@@ -39,6 +40,10 @@ public abstract class Endpoint {
             maxId = "";
         }
         return ACCOUNT_MEDIAS.replace("{{username}}", username).replace("{{maxId}}", maxId);
+    }
+
+    public static String getTagJsonByTagName(String tagName) {
+        return TAG_JSON_INFO.replace("{{tag_name}}", tagName);
     }
 
     public static String getMediaPageLinkByCode(String code) {
