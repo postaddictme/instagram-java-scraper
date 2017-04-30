@@ -3,6 +3,7 @@ package me.postaddict.instagram.scraper;
 import me.postaddict.instagram.scraper.domain.Account;
 import me.postaddict.instagram.scraper.domain.Comment;
 import me.postaddict.instagram.scraper.domain.Media;
+import me.postaddict.instagram.scraper.domain.Tag;
 
 /**
  * Created by vasily on 27.04.17.
@@ -53,6 +54,21 @@ public class ContentCheck {
             return true;
         } else {
             System.out.println(o);
+            return false;
+        }
+    }
+
+    static boolean checkTag(Tag t) {
+        if (t == null) {
+            return false;
+        }
+        if (t.name != null
+                && t.name.replace(" ", "").length() > 0 //instead of trim() and isEmpty()
+                && t.mediaCount >= 0
+            ) {
+            return true;
+        } else {
+            System.out.println(t);
             return false;
         }
     }

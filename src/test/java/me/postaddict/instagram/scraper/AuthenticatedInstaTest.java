@@ -5,6 +5,7 @@ import me.postaddict.instagram.scraper.cookie.DefaultCookieJar;
 import me.postaddict.instagram.scraper.domain.Account;
 import me.postaddict.instagram.scraper.domain.Comment;
 import me.postaddict.instagram.scraper.domain.Media;
+import me.postaddict.instagram.scraper.domain.Tag;
 import me.postaddict.instagram.scraper.interceptor.ErrorInterceptor;
 import me.postaddict.instagram.scraper.interceptor.UserAgentInterceptor;
 import me.postaddict.instagram.scraper.interceptor.UserAgents;
@@ -55,6 +56,14 @@ public class AuthenticatedInstaTest {
         assertEquals("kevin", account.username);
         assertTrue(checkAccount(account));
         System.out.println(account);
+    }
+
+    @Test
+    public void testGetTagByName() throws Exception {
+        Tag tag = client.getTagByName("corgi");
+        assertEquals("corgi", tag.name);
+        assertTrue(checkTag(tag));
+        System.out.println(tag);
     }
 
     @Test
