@@ -13,7 +13,7 @@ public abstract class Endpoint {
     public static final String GENERAL_SEARCH = "https://www.instagram.com/web/search/topsearch/?query={{query}}";
     public static final String ACCOUNT_JSON_INFO_BY_ID = "ig_user({{userId}}){id,username,external_url,full_name,profile_pic_url,biography,followed_by{count},follows{count},media{count},is_private,is_verified}";
     public static final String LAST_COMMENTS_BY_CODE = "ig_shortcode({{code}}){comments.last({{count}}){count,nodes{id,created_at,text,user{id,profile_pic_url,username,follows{count},followed_by{count},biography,full_name,media{count},is_private,external_url,is_verified}},page_info}}";
-    public static final String COMMENTS_BEFORE_COMMENT_ID_BY_CODE = "ig_shortcode({{code}}){comments.before({{commentId}},{{count}}){count,nodes{id,created_at,text,user{id,profile_pic_url,username,follows{count},followed_by{count},biography,full_name,media{count},is_private,external_url,is_verified}},page_info}}";
+    public static final String COMMENTS_BEFORE_COMMENT_ID_BY_CODE = "https://www.instagram.com/graphql/query/?query_id=17852405266163336&shortcode={{shortcode}}&first={{count}}&after={{commentId}}";
     public static final String MEDIA_LIKE = "https://www.instagram.com/web/likes/{{mediaId}}/like/";
     public static final String MEDIA_UNLIKE = "https://www.instagram.com/web/likes/{{mediaId}}/unlike/";
 
@@ -71,9 +71,9 @@ public abstract class Endpoint {
                 .replace("{{count}}", "" + count);
     }
 
-    public static String getCommentsBeforeCommentIdByCode(String code, int count, String commentId) {
+    public static String getCommentsBeforeCommentIdByCode(String shortcode, int count, String commentId) {
         return COMMENTS_BEFORE_COMMENT_ID_BY_CODE
-                .replace("{{code}}", code)
+                .replace("{{shortcode}}", shortcode)
                 .replace("{{count}}", "" + count)
                 .replace("{{commentId}}", commentId);
     }

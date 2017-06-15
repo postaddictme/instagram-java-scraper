@@ -249,10 +249,11 @@ public class Instagram implements AuthenticatedInsta {
 
         while (index < count && hasNext) {
             RequestBody formBody = new FormBody.Builder()
-                    .add("q", Endpoint.getCommentsBeforeCommentIdByCode(code, 20, commentId))
+//                    .add("q", Endpoint.getCommentsBeforeCommentIdByCode(code, 20, commentId))
                     .build();
             Request request = new Request.Builder()
-                    .url(Endpoint.INSTAGRAM_QUERY_URL)
+//                    .url(Endpoint.INSTAGRAM_QUERY_URL)
+                    .url(Endpoint.getCommentsBeforeCommentIdByCode(code, 20, commentId))
                     .header("Referer", Endpoint.BASE_URL + "/")
                     .post(formBody)
                     .build();
@@ -262,7 +263,7 @@ public class Instagram implements AuthenticatedInsta {
             response.body().close();
 
             Map commentsMap = gson.fromJson(jsonString, Map.class);
-            List nodes = (List) ((Map) commentsMap.get("comments")).get("nodes");
+            List nodes = (List) ((Map)((Map)((Map) commentsMap.get("data")).get("shortcode_media")).get("edge_media_to_comment")).get("edges");
             for (Object node : nodes) {
                 if (index == count) {
                     return comments;
@@ -272,8 +273,8 @@ public class Instagram implements AuthenticatedInsta {
                 Comment comment = Comment.fromApi(commentMap);
                 comments.add(comment);
             }
-            hasNext = (Boolean) ((Map) ((Map) commentsMap.get("comments")).get("page_info")).get("has_previous_page");
-            commentId = (String) ((Map) ((Map) commentsMap.get("comments")).get("page_info")).get("start_cursor");
+            hasNext = (Boolean) ((Map) (((Map)((Map)((Map) commentsMap.get("data")).get("shortcode_media")).get("edge_media_to_comment"))).get("page_info")).get("has_next_page");
+            commentId = (String) ((Map) (((Map)((Map)((Map) commentsMap.get("data")).get("shortcode_media")).get("edge_media_to_comment"))).get("page_info")).get("end_cursor");
         }
         return comments;
     }

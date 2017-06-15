@@ -11,6 +11,7 @@ public class Comment {
 
     public static Comment fromApi(Map commentMap) {
         Comment instance = new Comment();
+        commentMap = (Map) commentMap.get("node");
         instance.text = (String) commentMap.get("text");
 
         try {
@@ -24,12 +25,12 @@ public class Comment {
             }
         }
 
-        instance.id = (String) commentMap.get("id");
+       instance.id = (String) commentMap.get("id");
 
         try {
             instance.user = Account.fromAccountPage((Map) commentMap.get("user"));
         } catch (NullPointerException e) {
-            instance.user = Account.fromComments((Map) commentMap.get("from"));
+            instance.user = Account.fromComments((Map) commentMap.get("owner"));
         }
 
         return instance;
