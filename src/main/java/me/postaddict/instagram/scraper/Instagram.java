@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import me.postaddict.instagram.scraper.domain.Account;
 import me.postaddict.instagram.scraper.domain.Comment;
 import me.postaddict.instagram.scraper.domain.Media;
+import me.postaddict.instagram.scraper.domain.Tag;
 import me.postaddict.instagram.scraper.exception.InstagramAuthException;
 import okhttp3.*;
 
@@ -152,6 +153,20 @@ public class Instagram implements AuthenticatedInsta {
         return getMediaByUrl(Endpoint.getMediaPageLinkByCode(code));
     }
 
+    public Tag getTagByName(String tagName) throws IOException {
+        Request request = new Request.Builder()
+            .url(Endpoint.getTagJsonByTagName(tagName))
+            .build();
+
+        Response response = this.httpClient.newCall(request).execute();
+        String jsonString = response.body().string();
+        response.body().close();
+
+        Map tagJson = gson.fromJson(jsonString, Map.class);
+        return Tag.fromSearchPage((Map) tagJson.get("tag"));
+
+    }
+
     public List<Media> getLocationMediasById(String locationId, int count) throws IOException {
         int index = 0;
         ArrayList<Media> medias = new ArrayList<Media>();
@@ -274,7 +289,7 @@ public class Instagram implements AuthenticatedInsta {
         return comments;
     }
 
-  public void likeMediaByCode(String code) throws IOException {
+    public void likeMediaByCode(String code) throws IOException {
         String url = Endpoint.getMediaLikeLink(Media.getIdFromCode(code));
         Request request = new Request.Builder()
                 .url(url)
@@ -288,6 +303,37 @@ public class Instagram implements AuthenticatedInsta {
 
     public void unlikeMediaByCode(String code) throws IOException {
         String url = Endpoint.getMediaUnlikeLink(Media.getIdFromCode(code));
+        Request request = new Request.Builder()
+                .url(url)
+                .header("Referer", Endpoint.getMediaPageLinkByCode(code) + "/")
+                .post(new FormBody.Builder().build())
+                .build();
+
+        Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
+        response.body().close();
+    }
+
+    public Comment addMediaComment(String code, String commentText) throws IOException {
+        String url = Endpoint.addMediaCommentLink(Media.getIdFromCode(code));
+        FormBody formBody = new FormBody.Builder()
+                .add("comment_text", commentText)
+                .build();
+        Request request = new Request.Builder()
+                .url(url)
+                .header("Referer", Endpoint.getMediaPageLinkByCode(code) + "/")
+                .post(formBody)
+                .build();
+
+        Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
+        String jsonString = response.body().string();
+        response.body().close();
+
+        Map commentMap = gson.fromJson(jsonString, Map.class);
+        return Comment.fromApi(commentMap);
+    }
+
+    public void deleteMediaComment(String code, String commentId) throws IOException {
+        String url = Endpoint.deleteMediaCommentLink(Media.getIdFromCode(code), commentId);
         Request request = new Request.Builder()
                 .url(url)
                 .header("Referer", Endpoint.getMediaPageLinkByCode(code) + "/")
