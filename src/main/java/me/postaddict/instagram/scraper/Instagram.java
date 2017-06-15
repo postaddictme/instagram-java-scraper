@@ -248,14 +248,9 @@ public class Instagram implements AuthenticatedInsta {
         boolean hasNext = true;
 
         while (index < count && hasNext) {
-            RequestBody formBody = new FormBody.Builder()
-//                    .add("q", Endpoint.getCommentsBeforeCommentIdByCode(code, 20, commentId))
-                    .build();
             Request request = new Request.Builder()
-//                    .url(Endpoint.INSTAGRAM_QUERY_URL)
                     .url(Endpoint.getCommentsBeforeCommentIdByCode(code, 20, commentId))
                     .header("Referer", Endpoint.BASE_URL + "/")
-                    .post(formBody)
                     .build();
 
             Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
