@@ -43,14 +43,6 @@ public class AuthenticatedInstaTest {
     }
 
     @Test
-    public void testGetAccountById() throws Exception {
-        Account account = client.getAccountById(3);
-        assertEquals("kevin", account.username);
-        assertTrue(checkAccount(account));
-        System.out.println(account);
-    }
-
-    @Test
     public void testGetAccountByUsername() throws Exception {
         Account account = client.getAccountByUsername("kevin");
         assertEquals("kevin", account.username);

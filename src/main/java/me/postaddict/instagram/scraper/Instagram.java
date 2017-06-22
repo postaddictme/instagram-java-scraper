@@ -72,22 +72,18 @@ public class Instagram implements AuthenticatedInsta {
     }
 
     public Account getAccountById(long id) throws IOException {
-        RequestBody formBody = new FormBody.Builder()
-                .add("q", Endpoint.getAccountJsonInfoLinkByAccountId(id))
-                .build();
-
         Request request = new Request.Builder()
-                .url(Endpoint.INSTAGRAM_QUERY_URL)
+                .url(Endpoint.getAccountJsonInfoLinkByAccountId(id))
                 .header("Referer", Endpoint.BASE_URL + "/")
-                .post(formBody)
                 .build();
-
         Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
         String jsonString = response.body().string();
         response.body().close();
 
         Map userJson = gson.fromJson(jsonString, Map.class);
-        return Account.fromAccountPage(userJson);
+        String shortCode = (String) ((Map)((Map)((List)((Map)((Map)((Map)userJson.get("data")).get("user")).get("edge_owner_to_timeline_media")).get("edges")).get(0)).get("node")).get("shortcode");
+        Media m = getMediaByCode(shortCode);
+        return m.owner;
     }
 
     public Account getAccountByUsername(String username) throws IOException {
