@@ -9,6 +9,8 @@ import me.postaddict.instagram.scraper.domain.Tag;
  * Created by vasily on 27.04.17.
  */
 public class ContentCheck {
+    static final long INSTAGRAM_BORN_YEAR = 1262304000000L;
+    static final long THREE_DAYS = 3600000 * 24 *3;
     static boolean checkMedia(Media m) {
         if (m == null) {
             System.out.println("NULL");
@@ -16,7 +18,8 @@ public class ContentCheck {
         }
         if (m.shortcode != null
                 && m.shortcode.replace(" ", "").length() > 0 //instead of trim() and isEmpty()
-                && m.createdTime > 0
+                && m.createdTime > INSTAGRAM_BORN_YEAR
+                && m.createdTime < System.currentTimeMillis() + THREE_DAYS
                 && (m.ownerId != null  || m.owner != null)) {
             return true;
         } else {
@@ -32,7 +35,7 @@ public class ContentCheck {
         }
         if (c.id != null
                 && c.id.replace(" ", "").length() > 0 //instead of trim() and isEmpty()
-                && c.createdAt > 0
+                && c.createdAt > INSTAGRAM_BORN_YEAR
                 && c.text != null
                 && c.text.replace(" ", "").length() > 0 //instead of trim() and isEmpty()
                 && c.user != null) {

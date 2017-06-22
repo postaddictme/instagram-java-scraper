@@ -13,7 +13,7 @@ public class Media {
     public static final String INSTAGRAM_URL = "https://www.instagram.com/";
     public static final String TYPE_IMAGE = "image";
     public static final String TYPE_VIDEO = "video";
-
+    private static final long INSTAGRAM_BORN_YEAR = 1262304000000L;
     public String id;
     public long createdTime;
     public String type;
@@ -66,6 +66,7 @@ public class Media {
         Media instance = new Media();
         instance.id = (String) mediaMap.get("id");
         instance.createdTime = Long.parseLong((String) mediaMap.get("created_time"));
+        fixDate(instance);
         instance.type = (String) mediaMap.get("type");
         instance.link = (String) mediaMap.get("link");
         instance.shortcode = (String) mediaMap.get("code");
@@ -95,6 +96,12 @@ public class Media {
         return instance;
     }
 
+    private static void fixDate(Media instance) {
+        if(instance.createdTime > 0 && instance.createdTime < INSTAGRAM_BORN_YEAR){
+            instance.createdTime *= 1000;
+        }
+    }
+
     public static Media fromMediaPage(Map pageMap) {
         Media instance = new Media();
         instance.id = (String) pageMap.get("id");
@@ -105,6 +112,7 @@ public class Media {
             instance.videoViews = ((Double)pageMap.get("video_view_count")).intValue();
         }
         instance.createdTime = ((Double) pageMap.get("taken_at_timestamp")).longValue();
+        fixDate(instance);
         instance.shortcode = (String) pageMap.get("shortcode");
         instance.link = INSTAGRAM_URL + "p/" + instance.shortcode;
         instance.commentsCount = ((Double)((Map) pageMap.get("edge_media_to_comment")).get("count")).intValue();
@@ -129,6 +137,7 @@ public class Media {
             instance.caption = (String) mediaMap.get("caption");
         }
         instance.createdTime = ((Double) mediaMap.get("date")).longValue();
+        fixDate(instance);
         fillImageUrls(instance, (String) mediaMap.get("display_src"));
         instance.type = TYPE_IMAGE;
         if ((Boolean) mediaMap.get("is_video")) {
