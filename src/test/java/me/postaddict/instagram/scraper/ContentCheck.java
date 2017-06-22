@@ -36,6 +36,7 @@ public class ContentCheck {
         if (c.id != null
                 && c.id.replace(" ", "").length() > 0 //instead of trim() and isEmpty()
                 && c.createdAt > INSTAGRAM_BORN_YEAR
+                && c.createdAt < System.currentTimeMillis() + THREE_DAYS
                 && c.text != null
                 && c.text.replace(" ", "").length() > 0 //instead of trim() and isEmpty()
                 && c.user != null) {
