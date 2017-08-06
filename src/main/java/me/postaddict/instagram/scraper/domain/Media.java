@@ -121,6 +121,12 @@ public class Media {
             }
         }
         instance.owner = Account.fromMediaPage((Map) mediaMap.get("user"));
+        if (mediaMap.containsKey("location")) {
+            Map location = (Map) mediaMap.get("location");
+            if (location.containsKey("name")) {
+                instance.locationName = (String) location.get("name");
+            }
+        }
         return instance;
     }
 
