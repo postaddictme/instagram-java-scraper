@@ -13,7 +13,7 @@ public class Media {
     public static final String INSTAGRAM_URL = "https://www.instagram.com/";
     public static final String TYPE_IMAGE = "image";
     public static final String TYPE_VIDEO = "video";
-    private static final long INSTAGRAM_BORN_YEAR = 1262304000000L;
+    public static final long INSTAGRAM_BORN_YEAR = 1262304000000L;
     public String id;
     public long createdTime;
     public String type;

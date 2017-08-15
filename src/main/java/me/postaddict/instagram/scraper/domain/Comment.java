@@ -2,6 +2,8 @@ package me.postaddict.instagram.scraper.domain;
 
 import java.util.Map;
 
+import static me.postaddict.instagram.scraper.domain.Media.INSTAGRAM_BORN_YEAR;
+
 public class Comment {
     public String text;
     public Long createdAt;
@@ -11,6 +13,9 @@ public class Comment {
 
     public static Comment fromApi(Map commentMap) {
         Comment instance = new Comment();
+        if (commentMap.get("text") == null) {
+            commentMap = (Map) commentMap.get("node");
+        }
         instance.text = (String) commentMap.get("text");
 
         try {
@@ -23,9 +28,17 @@ public class Comment {
                 instance.createdAt = ((Double) time).longValue();
             }
         }
+        if(instance.createdAt > 0 && instance.createdAt < INSTAGRAM_BORN_YEAR){
+            instance.createdAt = instance.createdAt * 1000;
+        }
 
         instance.id = (String) commentMap.get("id");
-        instance.user = Account.fromComments((Map) commentMap.get("from"));
+        try {
+            instance.user = Account.fromComments((Map) commentMap.get("from"));
+        } catch (NullPointerException ne) {
+            instance.user = Account.fromComments((Map) commentMap.get("owner"));
+        }
+
 
         return instance;
     }
