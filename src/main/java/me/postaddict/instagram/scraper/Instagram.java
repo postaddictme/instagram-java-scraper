@@ -16,8 +16,8 @@ import java.util.Map;
 
 public class Instagram implements AuthenticatedInsta {
 
-    private OkHttpClient httpClient;
-    private Gson gson;
+    public OkHttpClient httpClient;
+    public Gson gson;
 
     public Instagram(OkHttpClient httpClient) {
         this.httpClient = httpClient;
