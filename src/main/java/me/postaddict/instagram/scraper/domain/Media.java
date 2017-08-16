@@ -14,7 +14,7 @@ public class Media {
     public static final String TYPE_IMAGE = "image";
     public static final String TYPE_VIDEO = "video";
     public static final String TYPE_CAROUSEL = "carousel";
-    private static final long INSTAGRAM_BORN_YEAR = 1262304000000L;
+    public static final long INSTAGRAM_BORN_YEAR = 1262304000000L;
     public String id;
     public long createdTime;
     public String type;
