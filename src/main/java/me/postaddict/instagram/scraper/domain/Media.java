@@ -121,7 +121,7 @@ public class Media {
             }
         }
         instance.owner = Account.fromMediaPage((Map) mediaMap.get("user"));
-        if (mediaMap.containsKey("location")) {
+        if (mediaMap.containsKey("location") && mediaMap.get("location") != null) {
             Map location = (Map) mediaMap.get("location");
             if (location.containsKey("name")) {
                 instance.locationName = (String) location.get("name");
