@@ -19,7 +19,8 @@ public abstract class Endpoint {
     public static final String MEDIA_UNLIKE = "https://www.instagram.com/web/likes/{{mediaId}}/unlike/";
     public static final String MEDIA_COMMENTS_ADD = "https://www.instagram.com/web/comments/{{mediaId}}/add/";
     public static final String MEDIA_COMMENTS_DELETE = "https://www.instagram.com/web/comments/{{mediaId}}/delete/{{commentId}}/";
-
+    public static final String FOLLOWS_URL = "https://www.instagram.com/graphql/query/?query_id=17874545323001329&variables={\"id\": {{userId}}, \"first\": {{count}}, \"after\": \"{{endCursor}}\"}";
+    public static final String FOLLOWERS_URL = "https://www.instagram.com/graphql/query/?query_id=17851374694183129&variables={\"id\": {{userId}}, \"first\": {{count}}, \"after\": \"{{endCursor}}\"}";
     public static final String INSTAGRAM_QUERY_URL = "https://www.instagram.com/query/";
     public static final String INSTAGRAM_CDN_URL = "https://scontent.cdninstagram.com/";
 
@@ -101,5 +102,19 @@ public abstract class Endpoint {
         return MEDIA_COMMENTS_DELETE
                 .replace("{{mediaId}}", mediaId)
                 .replace("{{commentId}}", commentId);
+    }
+
+    public static String getFollowsLinkVariables(long userId, int count , String endCursor) {
+        return FOLLOWS_URL
+                .replace("{{userId}}", String.valueOf(userId))
+                .replace("{{count}}", String.valueOf(count))
+                .replace("{{endCursor}}", endCursor);
+    }
+
+    public static String getFollowersLinkVariables(long userId, int count , String endCursor) {
+        return FOLLOWERS_URL
+                .replace("{{userId}}", String.valueOf(userId))
+                .replace("{{count}}", String.valueOf(count))
+                .replace("{{endCursor}}", endCursor);
     }
 }
