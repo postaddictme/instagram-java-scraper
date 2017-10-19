@@ -173,4 +173,18 @@ public class AuthenticatedInstaTest {
         client.deleteMediaComment("PASTE_HERE_MEDIA_CODE", "PASTE_COMMENT_ID");
     }
 
+    @Test
+    public void testFollows() throws Exception {
+        Account account = client.getAccountByUsername("kevin");
+        List<Account> follows = client.getFollows(account.id, 50);
+        assertEquals(follows.size(), 50);
+    }
+
+    @Test
+    public void testFollowers() throws Exception {
+        Account account = client.getAccountByUsername("kevin");
+        List<Account> followers = client.getFollowers(account.id, 50);
+        assertEquals(followers.size(), 50);
+    }
+
 }
