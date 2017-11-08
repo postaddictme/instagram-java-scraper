@@ -9,7 +9,10 @@ import me.postaddict.instagram.scraper.exception.InstagramAuthException;
 import okhttp3.*;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class Instagram implements AuthenticatedInsta {
 
@@ -111,8 +114,9 @@ public class Instagram implements AuthenticatedInsta {
             String jsonString = response.body().string();
             response.body().close();
 
-            Map mediasMap = gson.fromJson(jsonString, Map.class);
-            List items = (List) mediasMap.get("items");
+            Map map = gson.fromJson(jsonString, Map.class);
+            Map userMap = (Map) map.get("user");
+            List items = (List) (((Map) userMap.get("media")).get("nodes"));
 
             for (Object item : items) {
                 if (index == count) {
@@ -124,7 +128,7 @@ public class Instagram implements AuthenticatedInsta {
                 medias.add(media);
                 maxId = media.id;
             }
-            isMoreAvailable = (Boolean) mediasMap.get("more_available");
+            isMoreAvailable = (Boolean) ((Map) (((Map) userMap.get("media")).get("page_info"))).get("has_next_page");
         }
         return medias;
     }

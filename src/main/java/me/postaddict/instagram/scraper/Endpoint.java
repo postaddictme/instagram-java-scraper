@@ -5,7 +5,7 @@ public abstract class Endpoint {
     public static final String LOGIN_URL = "https://www.instagram.com/accounts/login/ajax/";
     public static final String ACCOUNT_PAGE = "https://www.instagram.com/{{username}}";
     public static final String MEDIA_LINK = "https://www.instagram.com/p/{{code}}";
-    public static final String ACCOUNT_MEDIAS = "https://www.instagram.com/{{username}}/media?max_id={{maxId}}";
+    public static final String ACCOUNT_MEDIAS = "https://www.instagram.com/{{username}}/?__a=1&max_id={{maxId}}";
     public static final String ACCOUNT_JSON_INFO = "https://www.instagram.com/{{username}}/?__a=1";
     public static final String TAG_JSON_INFO = "https://www.instagram.com/explore/tags/{{tag_name}}/?__a=1";
     public static final String MEDIA_JSON_INFO = "https://www.instagram.com/p/{{code}}/?__a=1";
@@ -104,14 +104,14 @@ public abstract class Endpoint {
                 .replace("{{commentId}}", commentId);
     }
 
-    public static String getFollowsLinkVariables(long userId, int count , String endCursor) {
+    public static String getFollowsLinkVariables(long userId, int count, String endCursor) {
         return FOLLOWS_URL
                 .replace("{{userId}}", String.valueOf(userId))
                 .replace("{{count}}", String.valueOf(count))
                 .replace("{{endCursor}}", endCursor);
     }
 
-    public static String getFollowersLinkVariables(long userId, int count , String endCursor) {
+    public static String getFollowersLinkVariables(long userId, int count, String endCursor) {
         return FOLLOWERS_URL
                 .replace("{{userId}}", String.valueOf(userId))
                 .replace("{{count}}", String.valueOf(count))

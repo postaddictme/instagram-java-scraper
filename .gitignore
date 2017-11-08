@@ -2,4 +2,4 @@
 build
 .gradle
 **/credentials.properties
-
+out
