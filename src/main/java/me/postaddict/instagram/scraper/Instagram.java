@@ -125,6 +125,7 @@ public class Instagram implements AuthenticatedInsta {
                 index++;
                 Map mediaMap = (Map) item;
                 Media media = Media.fromApi(mediaMap);
+                media.owner = Account.fromAccountPage(userMap);
                 medias.add(media);
                 maxId = media.id;
             }
