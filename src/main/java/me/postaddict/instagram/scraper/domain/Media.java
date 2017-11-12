@@ -31,6 +31,7 @@ public class Media {
     public String ownerId;
     public Account owner;
     public String locationName;
+    public Location location;
 
     public static class CarouselMedia {
     	public String type;
@@ -122,12 +123,6 @@ public class Media {
             }
         }
         instance.ownerId = (String) ((Map)mediaMap.get("owner")).get("id");
-        if (mediaMap.containsKey("location") && mediaMap.get("location") != null) {
-            Map location = (Map) mediaMap.get("location");
-            if (location.containsKey("name")) {
-                instance.locationName = (String) location.get("name");
-            }
-        }
         return instance;
     }
 
@@ -184,6 +179,13 @@ public class Media {
         String caption = (String)((Map)((Map)((List)((Map)pageMap.get("edge_media_to_caption")).get("edges")).get(0)).get("node")).get("text");
         if (caption != null) {
             instance.caption = caption;
+        }
+        if (pageMap.containsKey("location") && pageMap.get("location") != null) {
+            Map location = (Map) pageMap.get("location");
+            if (location.containsKey("name")) {
+                instance.locationName = (String) location.get("name");
+                instance.location = Location.fromLocationMedias(location);
+            }
         }
         instance.owner = Account.fromMediaPage((Map) pageMap.get("owner"));
         return instance;

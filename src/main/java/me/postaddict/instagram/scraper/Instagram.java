@@ -1,10 +1,7 @@
 package me.postaddict.instagram.scraper;
 
 import com.google.gson.Gson;
-import me.postaddict.instagram.scraper.domain.Account;
-import me.postaddict.instagram.scraper.domain.Comment;
-import me.postaddict.instagram.scraper.domain.Media;
-import me.postaddict.instagram.scraper.domain.Tag;
+import me.postaddict.instagram.scraper.domain.*;
 import me.postaddict.instagram.scraper.exception.InstagramAuthException;
 import okhttp3.*;
 
@@ -190,6 +187,7 @@ public class Instagram implements AuthenticatedInsta {
                 index++;
                 Map mediaMap = (Map) node;
                 Media media = Media.fromTagPage(mediaMap);
+                media.location = Location.fromLocationMedias((Map)locationMap.get("location"));
                 medias.add(media);
             }
             hasNext = (Boolean) ((Map) ((Map) ((Map) locationMap.get("location")).get("media")).get("page_info")).get("has_next_page");

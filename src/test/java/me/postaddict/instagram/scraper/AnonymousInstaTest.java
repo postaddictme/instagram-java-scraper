@@ -91,10 +91,16 @@ public class AnonymousInstaTest {
 
     @Test
     public void testGetLocationMediasById() throws Exception {
-        List<Media> list = client.getLocationMediasById("17326249", 13);
+        String locationId = "17326249";
+        List<Media> list = client.getLocationMediasById(locationId, 13);
         assertEquals(13, list.size());
         for (Media media : list) {
             assertTrue(checkMedia(media));
+            assertNotNull(media.location);
+            assertEquals(locationId, Long.toString(media.location.id));
+            assertNotNull(media.location.name);
+            assertNotNull(media.location.lat);
+            assertNotNull(media.location.lng);
         }
         System.out.println(list);
     }
