@@ -170,7 +170,15 @@ public class Media {
         fixDate(instance);
         instance.shortcode = (String) pageMap.get("shortcode");
         instance.link = INSTAGRAM_URL + "p/" + instance.shortcode;
-        instance.commentsCount = ((Double)((Map) pageMap.get("edge_media_to_comment")).get("count")).intValue();
+        Map edgeMediaToComment = (Map) pageMap.get("edge_media_to_comment");
+        instance.commentsCount = ((Double) edgeMediaToComment.get("count")).intValue();
+        if(edgeMediaToComment.containsKey("edges") && edgeMediaToComment.size()>0){
+            instance.previewCommentsList = new ArrayList<Comment>();
+            List<Map> comments = (List<Map>) edgeMediaToComment.get("edges");
+            for(Map comment: comments){
+                instance.previewCommentsList.add(Comment.fromApi(comment));
+            }
+        }
         instance.likesCount = ((Double)((Map) pageMap.get("edge_media_preview_like")).get("count")).intValue();
         fillImageUrls(instance, (String) pageMap.get("display_url"));
         String caption = (String)((Map)((Map)((List)((Map)pageMap.get("edge_media_to_caption")).get("edges")).get(0)).get("node")).get("text");
