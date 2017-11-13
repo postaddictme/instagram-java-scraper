@@ -95,7 +95,7 @@ public class StatelessInstaTest {
 
     @Test
     public void testPreviewComments() throws Exception {
-        Media media = client.getMedias("kevin", 1).get(0);
+        Media media = client.getMediaByCode("Ba63OW3hAKq");
         if (media.commentsCount > 0){
             assertTrue(media.previewCommentsList.size() > 0);
         } else {

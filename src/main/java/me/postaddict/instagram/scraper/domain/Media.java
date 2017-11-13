@@ -11,9 +11,9 @@ import java.util.Map;
 public class Media {
 
     public static final String INSTAGRAM_URL = "https://www.instagram.com/";
-    public static final String TYPE_IMAGE = "image";
-    public static final String TYPE_VIDEO = "video";
-    public static final String TYPE_CAROUSEL = "carousel";
+    public static final String TYPE_IMAGE = "GraphImage";
+    public static final String TYPE_VIDEO = "GraphVideo";
+    public static final String TYPE_CAROUSEL = "GraphSidecar";
     public static final long INSTAGRAM_BORN_YEAR = 1262304000000L;
     public String id;
     public long createdTime;
@@ -31,6 +31,7 @@ public class Media {
     public String ownerId;
     public Account owner;
     public String locationName;
+    public Location location;
 
     public static class CarouselMedia {
     	public String type;
@@ -74,17 +75,15 @@ public class Media {
     public static Media fromApi(Map mediaMap) {
         Media instance = new Media();
         instance.id = (String) mediaMap.get("id");
-        instance.createdTime = Long.parseLong((String) mediaMap.get("created_time"));
+        instance.createdTime = ((Double)mediaMap.get("date")).longValue();
         fixDate(instance);
-        instance.type = (String) mediaMap.get("type");
-        instance.link = (String) mediaMap.get("link");
+        instance.type = (String) mediaMap.get("__typename");
         instance.shortcode = (String) mediaMap.get("code");
+        instance.link = Endpoint.getMediaPageLinkByCode(instance.shortcode);
         if (mediaMap.get("caption") != null) {
-            instance.caption = (String) ((Map) mediaMap.get("caption")).get("text");
+            instance.caption = (String) mediaMap.get("caption");
         }
-
-        Map images = (Map) mediaMap.get("images");
-        fillImageUrls(instance, (String)((Map)images.get("standard_resolution")).get("url"));
+        fillImageUrls(instance, (String)mediaMap.get("display_src"));
         instance.commentsCount = (new Double(((Map) mediaMap.get("comments")).get("count").toString())).intValue();
         instance.likesCount = (new Double(((Map) mediaMap.get("likes")).get("count").toString())).intValue();
 
@@ -107,26 +106,23 @@ public class Media {
         		instance.carouselMedia.add(carouselMedia);
         	}
         }
-        if (instance.type.equals(TYPE_VIDEO) && mediaMap.containsKey("videos")) {
-            Map videos = (Map) mediaMap.get("videos");
-            instance.videoUrls.low = (String) ((Map) videos.get("low_resolution")).get("url");
-            instance.videoUrls.standard = (String) ((Map) videos.get("standard_resolution")).get("url");
-            instance.videoUrls.lowBandwidth = (String) ((Map) videos.get("low_bandwidth")).get("url");
+        if (instance.type.equals(TYPE_VIDEO)) {
+            instance.videoViews = ((Double)mediaMap.get("video_views")).intValue();
+            if (mediaMap.containsKey("videos")) {
+                Map videos = (Map) mediaMap.get("videos");
+                instance.videoUrls.low = (String) ((Map) videos.get("low_resolution")).get("url");
+                instance.videoUrls.standard = (String) ((Map) videos.get("standard_resolution")).get("url");
+                instance.videoUrls.lowBandwidth = (String) ((Map) videos.get("low_bandwidth")).get("url");
+            }
         }
 
         instance.previewCommentsList = new ArrayList<Comment>();
-        if (instance.commentsCount > 0){
-            for (Object o: (List)((Map)mediaMap.get("comments")).get("data")){
+        if (instance.commentsCount > 0 && mediaMap.get("edge_media_to_comment")!=null){
+            for (Object o: (List)((Map)mediaMap.get("edge_media_to_comment")).get("edges")){
                 instance.previewCommentsList.add(Comment.fromApi((Map)o));
             }
         }
-        instance.owner = Account.fromMediaPage((Map) mediaMap.get("user"));
-        if (mediaMap.containsKey("location") && mediaMap.get("location") != null) {
-            Map location = (Map) mediaMap.get("location");
-            if (location.containsKey("name")) {
-                instance.locationName = (String) location.get("name");
-            }
-        }
+        instance.ownerId = (String) ((Map)mediaMap.get("owner")).get("id");
         return instance;
     }
 
@@ -169,12 +165,27 @@ public class Media {
         fixDate(instance);
         instance.shortcode = (String) pageMap.get("shortcode");
         instance.link = INSTAGRAM_URL + "p/" + instance.shortcode;
-        instance.commentsCount = ((Double)((Map) pageMap.get("edge_media_to_comment")).get("count")).intValue();
+        Map edgeMediaToComment = (Map) pageMap.get("edge_media_to_comment");
+        instance.commentsCount = ((Double) edgeMediaToComment.get("count")).intValue();
+        if(edgeMediaToComment.containsKey("edges") && edgeMediaToComment.size()>0){
+            instance.previewCommentsList = new ArrayList<Comment>();
+            List<Map> comments = (List<Map>) edgeMediaToComment.get("edges");
+            for(Map comment: comments){
+                instance.previewCommentsList.add(Comment.fromApi(comment));
+            }
+        }
         instance.likesCount = ((Double)((Map) pageMap.get("edge_media_preview_like")).get("count")).intValue();
         fillImageUrls(instance, (String) pageMap.get("display_url"));
         String caption = (String)((Map)((Map)((List)((Map)pageMap.get("edge_media_to_caption")).get("edges")).get(0)).get("node")).get("text");
         if (caption != null) {
             instance.caption = caption;
+        }
+        if (pageMap.containsKey("location") && pageMap.get("location") != null) {
+            Map location = (Map) pageMap.get("location");
+            if (location.containsKey("name")) {
+                instance.locationName = (String) location.get("name");
+                instance.location = Location.fromLocationMedias(location);
+            }
         }
         instance.owner = Account.fromMediaPage((Map) pageMap.get("owner"));
         return instance;
