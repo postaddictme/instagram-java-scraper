@@ -90,6 +90,19 @@ public class AnonymousInstaTest {
     }
 
     @Test
+    public void testGetMediaByCodeCarousel() throws Exception {
+        Media media = client.getMediaByCode("BaKLiFugkQa");
+        assertEquals("kevin", media.owner.username);
+        assertTrue(checkMedia(media));
+        assertEquals(4, media.carouselMedia.size());
+        assertEquals("https://scontent.cdninstagram.com/t/22351958_144137916205565_6923513639366295552_n.jpg", media.carouselMedia.get(0).imageUrls.high);
+        assertEquals("https://scontent.cdninstagram.com/t/22352110_177635979467060_738026920783904768_n.jpg", media.carouselMedia.get(1).imageUrls.high);
+        assertEquals("https://scontent.cdninstagram.com/t/22352158_840551796104469_8224611081893445632_n.jpg", media.carouselMedia.get(2).imageUrls.high);
+        assertEquals("https://scontent.cdninstagram.com/t/22427115_152159245386313_6593256479942246400_n.jpg", media.carouselMedia.get(3).imageUrls.high);
+        System.out.println(media);
+    }
+
+    @Test
     public void testGetLocationMediasById() throws Exception {
         String locationId = "17326249";
         List<Media> list = client.getLocationMediasById(locationId, 13);
