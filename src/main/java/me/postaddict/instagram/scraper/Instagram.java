@@ -4,12 +4,12 @@ import com.google.gson.Gson;
 import me.postaddict.instagram.scraper.domain.*;
 import me.postaddict.instagram.scraper.exception.InstagramAuthException;
 import okhttp3.*;
+import org.apache.commons.io.IOUtils;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Instagram implements AuthenticatedInsta {
 
@@ -74,7 +74,7 @@ public class Instagram implements AuthenticatedInsta {
                 .header("Referer", Endpoint.BASE_URL + "/")
                 .build();
         Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
-        String jsonString = response.body().string();
+        String jsonString = getResponseJson(response);
         response.body().close();
 
         Map userJson = gson.fromJson(jsonString, Map.class);
@@ -83,13 +83,25 @@ public class Instagram implements AuthenticatedInsta {
         return m.owner;
     }
 
+    private String getResponseJson(Response response) throws IOException {
+        String json = response.body().string();
+        if(Boolean.getBoolean("dumpResponse")) {
+            StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+            File out = new File(stackTrace[2].getMethodName() + "_" + UUID.randomUUID().toString() + ".json");
+            try (FileWriter writer = new FileWriter(out)) {
+                IOUtils.write(json, writer);
+            }
+        }
+        return json;
+    }
+
     public Account getAccountByUsername(String username) throws IOException {
         Request request = new Request.Builder()
                 .url(Endpoint.getAccountJsonInfoLinkByUsername(username))
                 .build();
 
         Response response = this.httpClient.newCall(request).execute();
-        String jsonString = response.body().string();
+        String jsonString = getResponseJson(response);
         response.body().close();
 
         Map userJson = gson.fromJson(jsonString, Map.class);
@@ -108,7 +120,7 @@ public class Instagram implements AuthenticatedInsta {
                     .build();
 
             Response response = this.httpClient.newCall(request).execute();
-            String jsonString = response.body().string();
+            String jsonString = getResponseJson(response);
             response.body().close();
 
             Map map = gson.fromJson(jsonString, Map.class);
@@ -137,7 +149,7 @@ public class Instagram implements AuthenticatedInsta {
                 .build();
 
         Response response = this.httpClient.newCall(request).execute();
-        String jsonString = response.body().string();
+        String jsonString = getResponseJson(response);
         response.body().close();
 
         Map pageMap = gson.fromJson(jsonString, Map.class);
@@ -154,7 +166,7 @@ public class Instagram implements AuthenticatedInsta {
                 .build();
 
         Response response = this.httpClient.newCall(request).execute();
-        String jsonString = response.body().string();
+        String jsonString = getResponseJson(response);
         response.body().close();
 
         Map tagJson = gson.fromJson(jsonString, Map.class);
@@ -175,7 +187,7 @@ public class Instagram implements AuthenticatedInsta {
                     .build();
 
             Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
-            String jsonString = response.body().string();
+            String jsonString = getResponseJson(response);
             response.body().close();
 
             Map locationMap = gson.fromJson(jsonString, Map.class);
@@ -209,7 +221,7 @@ public class Instagram implements AuthenticatedInsta {
                     .build();
 
             Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
-            String jsonString = response.body().string();
+            String jsonString = getResponseJson(response);
             response.body().close();
 
             Map tagMap = gson.fromJson(jsonString, Map.class);
@@ -239,7 +251,7 @@ public class Instagram implements AuthenticatedInsta {
                 .build();
 
         Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
-        String jsonString = response.body().string();
+        String jsonString = getResponseJson(response);
         response.body().close();
 
         Map tagMap = gson.fromJson(jsonString, Map.class);
@@ -265,7 +277,7 @@ public class Instagram implements AuthenticatedInsta {
                     .build();
 
             Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
-            String jsonString = response.body().string();
+            String jsonString = getResponseJson(response);
             response.body().close();
 
             Map commentsMap = gson.fromJson(jsonString, Map.class);
@@ -308,7 +320,7 @@ public class Instagram implements AuthenticatedInsta {
                     .build();
 
             Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
-            String jsonString = response.body().string();
+            String jsonString = getResponseJson(response);
             response.body().close();
 
             Map commentsMap = gson.fromJson(jsonString, Map.class);
@@ -354,7 +366,7 @@ public class Instagram implements AuthenticatedInsta {
                     .build();
 
             Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
-            String jsonString = response.body().string();
+            String jsonString = getResponseJson(response);
             response.body().close();
 
             Map commentsMap = gson.fromJson(jsonString, Map.class);
@@ -402,7 +414,7 @@ public class Instagram implements AuthenticatedInsta {
                 .build();
 
         Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
-        String jsonString = response.body().string();
+        String jsonString = getResponseJson(response);
         response.body().close();
 
         Map commentMap = gson.fromJson(jsonString, Map.class);
