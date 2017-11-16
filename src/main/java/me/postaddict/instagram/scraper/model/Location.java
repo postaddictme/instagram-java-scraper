@@ -2,9 +2,6 @@ package me.postaddict.instagram.scraper.model;
 
 import lombok.Data;
 import lombok.ToString;
-import me.postaddict.instagram.scraper.domain.Media;
-
-import java.util.Collection;
 
 @Data
 @ToString
@@ -17,6 +14,5 @@ public class Location {
     private Double lng;
 
     private Integer count;//"media": {"count"
-    private PageObject<Media> media;//media": {"nodes"
-    private Collection<Media> topPosts;//top_posts
+    private MediaRating mediaRating;
 }
