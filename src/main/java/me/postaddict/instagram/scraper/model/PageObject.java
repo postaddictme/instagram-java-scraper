@@ -8,6 +8,7 @@ import java.util.Collection;
 @Data
 @ToString
 public class PageObject<T> {
+
     Collection<T> nodes;
     PageInfo pageInfo;
 }

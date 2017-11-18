@@ -1,23 +1,25 @@
 package me.postaddict.instagram.scraper.model;
 
 import lombok.Data;
-import lombok.ToString;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Embeddable;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.List;
 
+@Entity
 @Data
-@ToString
-@Embeddable
-public class MediaResource {
+public class CarouselResource{
+    @Id
+    private String shortcode;//"shortcode": "BaKLiFugkQa",
+    @ManyToOne
+    @JoinColumn(name="parent_media_id")
+    private Media parentMedia;
+
     protected int height; //"dimensions": {"height": 864,
-                        //"config_height": 512
+    //"config_height": 512
     protected int width;  //"dimensions": {"width": 1080
-                        //"config_width": 640,
+    //"config_width": 640,
     protected String displayUrl;//"display_url": "https://instagram.fhel3-1.fna.fbcdn.net/t51.2885-15/e35/22351958_144137916205565_6923513639366295552_n.jpg",
-                                //"src": "https://instagram.fhel3-1.fna.fbcdn.net/t51.2885-15/s640x640/sh0.08/e35/22351958_144137916205565_6923513639366295552_n.jpg",
+    //"src": "https://instagram.fhel3-1.fna.fbcdn.net/t51.2885-15/s640x640/sh0.08/e35/22351958_144137916205565_6923513639366295552_n.jpg",
     @ElementCollection
     protected List<DisplayResource> displayResources;//display_resources
     protected Boolean isVideo;//"is_video": false,
