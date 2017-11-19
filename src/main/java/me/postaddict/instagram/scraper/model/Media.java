@@ -29,7 +29,8 @@ public class Media {
     @ManyToMany
     private List<Comment> firstComments;
     private Boolean commentsDisabled;//"comments_disabled": false,
-    private long takenAtTimestamp;//"taken_at_timestamp": 1507835140,
+    private Boolean captionIsEdited;//caption_is_edited
+    private Long takenAtTimestamp;//"taken_at_timestamp": 1507835140,
     private Integer likeCount;//"edge_media_preview_like": {"count": 5219,
     @ManyToMany
     private List<Account> firstLikes;//"edge_media_preview_like": {"edges": [{"node": {"id": "5723685056","profile_pic_url": "https://instagram.fhel3-1.fna.fbcdn.net/t51.2885-19/s150x150/23421372_534899493542750_8049254439145439232_n.jpg","username": "cicinss1502"

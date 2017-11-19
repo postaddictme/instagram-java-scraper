@@ -32,7 +32,35 @@
       "should_log_client_event": false,
       "tracking_token": "eyJ2ZXJzaW9uIjo1LCJwYXlsb2FkIjp7ImlzX2FuYWx5dGljc190cmFja2VkIjp0cnVlLCJ1dWlkIjoiZmY2ODJiMDkxNTRjNDNkMDkxZmNmZmRhMjE5ZjQzOGQxNjM3ODY0MjkzNjg3MTAwMDc0In0sInNpZ25hdHVyZSI6IiJ9",
       "edge_media_to_tagged_user": {
-        "edges": []
+        "edges": [
+          {
+            "node": {
+              "user": {
+                "username": "abc1"
+              },
+              "x": 0.590625,
+              "y": 0.409375
+            }
+          },
+          {
+            "node": {
+              "user": {
+                "username": "cde2"
+              },
+              "x": 0.2,
+              "y": 0.4921875
+            }
+          },
+          {
+            "node": {
+              "user": {
+                "username": "def3"
+              },
+              "x": 0.5703125,
+              "y": 0.175
+            }
+          }
+        ]
       },
       "edge_media_to_caption": {
         "edges": [

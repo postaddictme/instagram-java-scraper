@@ -1,6 +1,8 @@
 package me.postaddict.instagram.scraper.mapping;
 
 import me.postaddict.instagram.scraper.model.Account;
+import me.postaddict.instagram.scraper.model.GraphQlResponse;
+import me.postaddict.instagram.scraper.model.Media;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.persistence.jaxb.JAXBContextProperties;
 import org.eclipse.persistence.jaxb.UnmarshallerProperties;
@@ -9,6 +11,7 @@ import org.eclipse.persistence.oxm.MediaType;
 import org.junit.Test;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -19,20 +22,34 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MappingTest {
     @Test
-    public void testAccountMapping() throws Exception {
+    public void testAccountByUsername() throws Exception {
         InputStream accountJson = MappingTest.class.getResourceAsStream("/getAccountByUsername_6e4a017e-e0ca-4512-9e96-48df0d486288.json");
+        String mappingFile = "me/postaddict/instagram/scraper/model/account-binding.json";
+        Unmarshaller unmarshaller = getUnmarshaller(mappingFile);
+        //   /media/ date
+        Account account = (Account) unmarshaller.unmarshal(accountJson);
+        assertThat(account.getUsername()).isNotNull();
+    }
+    @Test
+    public void testMediaByUrl() throws Exception {
+        InputStream accountJson = MappingTest.class.getResourceAsStream("/getMediaByUrl_ffd03200-d537-4719-8671-ac8414a796c0.json");
+        String mappingFile = "me/postaddict/instagram/scraper/model/media-by-url.json";
+        Unmarshaller unmarshaller = getUnmarshaller(mappingFile);
+        GraphQlResponse<Media> graphQlResponse = (GraphQlResponse<Media>) unmarshaller.unmarshal(accountJson);
+        assertThat(graphQlResponse.getPayload()).isNotNull();
+        //commentPreview
+        //firstLikes
+        //carouselMedia
+    }
 
-
+    private Unmarshaller getUnmarshaller(String mappingFile) throws JAXBException {
         Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put(JAXBContextProperties.OXM_METADATA_SOURCE, "me/postaddict/instagram/scraper/model/account-binding.json");
-        properties.put("eclipselink.media-type", "application/json");
+        properties.put(JAXBContextProperties.OXM_METADATA_SOURCE, mappingFile);
+        properties.put(JAXBContextProperties.MEDIA_TYPE, "application/json");
         JAXBContext jaxbContext = DynamicJAXBContextFactory.createContextFromOXM(Account.class.getClassLoader(), properties);
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
         unmarshaller.setProperty(UnmarshallerProperties.MEDIA_TYPE, MediaType.APPLICATION_JSON);
-        //   /media/ date
         unmarshaller.setProperty(UnmarshallerProperties.JSON_INCLUDE_ROOT, true);
-        Account account = (Account) unmarshaller.unmarshal(accountJson);
-        assertThat(account.getUsername()).isNotNull();
-
+        return unmarshaller;
     }
 }

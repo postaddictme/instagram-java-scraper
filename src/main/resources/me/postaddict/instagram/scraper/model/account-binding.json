@@ -199,7 +199,7 @@
           "type" : "java.lang.Integer",
           "xml-path" : "config_height/text()"
         },{
-          "java-attribute" : "sr",
+          "java-attribute" : "src",
           "type" : "java.lang.String",
           "xml-path" : "src/text()"
         }]

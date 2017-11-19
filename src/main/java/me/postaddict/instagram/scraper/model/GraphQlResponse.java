@@ -5,6 +5,6 @@ import lombok.ToString;
 
 @Data
 @ToString
-public class MediaPagination extends PageObject<Media> {
-    private Integer count;
+public class GraphQlResponse<T> {
+    private T payload;
 }
