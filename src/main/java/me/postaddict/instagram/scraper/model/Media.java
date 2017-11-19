@@ -27,12 +27,12 @@ public class Media {
     @Transient
     private PageObject<Comment> commentPreview; //"edge_media_to_comment": {"page_info": {"has_next_page": true,"end_cursor": "AQCevACiK8OqBEIOauzs11dVcr0cpnu_alC-_D2CRyT-JEo8kFTwozd8RidbD4FFlQahzAYq6gOO3TLN7Ut78KU2ZL5vCDV7Kio1zjbyMjGr0A"},
     @ManyToMany
-    private List<Comment> comments;
+    private List<Comment> firstComments;
     private Boolean commentsDisabled;//"comments_disabled": false,
     private long takenAtTimestamp;//"taken_at_timestamp": 1507835140,
     private Integer likeCount;//"edge_media_preview_like": {"count": 5219,
     @ManyToMany
-    private List<Account> likes;//"edge_media_preview_like": {"edges": [{"node": {"id": "5723685056","profile_pic_url": "https://instagram.fhel3-1.fna.fbcdn.net/t51.2885-19/s150x150/23421372_534899493542750_8049254439145439232_n.jpg","username": "cicinss1502"
+    private List<Account> firstLikes;//"edge_media_preview_like": {"edges": [{"node": {"id": "5723685056","profile_pic_url": "https://instagram.fhel3-1.fna.fbcdn.net/t51.2885-19/s150x150/23421372_534899493542750_8049254439145439232_n.jpg","username": "cicinss1502"
     @ManyToOne
     @JoinColumn(name="location_id")
     private Location location;//"location": {"id": "26929","has_public_page": true,"name": "Milk Media","slug": "milk-media"},
@@ -45,5 +45,7 @@ public class Media {
     private Boolean isAdvertising;//"is_ad": false,
     @OneToMany(mappedBy = "parentMedia")
     private Collection<CarouselResource> carouselMedia;//"edge_sidecar_to_children": {"edges": [{"node": {
+    @ElementCollection
+    private Collection<TaggedUser> taggedUser;//edge_media_to_tagged_user
     private Date lastUpdated = new Date();
 }
