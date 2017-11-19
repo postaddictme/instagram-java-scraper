@@ -17,5 +17,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.7'
     compile 'commons-io:commons-io:2.6'
     compile 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final'
+    compile 'org.eclipse.persistence:org.eclipse.persistence.moxy:2.7.0'
     compileOnly 'org.projectlombok:lombok:1.16.18'
+    testCompile 'org.assertj:assertj-core:3.8.0'
 }

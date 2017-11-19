@@ -6,6 +6,7 @@ import lombok.ToString;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.util.Date;
 
 @Entity
@@ -35,5 +36,7 @@ public class Account {
     private String profilePicUrlHd;//"profile_pic_url_hd": "https://instagram.fhel3-1.fna.fbcdn.net/t51.2885-19/s150x150/13732144_1764457777134045_549538515_a.jpg",
     private Boolean requestedByViewer;//"requested_by_viewer": false,
     private String connectedFbPage;//"connected_fb_page": null,
+    @Transient
+    private PageObject<Media> media;//media": {"nodes"
     private Date lastUpdated = new Date();
 }

@@ -7,9 +7,6 @@ import java.util.Collection;
 
 @Data
 @ToString
-public class PageObject<T> {
-
-    Collection<T> nodes;
-    Integer count;
-    PageInfo pageInfo;
+public class MediaPagination extends PageObject<Media> {
+    private Integer count;
 }
