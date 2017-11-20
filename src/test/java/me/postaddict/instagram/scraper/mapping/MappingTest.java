@@ -61,7 +61,29 @@ public class MappingTest {
         String mappingFile = "me/postaddict/instagram/scraper/model/location.json";
         Unmarshaller unmarshaller = getUnmarshaller(mappingFile);
         Location location = (Location) unmarshaller.unmarshal(accountJson);
+        //count
         assertThat(location).isNotNull();
+    }
+
+    @Test
+    public void testMediaList() throws Exception {
+        InputStream accountJson = MappingTest.class.getResourceAsStream("/getMedias_081fffaf-f255-4cf5-85e7-5eee0f0f8902.json");
+        String mappingFile = "me/postaddict/instagram/scraper/model/medias.json";
+        Unmarshaller unmarshaller = getUnmarshaller(mappingFile);
+        Account account = (Account) unmarshaller.unmarshal(accountJson);
+        //count
+        assertThat(account).isNotNull();
+
+    }
+
+    @Test
+    public void testTag() throws Exception {
+        InputStream accountJson = MappingTest.class.getResourceAsStream("/getTagByName_22ba043e-0545-4654-a609-5c2841ae16d9.json");
+        String mappingFile = "me/postaddict/instagram/scraper/model/tag.json";
+        Unmarshaller unmarshaller = getUnmarshaller(mappingFile);
+        Tag tag = (Tag) unmarshaller.unmarshal(accountJson);
+        //count
+        assertThat(tag).isNotNull();
     }
 
     private Unmarshaller getUnmarshaller(String mappingFile) throws JAXBException {
