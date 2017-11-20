@@ -3,7 +3,6 @@ package me.postaddict.instagram.scraper.mapping;
 import me.postaddict.instagram.scraper.model.Account;
 import me.postaddict.instagram.scraper.model.GraphQlResponse;
 import me.postaddict.instagram.scraper.model.Media;
-import org.apache.commons.io.IOUtils;
 import org.eclipse.persistence.jaxb.JAXBContextProperties;
 import org.eclipse.persistence.jaxb.UnmarshallerProperties;
 import org.eclipse.persistence.jaxb.dynamic.DynamicJAXBContextFactory;
@@ -14,7 +13,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,8 +24,8 @@ public class MappingTest {
         InputStream accountJson = MappingTest.class.getResourceAsStream("/getAccountByUsername_6e4a017e-e0ca-4512-9e96-48df0d486288.json");
         String mappingFile = "me/postaddict/instagram/scraper/model/account-binding.json";
         Unmarshaller unmarshaller = getUnmarshaller(mappingFile);
-        //   /media/ date
         Account account = (Account) unmarshaller.unmarshal(accountJson);
+        //   /media/date
         assertThat(account.getUsername()).isNotNull();
     }
     @Test
@@ -36,10 +34,18 @@ public class MappingTest {
         String mappingFile = "me/postaddict/instagram/scraper/model/media-by-url.json";
         Unmarshaller unmarshaller = getUnmarshaller(mappingFile);
         GraphQlResponse<Media> graphQlResponse = (GraphQlResponse<Media>) unmarshaller.unmarshal(accountJson);
+        //copy firstComments,commentCount
         assertThat(graphQlResponse.getPayload()).isNotNull();
-        //commentPreview
-        //firstLikes
-        //carouselMedia
+    }
+
+    @Test
+    public void testMediaByUrlCarousel() throws Exception {
+        InputStream accountJson = MappingTest.class.getResourceAsStream("/getMediaByUrl_ac2a5f1c-6e7a-4b66-bf9a-bdaac02e1f08.json");
+        String mappingFile = "me/postaddict/instagram/scraper/model/media-by-url.json";
+        Unmarshaller unmarshaller = getUnmarshaller(mappingFile);
+        GraphQlResponse<Media> graphQlResponse = (GraphQlResponse<Media>) unmarshaller.unmarshal(accountJson);
+        //parentMedia
+        assertThat(graphQlResponse.getPayload()).isNotNull();
     }
 
     private Unmarshaller getUnmarshaller(String mappingFile) throws JAXBException {
