@@ -1,99 +1,108 @@
 package me.postaddict.instagram.scraper.mapping;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import me.postaddict.instagram.scraper.ModelMapper;
 import me.postaddict.instagram.scraper.model.*;
-import org.eclipse.persistence.jaxb.JAXBContextProperties;
-import org.eclipse.persistence.jaxb.UnmarshallerProperties;
-import org.eclipse.persistence.jaxb.dynamic.DynamicJAXBContextFactory;
-import org.eclipse.persistence.oxm.MediaType;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MappingTest {
+
     @Test
     public void testAccountByUsername() throws Exception {
-        InputStream accountJson = MappingTest.class.getResourceAsStream("/getAccountByUsername_6e4a017e-e0ca-4512-9e96-48df0d486288.json");
-        String mappingFile = "me/postaddict/instagram/scraper/model/account-binding.json";
-        Unmarshaller unmarshaller = getUnmarshaller(mappingFile);
-        Account account = (Account) unmarshaller.unmarshal(accountJson);
-        //   /media/date
+        Account account = ModelMapper.mapAccount(
+                MappingTest.class.getResourceAsStream("/getAccountByUsername_6e4a017e-e0ca-4512-9e96-48df0d486288.json"));
         assertThat(account.getUsername()).isNotNull();
+        assertThat(IOUtils.toString(
+                MappingTest.class.getResourceAsStream("/expected/mapAccountByUsername.json"),"UTF-8")).isEqualTo(toJson(account));
     }
+
     @Test
     public void testMediaByUrl() throws Exception {
-        InputStream accountJson = MappingTest.class.getResourceAsStream("/getMediaByUrl_ffd03200-d537-4719-8671-ac8414a796c0.json");
-        String mappingFile = "me/postaddict/instagram/scraper/model/media-by-url.json";
-        Unmarshaller unmarshaller = getUnmarshaller(mappingFile);
-        GraphQlResponse<Media> graphQlResponse = (GraphQlResponse<Media>) unmarshaller.unmarshal(accountJson);
-        //copy firstComments,commentCount
+        GraphQlResponse<Media> graphQlResponse = ModelMapper.mapMedia(
+                MappingTest.class.getResourceAsStream("/getMediaByUrl_ffd03200-d537-4719-8671-ac8414a796c0.json"));
+
         assertThat(graphQlResponse.getPayload()).isNotNull();
+        assertThat(IOUtils.toString(
+                MappingTest.class.getResourceAsStream("/expected/mapMediaByUrl.json"),"UTF-8")).isEqualTo(toJson(graphQlResponse));
     }
 
     @Test
     public void testMediaByUrlCarousel() throws Exception {
-        InputStream accountJson = MappingTest.class.getResourceAsStream("/getMediaByUrl_ac2a5f1c-6e7a-4b66-bf9a-bdaac02e1f08.json");
-        String mappingFile = "me/postaddict/instagram/scraper/model/media-by-url.json";
-        Unmarshaller unmarshaller = getUnmarshaller(mappingFile);
-        GraphQlResponse<Media> graphQlResponse = (GraphQlResponse<Media>) unmarshaller.unmarshal(accountJson);
-        //parentMedia
+        GraphQlResponse<Media> graphQlResponse = ModelMapper.mapMedia(
+                MappingTest.class.getResourceAsStream("/getMediaByUrl_ac2a5f1c-6e7a-4b66-bf9a-bdaac02e1f08.json"));
+
         assertThat(graphQlResponse.getPayload()).isNotNull();
+        assertThat(IOUtils.toString(
+                MappingTest.class.getResourceAsStream("/expected/mapMediaByUrlCarousel.json"),"UTF-8")).isEqualTo(toJson(graphQlResponse));
     }
 
     @Test
     public void testComments() throws Exception {
-        InputStream accountJson = MappingTest.class.getResourceAsStream("/getCommentsByMediaCode_9cc06fff-6531-4530-a76e-ff72738def57.json");
-        String mappingFile = "me/postaddict/instagram/scraper/model/comments.json";
-        Unmarshaller unmarshaller = getUnmarshaller(mappingFile);
-        GraphQlResponse<PageObject<Comment>> graphQlResponse = (GraphQlResponse<PageObject<Comment>>) unmarshaller.unmarshal(accountJson);
+        GraphQlResponse<PageObject<Comment>> graphQlResponse = ModelMapper.mapComments(
+                MappingTest.class.getResourceAsStream("/getCommentsByMediaCode_9cc06fff-6531-4530-a76e-ff72738def57.json"));
+
         assertThat(graphQlResponse.getPayload()).isNotNull();
+        assertThat(IOUtils.toString(
+                MappingTest.class.getResourceAsStream("/expected/mapComments.json"),"UTF-8")).isEqualTo(toJson(graphQlResponse));
     }
 
     @Test
     public void testLocation() throws Exception {
-        InputStream accountJson = MappingTest.class.getResourceAsStream("/getLocationMediasById_90bf84cd-10ea-4d98-a224-bb3792255439.json");
-        String mappingFile = "me/postaddict/instagram/scraper/model/location.json";
-        Unmarshaller unmarshaller = getUnmarshaller(mappingFile);
-        Location location = (Location) unmarshaller.unmarshal(accountJson);
-        //count
+        InputStream locationStream = MappingTest.class.getResourceAsStream("/getLocationMediasById_90bf84cd-10ea-4d98-a224-bb3792255439.json");
+        Location location = ModelMapper.mapLocation(
+                locationStream);
+
         assertThat(location).isNotNull();
+        assertThat(IOUtils.toString(
+                MappingTest.class.getResourceAsStream("/expected/mapLocation.json"),"UTF-8")).isEqualTo(toJson(location));
     }
 
     @Test
     public void testMediaList() throws Exception {
-        InputStream accountJson = MappingTest.class.getResourceAsStream("/getMedias_081fffaf-f255-4cf5-85e7-5eee0f0f8902.json");
-        String mappingFile = "me/postaddict/instagram/scraper/model/medias.json";
-        Unmarshaller unmarshaller = getUnmarshaller(mappingFile);
-        Account account = (Account) unmarshaller.unmarshal(accountJson);
-        //count
-        assertThat(account).isNotNull();
+        InputStream mediaListStream = MappingTest.class.getResourceAsStream("/getMedias_081fffaf-f255-4cf5-85e7-5eee0f0f8902.json");
+        Account medias = ModelMapper.mapMediaList(mediaListStream);
+
+        assertThat(medias).isNotNull();
+        assertThat(IOUtils.toString(
+                MappingTest.class.getResourceAsStream("/expected/mapMediaList.json"),"UTF-8")).isEqualTo(toJson(medias));
 
     }
 
     @Test
     public void testTag() throws Exception {
-        InputStream accountJson = MappingTest.class.getResourceAsStream("/getTagByName_22ba043e-0545-4654-a609-5c2841ae16d9.json");
-        String mappingFile = "me/postaddict/instagram/scraper/model/tag.json";
-        Unmarshaller unmarshaller = getUnmarshaller(mappingFile);
-        Tag tag = (Tag) unmarshaller.unmarshal(accountJson);
-        //count
+        InputStream tagStream = MappingTest.class.getResourceAsStream("/getTagByName_22ba043e-0545-4654-a609-5c2841ae16d9.json");
+        Tag tag = ModelMapper.mapTag(tagStream);
+
         assertThat(tag).isNotNull();
+        assertThat(IOUtils.toString(
+                MappingTest.class.getResourceAsStream("/expected/mapTag.json"),"UTF-8")).isEqualTo(toJson(tag));
     }
 
-    private Unmarshaller getUnmarshaller(String mappingFile) throws JAXBException {
-        Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put(JAXBContextProperties.OXM_METADATA_SOURCE, mappingFile);
-        properties.put(JAXBContextProperties.MEDIA_TYPE, "application/json");
-        JAXBContext jaxbContext = DynamicJAXBContextFactory.createContextFromOXM(Account.class.getClassLoader(), properties);
-        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        unmarshaller.setProperty(UnmarshallerProperties.MEDIA_TYPE, MediaType.APPLICATION_JSON);
-        unmarshaller.setProperty(UnmarshallerProperties.JSON_INCLUDE_ROOT, true);
-        return unmarshaller;
+
+    @JsonFilter("skipLastUpdated")
+    private class PropertyFilterMixIn {}
+
+    private String toJson(Object instance) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.addMixIn(Object.class, PropertyFilterMixIn.class);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        SimpleBeanPropertyFilter theFilter = SimpleBeanPropertyFilter
+                .serializeAllExcept("lastUpdated");
+        FilterProvider filters = new SimpleFilterProvider()
+                .addFilter("skipLastUpdated", theFilter);
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        return objectMapper.writer(filters).writeValueAsString(instance);
     }
 }

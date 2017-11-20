@@ -1,8 +1,9 @@
 package me.postaddict.instagram.scraper;
 
-import me.postaddict.instagram.scraper.domain.Account;
-import me.postaddict.instagram.scraper.domain.Media;
-import me.postaddict.instagram.scraper.domain.Tag;
+import me.postaddict.instagram.scraper.model.Account;
+import me.postaddict.instagram.scraper.model.Media;
+import me.postaddict.instagram.scraper.model.PageObject;
+import me.postaddict.instagram.scraper.model.Tag;
 import me.postaddict.instagram.scraper.interceptor.ErrorInterceptor;
 import me.postaddict.instagram.scraper.interceptor.UserAgentInterceptor;
 import me.postaddict.instagram.scraper.interceptor.UserAgents;
@@ -12,6 +13,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.Collection;
 import java.util.List;
 
 import static me.postaddict.instagram.scraper.ContentCheck.checkAccount;
@@ -40,7 +42,7 @@ public class StatelessInstaTest {
     @Test
     public void testGetAccountByUsername() throws Exception {
         Account account = client.getAccountByUsername("kevin");
-        assertEquals("kevin", account.username);
+        assertEquals("kevin", account.getUsername());
         assertTrue(checkAccount(account));
         System.out.println(account);
     }
@@ -48,14 +50,15 @@ public class StatelessInstaTest {
     @Test
     public void testGetTagByName() throws Exception {
         Tag tag = client.getTagByName("corgi");
-        assertEquals("corgi", tag.name);
+        assertEquals("corgi", tag.getName());
         assertTrue(checkTag(tag));
         System.out.println(tag);
     }
 
     @Test
     public void testGetMedias() throws Exception {
-        List<Media> mediaList = client.getMedias("kevin", 50);
+        PageObject<Media> medias = client.getMedias("kevin", 2);
+        Collection<Media> mediaList = medias.getNodes();
         assertEquals(50, mediaList.size());
         for (Media media : mediaList) {
             assertTrue(checkMedia(media));
@@ -66,7 +69,7 @@ public class StatelessInstaTest {
     @Test
     public void testGetMediaByUrl() throws Exception {
         Media media = client.getMediaByUrl("https://www.instagram.com/p/BHaRdodBouH");
-        assertEquals("kevin", media.owner.username);
+        assertEquals("kevin", media.getOwner().getUsername());
         assertTrue(checkMedia(media));
         System.out.println(media);
     }
@@ -74,32 +77,32 @@ public class StatelessInstaTest {
     @Test
     public void testGetMediaByCode() throws Exception {
         Media media = client.getMediaByCode("BHaRdodBouH");
-        assertEquals("kevin", media.owner.username);
+        assertEquals("kevin", media.getOwner().getUsername());
         assertTrue(checkMedia(media));
         System.out.println(media);
     }
 
     @Test
     public void testGetIdFromCode() throws Exception {
-        String code = Media.getCodeFromId("1270593720437182847");
+        String code = MediaUtil.getCodeFromId("1270593720437182847");
         assertEquals("BGiDkHAgBF_", code);
-        code = Media.getCodeFromId("1270593720437182847_3");
+        code = MediaUtil.getCodeFromId("1270593720437182847_3");
         assertEquals("BGiDkHAgBF_", code);
     }
 
     @Test
     public void testGetCodeFromId() throws Exception {
-        String id = Media.getIdFromCode("BGiDkHAgBF_");
+        String id = MediaUtil.getIdFromCode("BGiDkHAgBF_");
         assertEquals("1270593720437182847", id);
     }
 
     @Test
     public void testPreviewComments() throws Exception {
         Media media = client.getMediaByCode("Ba63OW3hAKq");
-        if (media.commentsCount > 0){
-            assertTrue(media.previewCommentsList.size() > 0);
+        if (media.getCommentCount() > 0){
+            assertTrue(media.getCommentPreview().getNodes().size() > 0);
         } else {
-            assertFalse(media.previewCommentsList.size() > 0);
+            assertFalse(media.getCommentPreview().getNodes().size() > 0);
         }
     }
 

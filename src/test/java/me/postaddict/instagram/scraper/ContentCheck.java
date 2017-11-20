@@ -1,9 +1,9 @@
 package me.postaddict.instagram.scraper;
 
-import me.postaddict.instagram.scraper.domain.Account;
-import me.postaddict.instagram.scraper.domain.Comment;
-import me.postaddict.instagram.scraper.domain.Media;
-import me.postaddict.instagram.scraper.domain.Tag;
+import me.postaddict.instagram.scraper.model.Account;
+import me.postaddict.instagram.scraper.model.Comment;
+import me.postaddict.instagram.scraper.model.Media;
+import me.postaddict.instagram.scraper.model.Tag;
 
 /**
  * Created by vasily on 27.04.17.
@@ -16,11 +16,13 @@ public class ContentCheck {
             System.out.println("NULL");
             return false;
         }
-        if (m.shortcode != null
-                && m.shortcode.replace(" ", "").length() > 0 //instead of trim() and isEmpty()
+        if (m.getShortcode() != null
+                && m.getShortcode().replace(" ", "").length() > 0 //instead of trim() and isEmpty()
+/*
                 && m.createdTime > INSTAGRAM_BORN_YEAR
                 && m.createdTime < System.currentTimeMillis() + THREE_DAYS
-                && (m.ownerId != null  || m.owner != null)) {
+*/
+                && m.getOwner()!= null) {
             return true;
         } else {
             System.out.println(m);
@@ -33,13 +35,14 @@ public class ContentCheck {
             System.out.println("NULL");
             return false;
         }
-        if (c.id != null
-                && c.id.replace(" ", "").length() > 0 //instead of trim() and isEmpty()
+        if (c.getId() != 0
+/*
                 && c.createdAt > INSTAGRAM_BORN_YEAR
                 && c.createdAt < System.currentTimeMillis() + THREE_DAYS
-                && c.text != null
-                && c.text.replace(" ", "").length() > 0 //instead of trim() and isEmpty()
-                && c.user != null) {
+*/
+                && c.getText() != null
+                && c.getText().replace(" ", "").length() > 0 //instead of trim() and isEmpty()
+                && c.getOwner() != null) {
             return true;
         } else {
             System.out.println(c);
@@ -51,9 +54,9 @@ public class ContentCheck {
         if (o == null) {
             return false;
         }
-        if (o.id > 0
-                && o.username != null
-                && o.username.replace(" ", "").length() > 0 //instead of trim() and isEmpty()
+        if (o.getId() > 0
+                && o.getUsername() != null
+                && o.getUsername().replace(" ", "").length() > 0 //instead of trim() and isEmpty()
                 ) {
             return true;
         } else {
@@ -66,9 +69,9 @@ public class ContentCheck {
         if (t == null) {
             return false;
         }
-        if (t.name != null
-                && t.name.replace(" ", "").length() > 0 //instead of trim() and isEmpty()
-                && t.mediaCount >= 0
+        if (t.getName() != null
+                && t.getName().replace(" ", "").length() > 0 //instead of trim() and isEmpty()
+                && t.getCount() >= 0
             ) {
             return true;
         } else {

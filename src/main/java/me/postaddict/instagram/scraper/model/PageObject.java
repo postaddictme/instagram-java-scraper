@@ -3,13 +3,13 @@ package me.postaddict.instagram.scraper.model;
 import lombok.Data;
 import lombok.ToString;
 
-import java.util.Collection;
+import java.util.List;
 
 @Data
 @ToString
 public class PageObject<T> {
 
-    Collection<T> nodes;
-    Integer count;
-    PageInfo pageInfo;
+    private List<T> nodes;
+    private Integer count;
+    private PageInfo pageInfo;
 }

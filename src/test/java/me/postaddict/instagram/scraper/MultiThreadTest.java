@@ -2,8 +2,8 @@ package me.postaddict.instagram.scraper;
 
 import me.postaddict.instagram.scraper.cookie.CookieHashSet;
 import me.postaddict.instagram.scraper.cookie.DefaultCookieJar;
-import me.postaddict.instagram.scraper.domain.Comment;
-import me.postaddict.instagram.scraper.domain.Media;
+import me.postaddict.instagram.scraper.model.Comment;
+import me.postaddict.instagram.scraper.model.Media;
 import me.postaddict.instagram.scraper.exception.InstagramException;
 import me.postaddict.instagram.scraper.interceptor.ErrorInterceptor;
 import me.postaddict.instagram.scraper.interceptor.UserAgentInterceptor;
@@ -87,9 +87,9 @@ public class MultiThreadTest {
                 public List<Media> call() throws Exception {
                     List<Media> medias = new ArrayList<Media>();
                     try {
-                        medias.addAll(client.getTopMediasByTag(s));
+                        medias.addAll(client.getMediasByTag(s,1).getMediaRating().getTopPosts());
                         Thread.sleep(1000);
-                        medias.addAll(client.getMediasByTag(s, 50));
+                        medias.addAll(client.getMediasByTag(s, 50/12).getMediaRating().getMedia().getNodes());
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (InterruptedException e) {
