@@ -55,6 +55,15 @@ public class MappingTest {
         assertThat(graphQlResponse.getPayload()).isNotNull();
     }
 
+    @Test
+    public void testLocation() throws Exception {
+        InputStream accountJson = MappingTest.class.getResourceAsStream("/getLocationMediasById_90bf84cd-10ea-4d98-a224-bb3792255439.json");
+        String mappingFile = "me/postaddict/instagram/scraper/model/location.json";
+        Unmarshaller unmarshaller = getUnmarshaller(mappingFile);
+        Location location = (Location) unmarshaller.unmarshal(accountJson);
+        assertThat(location).isNotNull();
+    }
+
     private Unmarshaller getUnmarshaller(String mappingFile) throws JAXBException {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(JAXBContextProperties.OXM_METADATA_SOURCE, mappingFile);
