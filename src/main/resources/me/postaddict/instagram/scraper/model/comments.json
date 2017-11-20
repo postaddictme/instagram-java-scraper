@@ -1,0 +1,72 @@
+{
+  "package-name" : "me.postaddict.instagram.scraper.model",
+  "java-types" : {
+    "java-type" : [ {
+      "name" : "me.postaddict.instagram.scraper.model.GraphQlResponse",
+      "xml-root-element" : {
+        "name" : "data"
+      },
+      "java-attributes" : {
+        "xml-element" : [ {
+          "java-attribute" : "payload",
+          "type" : "me.postaddict.instagram.scraper.model.PageObject",
+          "xml-path" : "shortcode_media/edge_media_to_comment"
+        }]}
+
+    },{
+      "name" : "me.postaddict.instagram.scraper.model.PageObject",
+      "java-attributes" : {
+        "xml-element" : [ {
+          "java-attribute" : "count",
+          "type" : "java.lang.Integer",
+          "xml-path" : "count/text()"
+        },{
+          "java-attribute" : "pageInfo",
+          "type" : "me.postaddict.instagram.scraper.model.PageInfo",
+          "xml-path" : "page_info"
+        },{
+          "java-attribute" : "nodes",
+          "type" : "me.postaddict.instagram.scraper.model.Comment",
+          "xml-path" : "edges/node"
+        }]
+      }
+    }, {
+      "name" : "me.postaddict.instagram.scraper.model.PageInfo",
+      "xml-root-element" : {
+        "name" : "page_info"
+      },
+      "java-attributes" : {
+        "xml-attribute" : [ {
+          "java-attribute" : "hasNextPage",
+          "type" : "java.lang.Boolean",
+          "xml-path" : "has_next_page/text()"
+        }, {
+          "java-attribute" : "endCursor",
+          "type" : "java.lang.String",
+          "xml-path" : "end_cursor/text()"
+        } ]
+      }
+    },  {"name" : "me.postaddict.instagram.scraper.model.Comment",
+      "java-attributes" : {
+        "xml-element" : [ {
+          "java-attribute" : "createdAt",
+          "type" : "java.lang.Long",
+          "xml-path" : "created_at/text()"
+        }]
+      }
+    },{
+      "name" : "me.postaddict.instagram.scraper.model.Account",
+      "java-attributes" : {
+        "xml-element" : [ {
+          "java-attribute" : "username",
+          "type" : "java.lang.String",
+          "xml-path" : "username/text()"
+        },{
+          "java-attribute" : "profilePicUrl",
+          "type" : "java.lang.String",
+          "xml-path" : "profile_pic_url/text()"
+        }]
+      }
+    } ]
+  }
+}

@@ -1,8 +1,6 @@
 package me.postaddict.instagram.scraper.mapping;
 
-import me.postaddict.instagram.scraper.model.Account;
-import me.postaddict.instagram.scraper.model.GraphQlResponse;
-import me.postaddict.instagram.scraper.model.Media;
+import me.postaddict.instagram.scraper.model.*;
 import org.eclipse.persistence.jaxb.JAXBContextProperties;
 import org.eclipse.persistence.jaxb.UnmarshallerProperties;
 import org.eclipse.persistence.jaxb.dynamic.DynamicJAXBContextFactory;
@@ -45,6 +43,15 @@ public class MappingTest {
         Unmarshaller unmarshaller = getUnmarshaller(mappingFile);
         GraphQlResponse<Media> graphQlResponse = (GraphQlResponse<Media>) unmarshaller.unmarshal(accountJson);
         //parentMedia
+        assertThat(graphQlResponse.getPayload()).isNotNull();
+    }
+
+    @Test
+    public void testComments() throws Exception {
+        InputStream accountJson = MappingTest.class.getResourceAsStream("/getCommentsByMediaCode_9cc06fff-6531-4530-a76e-ff72738def57.json");
+        String mappingFile = "me/postaddict/instagram/scraper/model/comments.json";
+        Unmarshaller unmarshaller = getUnmarshaller(mappingFile);
+        GraphQlResponse<PageObject<Comment>> graphQlResponse = (GraphQlResponse<PageObject<Comment>>) unmarshaller.unmarshal(accountJson);
         assertThat(graphQlResponse.getPayload()).isNotNull();
     }
 
