@@ -1,7 +1,9 @@
 package me.postaddict.instagram.scraper;
 
+import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import me.postaddict.instagram.scraper.model.*;
+import org.apache.commons.beanutils.BeanUtils;
 import org.eclipse.persistence.jaxb.JAXBContextProperties;
 import org.eclipse.persistence.jaxb.UnmarshallerProperties;
 import org.eclipse.persistence.jaxb.dynamic.DynamicJAXBContextFactory;
@@ -23,8 +25,6 @@ public class ModelMapper {
     }
 
     public static GraphQlResponse<Media> mapMedia(InputStream jsonStream){
-        //copy firstComments,commentCount
-        //parentMedia
         GraphQlResponse<Media> graphQlResponse = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/media-by-url.json");
         Media media = graphQlResponse.getPayload();
         media.setCommentCount(media.getCommentPreview().getCount());
@@ -32,17 +32,21 @@ public class ModelMapper {
     }
 
     public static GraphQlResponse<PageObject<Comment>> mapComments(InputStream jsonStream){
-        //count
         return mapObject(jsonStream, "me/postaddict/instagram/scraper/model/comments.json");
     }
 
     public static Location mapLocation(InputStream jsonStream){
-        //count
-        return mapObject(jsonStream, "me/postaddict/instagram/scraper/model/location.json");
+        Location location = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/location.json");
+        location.setCount(location.getMediaRating().getMedia().getCount());
+        return location;
     }
 
+    @SneakyThrows
     public static Account mapMediaList(InputStream jsonStream){
         Account account = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/medias.json");
+        Account accountCopy = (Account) BeanUtils.cloneBean(account);
+        accountCopy.setMedia(null);
+        account.getMedia().getNodes().forEach(media-> media.setOwner(accountCopy));
         return account;
     }
 

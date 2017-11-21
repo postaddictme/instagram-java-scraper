@@ -12,7 +12,7 @@ import java.util.Date;
 @Entity
 @Data
 @ToString
-public class Account {
+public class Account implements Cloneable{
     @Id
     private long id;//"id": "3",
     @Column(name = "username", nullable = false)

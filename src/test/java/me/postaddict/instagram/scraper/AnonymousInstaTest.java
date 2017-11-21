@@ -145,7 +145,7 @@ public class AnonymousInstaTest {
     public void testGetCommentsByMediaCode() throws Exception {
         PageObject<Comment> comments= client.getCommentsByMediaCode("BHaRdodBouH", 2);
         Collection<Comment> list = comments.getNodes();
-        assertEquals(2*12, list.size());
+        assertEquals(2*15, list.size());
         for (Comment comment : list) {
             assertTrue(checkComment(comment));
         }
