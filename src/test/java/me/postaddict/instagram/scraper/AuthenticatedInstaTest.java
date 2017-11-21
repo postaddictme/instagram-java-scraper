@@ -2,16 +2,10 @@ package me.postaddict.instagram.scraper;
 
 import me.postaddict.instagram.scraper.cookie.CookieHashSet;
 import me.postaddict.instagram.scraper.cookie.DefaultCookieJar;
-import me.postaddict.instagram.scraper.domain.*;
 import me.postaddict.instagram.scraper.interceptor.ErrorInterceptor;
 import me.postaddict.instagram.scraper.interceptor.UserAgentInterceptor;
 import me.postaddict.instagram.scraper.interceptor.UserAgents;
 import me.postaddict.instagram.scraper.model.*;
-import me.postaddict.instagram.scraper.model.Account;
-import me.postaddict.instagram.scraper.model.Comment;
-import me.postaddict.instagram.scraper.model.Location;
-import me.postaddict.instagram.scraper.model.Media;
-import me.postaddict.instagram.scraper.model.Tag;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.junit.BeforeClass;
@@ -19,7 +13,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Collection;
-import java.util.List;
 
 import static me.postaddict.instagram.scraper.ContentCheck.*;
 import static org.junit.Assert.*;
@@ -173,7 +166,7 @@ public class AuthenticatedInstaTest {
 
     @Test
     public void testAddMediaComment() throws Exception {
-        me.postaddict.instagram.scraper.domain.Comment comment = client.addMediaComment("PASTE_HERE_MEDIA_CODE", "PASTE_COMMENT_TEXT");
+        ActionResponse<Comment> comment = client.addMediaComment("PASTE_HERE_MEDIA_CODE", "PASTE_COMMENT_TEXT");
         System.out.println(comment);
     }
 
@@ -185,15 +178,15 @@ public class AuthenticatedInstaTest {
     @Test
     public void testFollows() throws Exception {
         Account account = client.getAccountByUsername("kevin");
-        List<me.postaddict.instagram.scraper.domain.Account> follows = client.getFollows(account.getId(), 50);
-        assertEquals(follows.size(), 50);
+        PageObject<Account> follows = client.getFollows(account.getId(), 2);
+        assertTrue(follows.getNodes().size()>390);
     }
 
     @Test
     public void testFollowers() throws Exception {
         Account account = client.getAccountByUsername("kevin");
-        List<me.postaddict.instagram.scraper.domain.Account> followers = client.getFollowers(account.getId(), 50);
-        assertEquals(followers.size(), 50);
+        PageObject<Account> followers = client.getFollowers(account.getId(), 1);
+        assertEquals(200,followers.getNodes().size());
     }
 
 }

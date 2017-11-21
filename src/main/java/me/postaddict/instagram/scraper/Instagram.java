@@ -1,27 +1,28 @@
 package me.postaddict.instagram.scraper;
 
-import com.google.gson.Gson;
 import me.postaddict.instagram.scraper.exception.InstagramAuthException;
+import me.postaddict.instagram.scraper.mapper.Mapper;
+import me.postaddict.instagram.scraper.mapper.ModelMapper;
 import me.postaddict.instagram.scraper.model.*;
 import okhttp3.*;
-import org.apache.commons.io.IOUtils;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 public class Instagram implements AuthenticatedInsta {
 
-    public OkHttpClient httpClient;
-    public Gson gson;
+    protected OkHttpClient httpClient;
+    protected Mapper mapper;
 
     public Instagram(OkHttpClient httpClient) {
         this.httpClient = httpClient;
-        this.gson = new Gson();
+        this.mapper = new ModelMapper();
+    }
+
+    public Instagram(OkHttpClient httpClient, Mapper mapper) {
+        this.httpClient = httpClient;
+        this.mapper = mapper;
     }
 
     private Request withCsrfToken(Request request) {
@@ -72,25 +73,9 @@ public class Instagram implements AuthenticatedInsta {
                 .header("Referer", Endpoint.BASE_URL + "/")
                 .build();
         Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
-        String jsonString = getResponseJson(response);
-        response.body().close();
-
-        Map userJson = gson.fromJson(jsonString, Map.class);
-        String shortCode = (String) ((Map) ((Map) ((List) ((Map) ((Map) ((Map) userJson.get("data")).get("user")).get("edge_owner_to_timeline_media")).get("edges")).get(0)).get("node")).get("shortcode");
-        Media m = getMediaByCode(shortCode);
-        return m.getOwner();
-    }
-
-    private String getResponseJson(Response response) throws IOException {
-        String json = response.body().string();
-        if(Boolean.getBoolean("dumpResponse")) {
-            StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-            File out = new File(stackTrace[2].getMethodName() + "_" + UUID.randomUUID().toString() + ".json");
-            try (FileWriter writer = new FileWriter(out)) {
-                IOUtils.write(json, writer);
-            }
+        try (ResponseBody body = response.body()){
+            return getMediaByCode(mapper.getLastMediaShortCode(body.byteStream())).getOwner();
         }
-        return json;
     }
 
     public Account getAccountByUsername(String username) throws IOException {
@@ -100,7 +85,7 @@ public class Instagram implements AuthenticatedInsta {
 
         Response response = this.httpClient.newCall(request).execute();
         try (ResponseBody body = response.body()){
-            return ModelMapper.mapAccount(body.byteStream());
+            return mapper.mapAccount(body.byteStream());
         }
     }
 
@@ -119,7 +104,7 @@ public class Instagram implements AuthenticatedInsta {
             Response response = this.httpClient.newCall(request).execute();
             Account currentAccount;
             try (ResponseBody responseBody = response.body()){
-                currentAccount = ModelMapper.mapMediaList(responseBody.byteStream());
+                currentAccount = mapper.mapMediaList(responseBody.byteStream());
             }
 
             if(firstAccount==null){
@@ -143,7 +128,7 @@ public class Instagram implements AuthenticatedInsta {
 
         Response response = this.httpClient.newCall(request).execute();
         try (ResponseBody responseBody = response.body()){
-            return ModelMapper.mapMedia(responseBody.byteStream()).getPayload();
+            return mapper.mapMedia(responseBody.byteStream()).getPayload();
         }
     }
 
@@ -158,7 +143,7 @@ public class Instagram implements AuthenticatedInsta {
 
         Response response = this.httpClient.newCall(request).execute();
         try (ResponseBody responseBody = response.body()){
-            return ModelMapper.mapTag(responseBody.byteStream());
+            return mapper.mapTag(responseBody.byteStream());
         }
 
     }
@@ -179,7 +164,7 @@ public class Instagram implements AuthenticatedInsta {
 
             Location currentLocation;
             try (ResponseBody responseBody = response.body()){
-                currentLocation = ModelMapper.mapLocation(responseBody.byteStream());
+                currentLocation = mapper.mapLocation(responseBody.byteStream());
             }
 
             if(firstLocation==null){
@@ -211,7 +196,7 @@ public class Instagram implements AuthenticatedInsta {
             Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
             Tag currentTag;
             try (ResponseBody responseBody = response.body()){
-                currentTag = ModelMapper.mapTag(responseBody.byteStream());
+                currentTag = mapper.mapTag(responseBody.byteStream());
             }
 
             if(firstTag==null){
@@ -243,7 +228,7 @@ public class Instagram implements AuthenticatedInsta {
             Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
             PageObject<Comment> currentComments;
             try (ResponseBody responseBody = response.body()){
-                currentComments = ModelMapper.mapComments(responseBody.byteStream()).getPayload();
+                currentComments = mapper.mapComments(responseBody.byteStream()).getPayload();
             }
 
             if(firstComments==null){
@@ -272,85 +257,70 @@ public class Instagram implements AuthenticatedInsta {
         response.body().close();
     }
 
-    public List<me.postaddict.instagram.scraper.domain.Account> getFollows(long userId, int count) throws IOException {
+    public PageObject<Account> getFollows(long userId, int pageCount) throws IOException {
+        int idx = 0;
         boolean hasNext = true;
-        List<me.postaddict.instagram.scraper.domain.Account> follows = new ArrayList<>();
         String followsLink = Endpoint.getFollowsLinkVariables(userId, 200, "");
-        while (follows.size() < count && hasNext) {
+        PageObject<Account> firstFollows = null;
+        while (idx++ < pageCount && hasNext) {
+
             Request request = new Request.Builder()
                     .url(followsLink)
                     .header("Referer", Endpoint.BASE_URL + "/")
                     .build();
 
             Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
-            String jsonString = getResponseJson(response);
-            response.body().close();
-
-            Map commentsMap = gson.fromJson(jsonString, Map.class);
-            Map edgeFollow = (Map) ((Map) ((Map) commentsMap.get("data")).get("user")).get("edge_follow");
-            List edges = (List) edgeFollow.get("edges");
-            for (Object edgeObj : edges) {
-                me.postaddict.instagram.scraper.domain.Account account = account((Map) edgeObj);
-                follows.add(account);
-                if (count == follows.size()) {
-                    return follows;
-                }
+            PageObject<Account> currentFollows;
+            try (ResponseBody responseBody = response.body()){
+                currentFollows = mapper.mapFollow(responseBody.byteStream()).getPayload();
             }
-            boolean hasNexPage = (Boolean) ((Map) edgeFollow.get("page_info")).get("has_next_page");
-            if (hasNexPage) {
-                followsLink = Endpoint.getFollowsLinkVariables(userId, 200, (String) ((Map) edgeFollow.get("page_info")).get("end_cursor"));
-                hasNext = true;
+
+            if(firstFollows==null){
+                firstFollows = currentFollows;
             } else {
-                hasNext = false;
+                firstFollows.getNodes().addAll(currentFollows.getNodes());
+                firstFollows.setPageInfo(currentFollows.getPageInfo());
+            }
+
+            hasNext = currentFollows.getPageInfo().isHasNextPage();
+            if (hasNext) {
+                followsLink = Endpoint.getFollowsLinkVariables(userId, 200, currentFollows.getPageInfo().getEndCursor());
             }
         }
-        return follows;
+        return firstFollows;
     }
 
-    private me.postaddict.instagram.scraper.domain.Account account(Map edgeObj) {
-        me.postaddict.instagram.scraper.domain.Account account = new me.postaddict.instagram.scraper.domain.Account();
-        Map edgeNode = (Map) edgeObj.get("node");
-        account.id = Long.valueOf((String) edgeNode.get("id"));
-        account.username = (String) edgeNode.get("username");
-        account.profilePicUrl = (String) edgeNode.get("profile_pic_url");
-        account.isVerified = (Boolean) edgeNode.get("is_verified");
-        account.fullName = (String) edgeNode.get("full_name");
-        return account;
-    }
-
-    public List<me.postaddict.instagram.scraper.domain.Account> getFollowers(long userId, int count) throws IOException {
+    public PageObject<Account> getFollowers(long userId, int pageCount) throws IOException {
+        int idx = 0;
         boolean hasNext = true;
-        List<me.postaddict.instagram.scraper.domain.Account> followers = new ArrayList<>();
         String followsLink = Endpoint.getFollowersLinkVariables(userId, 200, "");
-        while (followers.size() < count && hasNext) {
+        PageObject<Account> firstFollows = null;
+        while (idx++ < pageCount && hasNext) {
+
             Request request = new Request.Builder()
                     .url(followsLink)
                     .header("Referer", Endpoint.BASE_URL + "/")
                     .build();
 
             Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
-            String jsonString = getResponseJson(response);
-            response.body().close();
-
-            Map commentsMap = gson.fromJson(jsonString, Map.class);
-            Map edgeFollow = (Map) ((Map) ((Map) commentsMap.get("data")).get("user")).get("edge_followed_by");
-            List edges = (List) edgeFollow.get("edges");
-            for (Object edgeObj : edges) {
-                me.postaddict.instagram.scraper.domain.Account account = account((Map) edgeObj);
-                followers.add(account);
-                if (count == followers.size()) {
-                    return followers;
-                }
+            PageObject<Account> currentFollows;
+            try (ResponseBody responseBody = response.body()){
+                currentFollows = mapper.mapFollowers(responseBody.byteStream()).getPayload();
             }
-            boolean hasNexPage = (Boolean) ((Map) edgeFollow.get("page_info")).get("has_next_page");
-            if (hasNexPage) {
-                followsLink = Endpoint.getFollowersLinkVariables(userId, 200, (String) ((Map) edgeFollow.get("page_info")).get("end_cursor"));
-                hasNext = true;
+
+            if(firstFollows==null){
+                firstFollows = currentFollows;
             } else {
-                hasNext = false;
+                firstFollows.getNodes().addAll(currentFollows.getNodes());
+                firstFollows.setPageInfo(currentFollows.getPageInfo());
+            }
+
+            hasNext = currentFollows.getPageInfo().isHasNextPage();
+            if (hasNext) {
+                followsLink = Endpoint.getFollowersLinkVariables(userId, 200, currentFollows.getPageInfo().getEndCursor());
             }
         }
-        return followers;
+        return firstFollows;
     }
 
     public void unlikeMediaByCode(String code) throws IOException {
@@ -365,7 +335,7 @@ public class Instagram implements AuthenticatedInsta {
         response.body().close();
     }
 
-    public me.postaddict.instagram.scraper.domain.Comment addMediaComment(String code, String commentText) throws IOException {
+    public ActionResponse<Comment> addMediaComment(String code, String commentText) throws IOException {
         String url = Endpoint.addMediaCommentLink(MediaUtil.getIdFromCode(code));
         FormBody formBody = new FormBody.Builder()
                 .add("comment_text", commentText)
@@ -377,11 +347,9 @@ public class Instagram implements AuthenticatedInsta {
                 .build();
 
         Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
-        String jsonString = getResponseJson(response);
-        response.body().close();
-
-        Map commentMap = gson.fromJson(jsonString, Map.class);
-        return me.postaddict.instagram.scraper.domain.Comment.fromApi(commentMap);
+        try (ResponseBody responseBody = response.body()){
+            return mapper.mapMediaCommentResponse(responseBody.byteStream());
+        }
     }
 
     public void deleteMediaComment(String code, String commentId) throws IOException {

@@ -1,10 +1,11 @@
 package me.postaddict.instagram.scraper;
 
-import me.postaddict.instagram.scraper.domain.Account;
-import me.postaddict.instagram.scraper.domain.Comment;
+import me.postaddict.instagram.scraper.model.Account;
+import me.postaddict.instagram.scraper.model.ActionResponse;
+import me.postaddict.instagram.scraper.model.Comment;
+import me.postaddict.instagram.scraper.model.PageObject;
 
 import java.io.IOException;
-import java.util.List;
 
 public interface AuthenticatedInsta extends AnonymousInsta {
 
@@ -12,11 +13,11 @@ public interface AuthenticatedInsta extends AnonymousInsta {
     void likeMediaByCode(String code) throws IOException;
     void unlikeMediaByCode(String code) throws IOException;
 
-    Comment addMediaComment(String code, String commentText) throws IOException;
+    ActionResponse<Comment> addMediaComment(String code, String commentText) throws IOException;
 
     void deleteMediaComment(String code, String commentId) throws IOException;
 
-    List<Account> getFollows(long userId, int count) throws IOException;
+    PageObject<Account> getFollows(long userId, int pageCount) throws IOException;
 
-    List<Account> getFollowers(long userId, int count) throws IOException;
+    PageObject<Account> getFollowers(long userId, int pageCount) throws IOException;
 }

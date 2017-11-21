@@ -13,7 +13,7 @@ import javax.persistence.ManyToOne;
 @ToString
 public class Comment {
     @Id
-    private long id;//"id": "17854775992129844",
+    private Long id;//"id": "17854775992129844",
     private String text;//"text": "Ahhhhh @georgiacoggings_",
     private Long createdAt;//"created_at": 1478676181,
     @ManyToOne
