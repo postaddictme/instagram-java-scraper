@@ -2,10 +2,10 @@ package me.postaddict.instagram.scraper;
 
 import me.postaddict.instagram.scraper.cookie.CookieHashSet;
 import me.postaddict.instagram.scraper.cookie.DefaultCookieJar;
-import me.postaddict.instagram.scraper.model.*;
 import me.postaddict.instagram.scraper.interceptor.ErrorInterceptor;
 import me.postaddict.instagram.scraper.interceptor.UserAgentInterceptor;
 import me.postaddict.instagram.scraper.interceptor.UserAgents;
+import me.postaddict.instagram.scraper.model.*;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.junit.BeforeClass;
@@ -14,7 +14,6 @@ import org.junit.Test;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 import static me.postaddict.instagram.scraper.ContentCheck.*;
 import static org.junit.Assert.*;

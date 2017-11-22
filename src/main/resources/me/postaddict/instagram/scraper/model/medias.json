@@ -32,7 +32,7 @@
           "type" : "java.lang.String",
           "xml-path" : "external_url_linkshimmed/text()"
         },{
-          "java-attribute" : "followed_by",
+          "java-attribute" : "followedBy",
           "type" : "java.lang.Integer",
           "xml-path" : "followed_by/count/text()"
         },{

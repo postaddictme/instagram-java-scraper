@@ -26,38 +26,38 @@ public class MappingTest {
         Account account = modelMapper.mapAccount(
                 MappingTest.class.getResourceAsStream("/getAccountByUsername_6e4a017e-e0ca-4512-9e96-48df0d486288.json"));
         assertThat(account.getUsername()).isNotNull();
-        assertThat(IOUtils.toString(
-                MappingTest.class.getResourceAsStream("/expected/mapAccountByUsername.json"),"UTF-8")).isEqualTo(toJson(account));
+        assertThat(toJson(account)).isEqualTo(IOUtils.toString(
+                MappingTest.class.getResourceAsStream("/expected/mapAccountByUsername.json"),"UTF-8"));
     }
 
     @Test
     public void testMediaByUrl() throws Exception {
-        GraphQlResponse<Media> graphQlResponse = modelMapper.mapMedia(
+        Media media = modelMapper.mapMedia(
                 MappingTest.class.getResourceAsStream("/getMediaByUrl_ffd03200-d537-4719-8671-ac8414a796c0.json"));
 
-        assertThat(graphQlResponse.getPayload()).isNotNull();
-        assertThat(IOUtils.toString(
-                MappingTest.class.getResourceAsStream("/expected/mapMediaByUrl.json"),"UTF-8")).isEqualTo(toJson(graphQlResponse));
+        assertThat(media).isNotNull();
+        assertThat(toJson(media)).isEqualTo(IOUtils.toString(
+                MappingTest.class.getResourceAsStream("/expected/mapMediaByUrl.json"),"UTF-8"));
     }
 
     @Test
     public void testMediaByUrlCarousel() throws Exception {
-        GraphQlResponse<Media> graphQlResponse = modelMapper.mapMedia(
+        Media media = modelMapper.mapMedia(
                 MappingTest.class.getResourceAsStream("/getMediaByUrl_ac2a5f1c-6e7a-4b66-bf9a-bdaac02e1f08.json"));
 
-        assertThat(graphQlResponse.getPayload()).isNotNull();
-        assertThat(IOUtils.toString(
-                MappingTest.class.getResourceAsStream("/expected/mapMediaByUrlCarousel.json"),"UTF-8")).isEqualTo(toJson(graphQlResponse));
+        assertThat(media).isNotNull();
+        assertThat(toJson(media)).isEqualTo(IOUtils.toString(
+                MappingTest.class.getResourceAsStream("/expected/mapMediaByUrlCarousel.json"),"UTF-8"));
     }
 
     @Test
     public void testComments() throws Exception {
-        GraphQlResponse<PageObject<Comment>> graphQlResponse = modelMapper.mapComments(
+        PageObject<Comment> comments = modelMapper.mapComments(
                 MappingTest.class.getResourceAsStream("/getCommentsByMediaCode_9cc06fff-6531-4530-a76e-ff72738def57.json"));
 
-        assertThat(graphQlResponse.getPayload()).isNotNull();
-        assertThat(IOUtils.toString(
-                MappingTest.class.getResourceAsStream("/expected/mapComments.json"),"UTF-8")).isEqualTo(toJson(graphQlResponse));
+        assertThat(comments).isNotNull();
+        assertThat(toJson(comments)).isEqualTo(IOUtils.toString(
+                MappingTest.class.getResourceAsStream("/expected/mapComments.json"),"UTF-8"));
     }
 
     @Test
@@ -67,8 +67,8 @@ public class MappingTest {
                 locationStream);
 
         assertThat(location).isNotNull();
-        assertThat(IOUtils.toString(
-                MappingTest.class.getResourceAsStream("/expected/mapLocation.json"),"UTF-8")).isEqualTo(toJson(location));
+        assertThat(toJson(location)).isEqualTo(IOUtils.toString(
+                MappingTest.class.getResourceAsStream("/expected/mapLocation.json"),"UTF-8"));
     }
 
     @Test
@@ -77,9 +77,8 @@ public class MappingTest {
         Account medias = modelMapper.mapMediaList(mediaListStream);
 
         assertThat(medias).isNotNull();
-        assertThat(IOUtils.toString(
-                MappingTest.class.getResourceAsStream("/expected/mapMediaList.json"),"UTF-8")).isEqualTo(toJson(medias));
-
+        assertThat(toJson(medias)).isEqualTo(IOUtils.toString(
+                MappingTest.class.getResourceAsStream("/expected/mapMediaList.json"),"UTF-8"));
     }
 
     @Test
@@ -88,10 +87,8 @@ public class MappingTest {
         Account medias = modelMapper.mapMediaList(mediaListStream);
 
         assertThat(medias).isNotNull();
-        String expected = toJson(medias);
-        assertThat(IOUtils.toString(
-                MappingTest.class.getResourceAsStream("/expected/mapMediaListCarousel.json"),"UTF-8")).isEqualTo(expected);
-
+        assertThat(toJson(medias)).isEqualTo(IOUtils.toString(
+                MappingTest.class.getResourceAsStream("/expected/mapMediaListCarousel.json"),"UTF-8"));
     }
 
     @Test
@@ -100,28 +97,28 @@ public class MappingTest {
         Tag tag = modelMapper.mapTag(tagStream);
 
         assertThat(tag).isNotNull();
-        assertThat(IOUtils.toString(
-                MappingTest.class.getResourceAsStream("/expected/mapTag.json"),"UTF-8")).isEqualTo(toJson(tag));
+        assertThat(toJson(tag)).isEqualTo(IOUtils.toString(
+                MappingTest.class.getResourceAsStream("/expected/mapTag.json"),"UTF-8"));
     }
 
     @Test
     public void testFollow() throws Exception {
         InputStream followStream = MappingTest.class.getResourceAsStream("/follows.json");
-        GraphQlResponse<PageObject<Account>> follow = modelMapper.mapFollow(followStream);
+        PageObject<Account> follow = modelMapper.mapFollow(followStream);
 
         assertThat(follow).isNotNull();
-        assertThat(IOUtils.toString(
-                MappingTest.class.getResourceAsStream("/expected/mapFollows.json"),"UTF-8")).isEqualTo(toJson(follow.getPayload()));
+        assertThat(toJson(follow)).isEqualTo(IOUtils.toString(
+                MappingTest.class.getResourceAsStream("/expected/mapFollows.json"),"UTF-8"));
     }
 
     @Test
     public void testFollowers() throws Exception {
         InputStream followersStream = MappingTest.class.getResourceAsStream("/followers.json");
-        GraphQlResponse<PageObject<Account>> followers = modelMapper.mapFollowers(followersStream);
+        PageObject<Account> followers = modelMapper.mapFollowers(followersStream);
 
         assertThat(followers).isNotNull();
-        assertThat(IOUtils.toString(
-                MappingTest.class.getResourceAsStream("/expected/mapFollowers.json"),"UTF-8")).isEqualTo(toJson(followers.getPayload()));
+        assertThat(toJson(followers)).isEqualTo(IOUtils.toString(
+                MappingTest.class.getResourceAsStream("/expected/mapFollowers.json"),"UTF-8"));
     }
 
     @Test
@@ -131,8 +128,8 @@ public class MappingTest {
 
         assertThat(mediaCommentResponse).isNotNull();
         assertThat(mediaCommentResponse.getStatus()).isEqualTo("ok");
-        assertThat(IOUtils.toString(
-                MappingTest.class.getResourceAsStream("/expected/mapComment.json"),"UTF-8")).isEqualTo(toJson(mediaCommentResponse));
+        assertThat(toJson(mediaCommentResponse)).isEqualTo(IOUtils.toString(
+                MappingTest.class.getResourceAsStream("/expected/mapComment.json"),"UTF-8"));
     }
 
 

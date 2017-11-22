@@ -1,12 +1,12 @@
 package me.postaddict.instagram.scraper;
 
+import me.postaddict.instagram.scraper.interceptor.ErrorInterceptor;
+import me.postaddict.instagram.scraper.interceptor.UserAgentInterceptor;
+import me.postaddict.instagram.scraper.interceptor.UserAgents;
 import me.postaddict.instagram.scraper.model.Account;
 import me.postaddict.instagram.scraper.model.Media;
 import me.postaddict.instagram.scraper.model.PageObject;
 import me.postaddict.instagram.scraper.model.Tag;
-import me.postaddict.instagram.scraper.interceptor.ErrorInterceptor;
-import me.postaddict.instagram.scraper.interceptor.UserAgentInterceptor;
-import me.postaddict.instagram.scraper.interceptor.UserAgents;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.junit.BeforeClass;
@@ -14,11 +14,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Collection;
-import java.util.List;
 
-import static me.postaddict.instagram.scraper.ContentCheck.checkAccount;
-import static me.postaddict.instagram.scraper.ContentCheck.checkMedia;
-import static me.postaddict.instagram.scraper.ContentCheck.checkTag;
+import static me.postaddict.instagram.scraper.ContentCheck.*;
 import static org.junit.Assert.*;
 
 @Ignore

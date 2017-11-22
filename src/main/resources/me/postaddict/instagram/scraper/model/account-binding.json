@@ -32,7 +32,7 @@
           "type" : "java.lang.String",
           "xml-path" : "external_url_linkshimmed/text()"
         },{
-          "java-attribute" : "followed_by",
+          "java-attribute" : "followedBy",
           "type" : "java.lang.Integer",
           "xml-path" : "followed_by/count/text()"
         },{
@@ -157,6 +157,10 @@
           "java-attribute" : "likeCount",
           "type" : "java.lang.Integer",
           "xml-path" : "likes/count/text()"
+        },{
+          "java-attribute" : "takenAtTimestamp",
+          "type" : "java.lang.Long",
+          "xml-path" : "date/text()"
         }, {
           "java-attribute" : "mediaResource",
           "type" : "me.postaddict.instagram.scraper.model.MediaResource",

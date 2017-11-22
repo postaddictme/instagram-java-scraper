@@ -1,6 +1,10 @@
 package me.postaddict.instagram.scraper;
 
-public abstract class Endpoint {
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public class Endpoint {
+    public static final String REFERER = "Referer";
     public static final String BASE_URL = "https://www.instagram.com";
     public static final String LOGIN_URL = "https://www.instagram.com/accounts/login/ajax/";
     public static final String ACCOUNT_PAGE = "https://www.instagram.com/{{username}}";
@@ -23,98 +27,111 @@ public abstract class Endpoint {
     public static final String FOLLOWERS_URL = "https://www.instagram.com/graphql/query/?query_id=17851374694183129&variables={\"id\": {{userId}}, \"first\": {{count}}, \"after\": \"{{endCursor}}\"}";
     public static final String INSTAGRAM_QUERY_URL = "https://www.instagram.com/query/";
     public static final String INSTAGRAM_CDN_URL = "https://scontent.cdninstagram.com/";
+    public static final String USERNAME = "{{username}}";
+    public static final String USER_ID = "{{userId}}";
+    public static final String MAX_ID = "{{maxId}}";
+    public static final String CODE = "{{code}}";
+    public static final String TAG_NAME = "{{tag_name}}";
+    public static final String COUNT = "{{count}}";
+    public static final String SHORTCODE = "{{shortcode}}";
+    public static final String COMMENT_ID = "{{commentId}}";
+    public static final String MEDIA_ID = "{{mediaId}}";
+    public static final String END_CURSOR = "{{endCursor}}";
+    public static final String TAG = "{{tag}}";
+    public static final String QUERY = "{{query}}";
+    public static final String FACEBOOK_LOCATION_ID = "{{facebookLocationId}}";
 
     public static String getAccountPageLink(String username) {
-        return ACCOUNT_PAGE.replace("{{username}}", username);
+        return ACCOUNT_PAGE.replace(USERNAME, username);
     }
 
     public static String getAccountJsonInfoLinkByUsername(String username) {
-        return ACCOUNT_JSON_INFO.replace("{{username}}", username);
+        return ACCOUNT_JSON_INFO.replace(USERNAME, username);
     }
 
     public static String getAccountJsonInfoLinkByAccountId(long userId) {
-        return ACCOUNT_JSON_INFO_BY_ID.replace("{{userId}}", "" + userId);
+        return ACCOUNT_JSON_INFO_BY_ID.replace(USER_ID, "" + userId);
     }
 
     public static String getAccountMediasJsonLink(String username, String maxId) {
         if (maxId == null) {
             maxId = "";
         }
-        return ACCOUNT_MEDIAS.replace("{{username}}", username).replace("{{maxId}}", maxId);
+        return ACCOUNT_MEDIAS.replace(USERNAME, username).replace(MAX_ID, maxId);
     }
 
     public static String getTagJsonByTagName(String tagName) {
-        return TAG_JSON_INFO.replace("{{tag_name}}", tagName);
+        return TAG_JSON_INFO.replace(TAG_NAME, tagName);
     }
 
     public static String getMediaPageLinkByCode(String code) {
-        return MEDIA_LINK.replace("{{code}}", code);
+        return MEDIA_LINK.replace(CODE, code);
     }
 
     public static String getMediaJsonLinkByShortcode(String shortcode) {
-        return MEDIA_JSON_INFO.replace("{{code}}", shortcode);
+        return MEDIA_JSON_INFO.replace(CODE, shortcode);
     }
 
     public static String getMediasJsonByLocationIdLink(String facebookLocationId, String maxId) {
         if (maxId == null) {
             maxId = "";
         }
-        return MEDIA_JSON_BY_LOCATION_ID.replace("{{facebookLocationId}}", facebookLocationId).replace("{{maxId}}", maxId);
+        return MEDIA_JSON_BY_LOCATION_ID.replace(FACEBOOK_LOCATION_ID, facebookLocationId).replace(MAX_ID, maxId);
     }
 
     public static String getMediasJsonByTagLink(String tag, String maxId) {
         if (maxId == null) {
             maxId = "";
         }
-        return MEDIA_JSON_BY_TAG.replace("{{tag}}", tag).replace("{{maxId}}", maxId);
+        return MEDIA_JSON_BY_TAG.replace(TAG, tag).replace(MAX_ID, maxId);
     }
 
     public static String getGeneralSearchJsonLink(String query) {
-        return GENERAL_SEARCH.replace("{{query}}", query);
+        return GENERAL_SEARCH.replace(QUERY, query);
     }
 
     public static String getLastCommentsByCodeLink(String code, int count) {
         return LAST_COMMENTS_BY_CODE
-                .replace("{{code}}", code)
-                .replace("{{count}}", "" + count);
+                .replace(CODE, code)
+                .replace(COUNT, "" + count);
     }
 
     public static String getCommentsBeforeCommentIdByCode(String shortcode, int count, String commentId) {
         return COMMENTS_BEFORE_COMMENT_ID_BY_CODE
-                .replace("{{shortcode}}", shortcode)
-                .replace("{{count}}", "" + count)
-                .replace("{{commentId}}", commentId);
+                .replace(SHORTCODE, shortcode)
+                .replace(COUNT, "" + count)
+                .replace(COMMENT_ID, commentId);
     }
 
     public static String getMediaLikeLink(String mediaId) {
-        return MEDIA_LIKE.replace("{{mediaId}}", mediaId);
+        return MEDIA_LIKE.replace(MEDIA_ID, mediaId);
     }
 
     public static String getMediaUnlikeLink(String mediaId) {
-        return MEDIA_UNLIKE.replace("{{mediaId}}", mediaId);
+        return MEDIA_UNLIKE.replace(MEDIA_ID, mediaId);
     }
 
     public static String addMediaCommentLink(String mediaId) {
-        return MEDIA_COMMENTS_ADD.replace("{{mediaId}}", mediaId);
+        return MEDIA_COMMENTS_ADD.replace(MEDIA_ID, mediaId);
     }
 
     public static String deleteMediaCommentLink(String mediaId, String commentId) {
         return MEDIA_COMMENTS_DELETE
-                .replace("{{mediaId}}", mediaId)
-                .replace("{{commentId}}", commentId);
+                .replace(MEDIA_ID, mediaId)
+                .replace(COMMENT_ID, commentId);
     }
 
     public static String getFollowsLinkVariables(long userId, int count, String endCursor) {
         return FOLLOWS_URL
-                .replace("{{userId}}", String.valueOf(userId))
-                .replace("{{count}}", String.valueOf(count))
-                .replace("{{endCursor}}", endCursor);
+                .replace(USER_ID, String.valueOf(userId))
+                .replace(COUNT, String.valueOf(count))
+                .replace(END_CURSOR, endCursor);
     }
 
     public static String getFollowersLinkVariables(long userId, int count, String endCursor) {
         return FOLLOWERS_URL
-                .replace("{{userId}}", String.valueOf(userId))
-                .replace("{{count}}", String.valueOf(count))
-                .replace("{{endCursor}}", endCursor);
+                .replace(USER_ID, String.valueOf(userId))
+                .replace(COUNT, String.valueOf(count))
+                .replace(END_CURSOR, endCursor);
     }
 }

@@ -19,7 +19,7 @@ public class Location {
     private Double lat;
     private Double lng;
 
-    private Integer count;//"media": {"count"
+    private Integer count;
     @Transient
     private MediaRating mediaRating;
 }

@@ -6,7 +6,6 @@ import me.postaddict.instagram.scraper.model.PageObject;
 import me.postaddict.instagram.scraper.model.Tag;
 
 import java.io.IOException;
-import java.util.List;
 
 public interface StatelessInsta {
 

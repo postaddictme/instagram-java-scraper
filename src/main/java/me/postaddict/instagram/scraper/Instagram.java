@@ -7,7 +7,6 @@ import me.postaddict.instagram.scraper.model.*;
 import okhttp3.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Instagram implements AuthenticatedInsta {
@@ -59,7 +58,7 @@ public class Instagram implements AuthenticatedInsta {
 
         Request request = new Request.Builder()
                 .url(Endpoint.LOGIN_URL)
-                .header("Referer", Endpoint.BASE_URL + "/")
+                .header(Endpoint.REFERER, Endpoint.BASE_URL + "/")
                 .post(formBody)
                 .build();
 
@@ -70,7 +69,7 @@ public class Instagram implements AuthenticatedInsta {
     public Account getAccountById(long id) throws IOException {
         Request request = new Request.Builder()
                 .url(Endpoint.getAccountJsonInfoLinkByAccountId(id))
-                .header("Referer", Endpoint.BASE_URL + "/")
+                .header(Endpoint.REFERER, Endpoint.BASE_URL + "/")
                 .build();
         Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
         try (ResponseBody body = response.body()){
@@ -91,7 +90,6 @@ public class Instagram implements AuthenticatedInsta {
 
     public PageObject<Media> getMedias(String username, int pageCount) throws IOException {
         int index = 0;
-        ArrayList<Media> medias = new ArrayList<>();
         String maxId = "";
         boolean isMoreAvailable = true;
 
@@ -118,7 +116,7 @@ public class Instagram implements AuthenticatedInsta {
             maxId = currentAccount.getMedia().getPageInfo().getEndCursor();
             isMoreAvailable = currentAccount.getMedia().getPageInfo().isHasNextPage();
         }
-        return firstAccount.getMedia();
+        return firstAccount!=null?firstAccount.getMedia():null;
     }
 
     public Media getMediaByUrl(String url) throws IOException {
@@ -128,7 +126,7 @@ public class Instagram implements AuthenticatedInsta {
 
         Response response = this.httpClient.newCall(request).execute();
         try (ResponseBody responseBody = response.body()){
-            return mapper.mapMedia(responseBody.byteStream()).getPayload();
+            return mapper.mapMedia(responseBody.byteStream());
         }
     }
 
@@ -157,7 +155,7 @@ public class Instagram implements AuthenticatedInsta {
         while (index < pageCount && hasNext) {
             Request request = new Request.Builder()
                     .url(Endpoint.getMediasJsonByLocationIdLink(locationId, offset))
-                    .header("Referer", Endpoint.BASE_URL + "/")
+                    .header(Endpoint.REFERER, Endpoint.BASE_URL + "/")
                     .build();
 
             Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
@@ -190,7 +188,7 @@ public class Instagram implements AuthenticatedInsta {
         while (index < pageCount && hasNext) {
             Request request = new Request.Builder()
                     .url(Endpoint.getMediasJsonByTagLink(tag, maxId))
-                    .header("Referer", Endpoint.BASE_URL + "/")
+                    .header(Endpoint.REFERER, Endpoint.BASE_URL + "/")
                     .build();
 
             Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
@@ -222,13 +220,13 @@ public class Instagram implements AuthenticatedInsta {
         while (index < pageCount && hasNext) {
             Request request = new Request.Builder()
                     .url(Endpoint.getCommentsBeforeCommentIdByCode(code, 20, commentId))
-                    .header("Referer", Endpoint.BASE_URL + "/")
+                    .header(Endpoint.REFERER, Endpoint.BASE_URL + "/")
                     .build();
 
             Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
             PageObject<Comment> currentComments;
             try (ResponseBody responseBody = response.body()){
-                currentComments = mapper.mapComments(responseBody.byteStream()).getPayload();
+                currentComments = mapper.mapComments(responseBody.byteStream());
             }
 
             if(firstComments==null){
@@ -249,7 +247,7 @@ public class Instagram implements AuthenticatedInsta {
         String url = Endpoint.getMediaLikeLink(MediaUtil.getIdFromCode(code));
         Request request = new Request.Builder()
                 .url(url)
-                .header("Referer", Endpoint.getMediaPageLinkByCode(code) + "/")
+                .header(Endpoint.REFERER, Endpoint.getMediaPageLinkByCode(code) + "/")
                 .post(new FormBody.Builder().build())
                 .build();
 
@@ -266,13 +264,13 @@ public class Instagram implements AuthenticatedInsta {
 
             Request request = new Request.Builder()
                     .url(followsLink)
-                    .header("Referer", Endpoint.BASE_URL + "/")
+                    .header(Endpoint.REFERER, Endpoint.BASE_URL + "/")
                     .build();
 
             Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
             PageObject<Account> currentFollows;
             try (ResponseBody responseBody = response.body()){
-                currentFollows = mapper.mapFollow(responseBody.byteStream()).getPayload();
+                currentFollows = mapper.mapFollow(responseBody.byteStream());
             }
 
             if(firstFollows==null){
@@ -299,13 +297,13 @@ public class Instagram implements AuthenticatedInsta {
 
             Request request = new Request.Builder()
                     .url(followsLink)
-                    .header("Referer", Endpoint.BASE_URL + "/")
+                    .header(Endpoint.REFERER, Endpoint.BASE_URL + "/")
                     .build();
 
             Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
             PageObject<Account> currentFollows;
             try (ResponseBody responseBody = response.body()){
-                currentFollows = mapper.mapFollowers(responseBody.byteStream()).getPayload();
+                currentFollows = mapper.mapFollowers(responseBody.byteStream());
             }
 
             if(firstFollows==null){
@@ -327,7 +325,7 @@ public class Instagram implements AuthenticatedInsta {
         String url = Endpoint.getMediaUnlikeLink(MediaUtil.getIdFromCode(code));
         Request request = new Request.Builder()
                 .url(url)
-                .header("Referer", Endpoint.getMediaPageLinkByCode(code) + "/")
+                .header(Endpoint.REFERER, Endpoint.getMediaPageLinkByCode(code) + "/")
                 .post(new FormBody.Builder().build())
                 .build();
 
@@ -342,7 +340,7 @@ public class Instagram implements AuthenticatedInsta {
                 .build();
         Request request = new Request.Builder()
                 .url(url)
-                .header("Referer", Endpoint.getMediaPageLinkByCode(code) + "/")
+                .header(Endpoint.REFERER, Endpoint.getMediaPageLinkByCode(code) + "/")
                 .post(formBody)
                 .build();
 
@@ -356,7 +354,7 @@ public class Instagram implements AuthenticatedInsta {
         String url = Endpoint.deleteMediaCommentLink(MediaUtil.getIdFromCode(code), commentId);
         Request request = new Request.Builder()
                 .url(url)
-                .header("Referer", Endpoint.getMediaPageLinkByCode(code) + "/")
+                .header(Endpoint.REFERER, Endpoint.getMediaPageLinkByCode(code) + "/")
                 .post(new FormBody.Builder().build())
                 .build();
 
