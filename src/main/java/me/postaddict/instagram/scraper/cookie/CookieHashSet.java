@@ -12,7 +12,7 @@ public class CookieHashSet implements CookieCache {
     private Set<CookieBox> boxes;
 
     public CookieHashSet() {
-        boxes = new HashSet<CookieBox>();
+        boxes = new HashSet<>();
     }
 
     @Override

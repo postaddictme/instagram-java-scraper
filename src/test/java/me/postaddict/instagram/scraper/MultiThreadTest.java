@@ -2,12 +2,10 @@ package me.postaddict.instagram.scraper;
 
 import me.postaddict.instagram.scraper.cookie.CookieHashSet;
 import me.postaddict.instagram.scraper.cookie.DefaultCookieJar;
-import me.postaddict.instagram.scraper.domain.Comment;
-import me.postaddict.instagram.scraper.domain.Media;
-import me.postaddict.instagram.scraper.exception.InstagramException;
 import me.postaddict.instagram.scraper.interceptor.ErrorInterceptor;
 import me.postaddict.instagram.scraper.interceptor.UserAgentInterceptor;
 import me.postaddict.instagram.scraper.interceptor.UserAgents;
+import me.postaddict.instagram.scraper.model.Media;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.junit.Assert;
@@ -22,8 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 
-import static me.postaddict.instagram.scraper.ContentCheck.checkAccount;
-import static me.postaddict.instagram.scraper.ContentCheck.checkComment;
 import static me.postaddict.instagram.scraper.ContentCheck.checkMedia;
 
 /**
@@ -87,9 +83,9 @@ public class MultiThreadTest {
                 public List<Media> call() throws Exception {
                     List<Media> medias = new ArrayList<Media>();
                     try {
-                        medias.addAll(client.getTopMediasByTag(s));
+                        medias.addAll(client.getMediasByTag(s,1).getMediaRating().getTopPosts());
                         Thread.sleep(1000);
-                        medias.addAll(client.getMediasByTag(s, 50));
+                        medias.addAll(client.getMediasByTag(s, 3).getMediaRating().getMedia().getNodes());
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (InterruptedException e) {
@@ -106,7 +102,7 @@ public class MultiThreadTest {
             for (Media media : result) {
                 Assert.assertTrue(checkMedia(media));
             }
-            Assert.assertEquals(59, result.size());
+            Assert.assertEquals(63, result.size());
         }
     }
 }

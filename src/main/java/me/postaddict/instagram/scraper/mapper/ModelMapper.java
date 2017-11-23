@@ -1,0 +1,141 @@
+package me.postaddict.instagram.scraper.mapper;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.igorsuhorukov.dom.transform.DomTransformer;
+import com.github.igorsuhorukov.dom.transform.converter.NopTypeConverter;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.SneakyThrows;
+import me.postaddict.instagram.scraper.model.*;
+import org.apache.commons.beanutils.BeanUtils;
+import org.eclipse.persistence.jaxb.JAXBContextProperties;
+import org.eclipse.persistence.jaxb.UnmarshallerProperties;
+import org.eclipse.persistence.jaxb.dynamic.DynamicJAXBContextFactory;
+import org.eclipse.persistence.oxm.MediaType;
+import org.w3c.dom.Node;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.xpath.XPathFactory;
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class ModelMapper implements Mapper{
+
+    private final ThreadLocal<ObjectMapper> mapperThreadLocal = ThreadLocal.withInitial(ObjectMapper::new);
+    @Getter(AccessLevel.PROTECTED)
+    private final ConcurrentHashMap<String, ThreadLocal<Unmarshaller>> unmarshallerCache = new ConcurrentHashMap<>();
+
+    public Account mapAccount(InputStream jsonStream){
+        return mapObject(jsonStream, "me/postaddict/instagram/scraper/model/account-binding.json");
+    }
+
+    public Media mapMedia(InputStream jsonStream){
+        GraphQlResponse<Media> graphQlResponse = mapObject(jsonStream,
+                "me/postaddict/instagram/scraper/model/media-by-url.json");
+        Media media = graphQlResponse.getPayload();
+        media.setCommentCount(media.getCommentPreview().getCount());
+        return graphQlResponse.getPayload();
+    }
+
+    public PageObject<Comment> mapComments(InputStream jsonStream){
+        GraphQlResponse<PageObject<Comment>> comments = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/comments.json");
+        return comments.getPayload();
+    }
+
+    public Location mapLocation(InputStream jsonStream){
+        Location location = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/location.json");
+        location.setCount(location.getMediaRating().getMedia().getCount());
+        return location;
+    }
+
+    @SneakyThrows
+    public Account mapMediaList(InputStream jsonStream){
+        Account account = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/medias.json");
+        Account accountCopy = (Account) BeanUtils.cloneBean(account);
+        accountCopy.setMedia(null);
+        account.getMedia().getNodes().forEach(media-> media.setOwner(accountCopy));
+        return account;
+    }
+
+    public Tag mapTag(InputStream jsonStream){
+        Tag tag = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/tag.json");
+        if(tag!=null && tag.getMediaRating()!=null && tag.getMediaRating().getMedia()!=null) {
+            tag.setCount(tag.getMediaRating().getMedia().getCount());
+        }
+        return tag;
+    }
+
+    public PageObject<Account> mapFollow(InputStream jsonStream){
+        GraphQlResponse<PageObject<Account>> follow = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/follow.json");
+        return follow.getPayload();
+    }
+
+    public PageObject<Account> mapFollowers(InputStream jsonStream) {
+        GraphQlResponse<PageObject<Account>> followers = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/followers.json");
+        return followers.getPayload();
+    }
+
+    @SuppressWarnings("unchecked")
+    @SneakyThrows
+    public ActionResponse<Comment> mapMediaCommentResponse(InputStream jsonStream) {
+        return mapObject(jsonStream, "me/postaddict/instagram/scraper/model/mediaCommentResponse.json", ActionResponse.class);
+    }
+
+    @Override
+    @SneakyThrows
+    public String getLastMediaShortCode(InputStream jsonStream) {
+        Map<String,Object> jsonMap = mapperThreadLocal.get().readValue(jsonStream,
+                                                                new TypeReference<Map<String, Object>>() {});
+        Node jsonDom = new DomTransformer(new NopTypeConverter()).transform(Collections.singletonMap("root",jsonMap));
+        return XPathFactory.newInstance().newXPath().evaluate("//shortcode", jsonDom);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected  <T> T mapObject(InputStream jsonStream, String mappingFile){
+        try {
+            ThreadLocal<Unmarshaller> unmarshaller = getCachedUnmarshaller(mappingFile);
+            unmarshaller.get().setProperty(UnmarshallerProperties.JSON_INCLUDE_ROOT, true);
+            return (T) unmarshaller.get().unmarshal(jsonStream);
+        } catch (JAXBException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    protected  <T> T mapObject(InputStream jsonStream, String mappingFile, Class rootClass){
+        try {
+            ThreadLocal<Unmarshaller> unmarshaller = getCachedUnmarshaller(mappingFile);
+            unmarshaller.get().setProperty(UnmarshallerProperties.JSON_INCLUDE_ROOT, false);
+            return (T) unmarshaller.get().unmarshal(new StreamSource(jsonStream), rootClass).getValue();
+        } catch (JAXBException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    protected ThreadLocal<Unmarshaller> getCachedUnmarshaller(String mappingFile) {
+        return getUnmarshallerCache().
+                        computeIfAbsent(mappingFile, mapping -> ThreadLocal.withInitial(() -> getUnmarshaller(mapping)));
+    }
+
+    @SneakyThrows
+    protected Unmarshaller getUnmarshaller(String mappingFile){
+        Map<String, Object> properties = new HashMap<>();
+        properties.put(JAXBContextProperties.OXM_METADATA_SOURCE, mappingFile);
+        properties.put(JAXBContextProperties.MEDIA_TYPE, MediaType.APPLICATION_JSON);
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader()==null?
+                Account.class.getClassLoader():Thread.currentThread().getContextClassLoader();
+
+        JAXBContext jaxbContext = DynamicJAXBContextFactory.createContextFromOXM(classLoader, properties);
+        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+        unmarshaller.setProperty(UnmarshallerProperties.MEDIA_TYPE, MediaType.APPLICATION_JSON);
+        return unmarshaller;
+    }
+
+}

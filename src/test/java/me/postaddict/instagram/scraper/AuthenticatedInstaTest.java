@@ -2,20 +2,17 @@ package me.postaddict.instagram.scraper;
 
 import me.postaddict.instagram.scraper.cookie.CookieHashSet;
 import me.postaddict.instagram.scraper.cookie.DefaultCookieJar;
-import me.postaddict.instagram.scraper.domain.Account;
-import me.postaddict.instagram.scraper.domain.Comment;
-import me.postaddict.instagram.scraper.domain.Media;
-import me.postaddict.instagram.scraper.domain.Tag;
 import me.postaddict.instagram.scraper.interceptor.ErrorInterceptor;
 import me.postaddict.instagram.scraper.interceptor.UserAgentInterceptor;
 import me.postaddict.instagram.scraper.interceptor.UserAgents;
+import me.postaddict.instagram.scraper.model.*;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.List;
+import java.util.Collection;
 
 import static me.postaddict.instagram.scraper.ContentCheck.*;
 import static org.junit.Assert.*;
@@ -45,7 +42,7 @@ public class AuthenticatedInstaTest {
     @Test
     public void testGetAccountByUsername() throws Exception {
         Account account = client.getAccountByUsername("kevin");
-        assertEquals("kevin", account.username);
+        assertEquals("kevin", account.getUsername());
         assertTrue(checkAccount(account));
         System.out.println(account);
     }
@@ -53,15 +50,16 @@ public class AuthenticatedInstaTest {
     @Test
     public void testGetTagByName() throws Exception {
         Tag tag = client.getTagByName("corgi");
-        assertEquals("corgi", tag.name);
+        assertEquals("corgi", tag.getName());
         assertTrue(checkTag(tag));
         System.out.println(tag);
     }
 
     @Test
     public void testGetMedias() throws Exception {
-        List<Media> mediaList = client.getMedias("kevin", 50);
-        assertEquals(50, mediaList.size());
+        PageObject<Media> medias = client.getMedias("kevin", 2);
+        Collection<Media> mediaList = medias.getNodes();
+        assertEquals(2*12, mediaList.size());
         for (Media media : mediaList) {
             assertTrue(checkMedia(media));
         }
@@ -71,7 +69,7 @@ public class AuthenticatedInstaTest {
     @Test
     public void testGetMediaByUrl() throws Exception {
         Media media = client.getMediaByUrl("https://www.instagram.com/p/BHaRdodBouH");
-        assertEquals("kevin", media.owner.username);
+        assertEquals("kevin", media.getOwner().getUsername());
         assertTrue(checkMedia(media));
         System.out.println(media);
     }
@@ -79,15 +77,16 @@ public class AuthenticatedInstaTest {
     @Test
     public void testGetMediaByCode() throws Exception {
         Media media = client.getMediaByCode("BHaRdodBouH");
-        assertEquals("kevin", media.owner.username);
+        assertEquals("kevin", media.getOwner().getUsername());
         assertTrue(checkMedia(media));
         System.out.println(media);
     }
 
     @Test
     public void testGetLocationMediasById() throws Exception {
-        List<Media> list = client.getLocationMediasById("17326249", 13);
-        assertEquals(13, list.size());
+        Location location = client.getLocationMediasById("17326249", 1);
+        Collection<Media> list = location.getMediaRating().getMedia().getNodes();
+        assertEquals(12, list.size());
         for (Media media : list) {
             assertTrue(checkMedia(media));
         }
@@ -96,8 +95,9 @@ public class AuthenticatedInstaTest {
 
     @Test
     public void testGetMediasByTag() throws Exception {
-        List<Media> list = client.getMediasByTag("Moscow", 50);
-        assertEquals(50, list.size());
+        Tag tag = client.getMediasByTag("Moscow", 2);
+        Collection<Media> list = tag.getMediaRating().getMedia().getNodes();
+        assertEquals(2*12, list.size());
         for (Media media : list) {
             assertTrue(checkMedia(media));
         }
@@ -106,7 +106,8 @@ public class AuthenticatedInstaTest {
 
     @Test
     public void testGetTopMediasByTag() throws Exception {
-        List<Media> list = client.getTopMediasByTag("Sheremetyevo");
+        Tag tag = client.getMediasByTag("Sheremetyevo", 1);
+        Collection<Media> list = tag.getMediaRating().getTopPosts();
         assertEquals(9, list.size());
         for (Media media : list) {
             assertTrue(checkMedia(media));
@@ -116,8 +117,9 @@ public class AuthenticatedInstaTest {
 
     @Test
     public void testGetCommentsByMediaCode() throws Exception {
-        List<Comment> list = client.getCommentsByMediaCode("BHaRdodBouH", 50);
-        assertEquals(50, list.size());
+        PageObject<Comment> comments = client.getCommentsByMediaCode("BHaRdodBouH", 2);
+        Collection<Comment> list = comments.getNodes();
+        assertEquals(2*12, list.size());
         for (Comment comment : list) {
             assertTrue(checkComment(comment));
         }
@@ -126,29 +128,29 @@ public class AuthenticatedInstaTest {
 
     @Test
     public void testGetIdFromCode() throws Exception {
-        String code = Media.getCodeFromId("1270593720437182847");
+        String code = MediaUtil.getCodeFromId("1270593720437182847");
         assertEquals("BGiDkHAgBF_", code);
-        code = Media.getCodeFromId("1270593720437182847_3");
+        code = MediaUtil.getCodeFromId("1270593720437182847_3");
         assertEquals("BGiDkHAgBF_", code);
     }
 
     @Test
     public void testGetCodeFromId() throws Exception {
-        String id = Media.getIdFromCode("BGiDkHAgBF_");
+        String id = MediaUtil.getIdFromCode("BGiDkHAgBF_");
         assertEquals("1270593720437182847", id);
     }
 
     @Test
     public void testPreviewComments() throws Exception {
-        Media media = client.getMedias("kevin", 1).get(0);
+        Media media = client.getMediaByCode("");
         System.out.println(media);
-        if (media.commentsCount > 0){
-            assertTrue(media.previewCommentsList.size() > 0);
-            for (Comment comment : media.previewCommentsList) {
+        if (media.getCommentCount() > 0){
+            assertTrue(media.getCommentPreview().getNodes().size() > 0);
+            for (Comment comment : media.getCommentPreview().getNodes()) {
                 assertTrue(checkComment(comment));
             }
         } else {
-            assertFalse(media.previewCommentsList.size() > 0);
+            assertFalse(media.getCommentPreview().getNodes().size() > 0);
         }
     }
 
@@ -164,7 +166,7 @@ public class AuthenticatedInstaTest {
 
     @Test
     public void testAddMediaComment() throws Exception {
-        Comment comment = client.addMediaComment("PASTE_HERE_MEDIA_CODE", "PASTE_COMMENT_TEXT");
+        ActionResponse<Comment> comment = client.addMediaComment("PASTE_HERE_MEDIA_CODE", "PASTE_COMMENT_TEXT");
         System.out.println(comment);
     }
 
@@ -176,15 +178,15 @@ public class AuthenticatedInstaTest {
     @Test
     public void testFollows() throws Exception {
         Account account = client.getAccountByUsername("kevin");
-        List<Account> follows = client.getFollows(account.id, 50);
-        assertEquals(follows.size(), 50);
+        PageObject<Account> follows = client.getFollows(account.getId(), 2);
+        assertTrue(follows.getNodes().size()>390);
     }
 
     @Test
     public void testFollowers() throws Exception {
         Account account = client.getAccountByUsername("kevin");
-        List<Account> followers = client.getFollowers(account.id, 50);
-        assertEquals(followers.size(), 50);
+        PageObject<Account> followers = client.getFollowers(account.getId(), 1);
+        assertEquals(200,followers.getNodes().size());
     }
 
 }
