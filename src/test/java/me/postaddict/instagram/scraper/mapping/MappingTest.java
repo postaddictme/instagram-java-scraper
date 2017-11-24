@@ -82,7 +82,7 @@ public class MappingTest {
     }
 
     @Test
-    public void testMediaList1() throws Exception {
+    public void testMediaCarousel() throws Exception {
         InputStream mediaListStream = MappingTest.class.getResourceAsStream("/getMedias.json");
         Account medias = modelMapper.mapMediaList(mediaListStream);
 
