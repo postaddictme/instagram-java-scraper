@@ -7,6 +7,7 @@ import com.github.igorsuhorukov.dom.transform.converter.NopTypeConverter;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import me.postaddict.instagram.scraper.MediaUtil;
 import me.postaddict.instagram.scraper.model.*;
 import org.apache.commons.beanutils.BeanUtils;
 import org.eclipse.persistence.jaxb.JAXBContextProperties;
@@ -41,11 +42,18 @@ public class ModelMapper implements Mapper{
                 "me/postaddict/instagram/scraper/model/media-by-url.json");
         Media media = graphQlResponse.getPayload();
         media.setCommentCount(media.getCommentPreview().getCount());
+        if(media.getCommentPreview()!=null && media.getCommentPreview().getNodes()!=null) {
+            media.getCommentPreview().getNodes().forEach(this::updateCommentTime);
+        }
+        updateMediaTime(media);
         return graphQlResponse.getPayload();
     }
 
     public PageObject<Comment> mapComments(InputStream jsonStream){
         GraphQlResponse<PageObject<Comment>> comments = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/comments.json");
+        if(comments.getPayload()!=null && comments.getPayload().getNodes()!=null) {
+            comments.getPayload().getNodes().forEach(this::updateCommentTime);
+        }
         return comments.getPayload();
     }
 
@@ -61,6 +69,7 @@ public class ModelMapper implements Mapper{
         Account accountCopy = (Account) BeanUtils.cloneBean(account);
         accountCopy.setMedia(null);
         account.getMedia().getNodes().forEach(media-> media.setOwner(accountCopy));
+        account.getMedia().getNodes().forEach(this::updateMediaTime);
         return account;
     }
 
@@ -86,6 +95,18 @@ public class ModelMapper implements Mapper{
     @SneakyThrows
     public ActionResponse<Comment> mapMediaCommentResponse(InputStream jsonStream) {
         return mapObject(jsonStream, "me/postaddict/instagram/scraper/model/mediaCommentResponse.json", ActionResponse.class);
+    }
+
+    private void updateMediaTime(Media media) {
+        if(media.getTakenAtTimestamp() < MediaUtil.INSTAGRAM_BORN_YEAR){
+            media.setTakenAtTimestamp(media.getTakenAtTimestamp()*1000);
+        }
+    }
+
+    private void updateCommentTime(Comment comment) {
+        if(comment.getCreatedAt() < MediaUtil.INSTAGRAM_BORN_YEAR){
+            comment.setCreatedAt(comment.getCreatedAt()*1000);
+        }
     }
 
     @Override
