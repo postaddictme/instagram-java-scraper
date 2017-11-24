@@ -68,8 +68,10 @@ public class ModelMapper implements Mapper{
         Account account = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/medias.json");
         Account accountCopy = (Account) BeanUtils.cloneBean(account);
         accountCopy.setMedia(null);
-        account.getMedia().getNodes().forEach(media-> media.setOwner(accountCopy));
-        account.getMedia().getNodes().forEach(this::updateMediaTime);
+        if(account.getMedia()!=null && account.getMedia().getNodes()!=null) {
+            account.getMedia().getNodes().forEach(media -> media.setOwner(accountCopy));
+            account.getMedia().getNodes().forEach(this::updateMediaTime);
+        }
         return account;
     }
 

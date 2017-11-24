@@ -47,4 +47,9 @@ public class Media {
     @ElementCollection
     private Collection<TaggedUser> taggedUser;
     private Date lastUpdated = new Date();
+
+    @Transient
+    public Date getCreated(){
+        return takenAtTimestamp != null ? new Date(takenAtTimestamp) : null;
+    }
 }
