@@ -4,6 +4,8 @@ import me.postaddict.instagram.scraper.exception.InstagramAuthException;
 import me.postaddict.instagram.scraper.mapper.Mapper;
 import me.postaddict.instagram.scraper.mapper.ModelMapper;
 import me.postaddict.instagram.scraper.model.*;
+import me.postaddict.instagram.scraper.request.*;
+import me.postaddict.instagram.scraper.request.parameters.*;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -11,6 +13,7 @@ import java.util.List;
 
 public class Instagram implements AuthenticatedInsta {
 
+    private static final PageInfo FIRST_PAGE = new PageInfo(true, "");
     protected OkHttpClient httpClient;
     protected Mapper mapper;
 
@@ -89,34 +92,8 @@ public class Instagram implements AuthenticatedInsta {
     }
 
     public PageObject<Media> getMedias(String username, int pageCount) throws IOException {
-        int index = 0;
-        String maxId = "";
-        boolean isMoreAvailable = true;
-
-        Account firstAccount = null;
-        while (index < pageCount && isMoreAvailable) {
-            Request request = new Request.Builder()
-                    .url(Endpoint.getAccountMediasJsonLink(username, maxId))
-                    .build();
-
-            Response response = this.httpClient.newCall(request).execute();
-            Account currentAccount;
-            try (ResponseBody responseBody = response.body()){
-                currentAccount = mapper.mapMediaList(responseBody.byteStream());
-            }
-
-            if(firstAccount==null){
-                firstAccount = currentAccount;
-            } else {
-                firstAccount.getMedia().getNodes().addAll(currentAccount.getMedia().getNodes());
-                firstAccount.getMedia().setPageInfo(currentAccount.getMedia().getPageInfo());
-            }
-
-            index++;
-            maxId = currentAccount.getMedia().getPageInfo().getEndCursor();
-            isMoreAvailable = currentAccount.getMedia().getPageInfo().isHasNextPage();
-        }
-        return firstAccount!=null?firstAccount.getMedia():null;
+        GetMediasRequest getMediasRequest = new GetMediasRequest(httpClient, mapper);
+        return getMediasRequest.requestInstagramResult(new UsernameParameter(username), pageCount, FIRST_PAGE).getMedia();
     }
 
     public Media getMediaByUrl(String url) throws IOException {
@@ -147,100 +124,19 @@ public class Instagram implements AuthenticatedInsta {
     }
 
     public Location getLocationMediasById(String locationId, int pageCount) throws IOException {
-        int index = 0;
-        String offset = "";
-        boolean hasNext = true;
-
-        Location firstLocation = null;
-        while (index < pageCount && hasNext) {
-            Request request = new Request.Builder()
-                    .url(Endpoint.getMediasJsonByLocationIdLink(locationId, offset))
-                    .header(Endpoint.REFERER, Endpoint.BASE_URL + "/")
-                    .build();
-
-            Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
-
-            Location currentLocation;
-            try (ResponseBody responseBody = response.body()){
-                currentLocation = mapper.mapLocation(responseBody.byteStream());
-            }
-
-            if(firstLocation==null){
-                firstLocation=currentLocation;
-            } else {
-                firstLocation.getMediaRating().getMedia().getNodes().addAll(currentLocation.getMediaRating().getMedia().getNodes());
-                firstLocation.getMediaRating().getMedia().setPageInfo(currentLocation.getMediaRating().getMedia().getPageInfo());
-            }
-
-            index++;
-            hasNext = currentLocation.getMediaRating().getMedia().getPageInfo().isHasNextPage();
-            offset = currentLocation.getMediaRating().getMedia().getPageInfo().getEndCursor();
-        }
-        return firstLocation;
+        GetLocationRequest getLocationRequest = new GetLocationRequest(httpClient, mapper);
+        return getLocationRequest.requestInstagramResult(new LocationParameter(locationId), pageCount, FIRST_PAGE);
     }
 
     public Tag getMediasByTag(String tag, int pageCount) throws IOException {
-        int index = 0;
-        String maxId = "";
-        boolean hasNext = true;
-
-        Tag firstTag = null;
-        while (index < pageCount && hasNext) {
-            Request request = new Request.Builder()
-                    .url(Endpoint.getMediasJsonByTagLink(tag, maxId))
-                    .header(Endpoint.REFERER, Endpoint.BASE_URL + "/")
-                    .build();
-
-            Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
-            Tag currentTag;
-            try (ResponseBody responseBody = response.body()){
-                currentTag = mapper.mapTag(responseBody.byteStream());
-            }
-
-            if(firstTag==null){
-                firstTag = currentTag;
-            } else {
-                firstTag.getMediaRating().getMedia().getNodes().addAll(currentTag.getMediaRating().getMedia().getNodes());
-                firstTag.getMediaRating().getMedia().setPageInfo(currentTag.getMediaRating().getMedia().getPageInfo());
-            }
-
-            index++;
-            hasNext = currentTag.getMediaRating().getMedia().getPageInfo().isHasNextPage();
-            maxId = currentTag.getMediaRating().getMedia().getPageInfo().getEndCursor();
-        }
-        return firstTag;
+        GetMediaByTagRequest getMediaByTagRequest = new GetMediaByTagRequest(httpClient, mapper);
+        return getMediaByTagRequest.requestInstagramResult(new TagName(tag), pageCount, FIRST_PAGE);
     }
 
     public PageObject<Comment> getCommentsByMediaCode(String code, int pageCount) throws IOException {
-        int index = 0;
-        String commentId = "0";
-        boolean hasNext = true;
-
-        PageObject<Comment> firstComments = null;
-        while (index < pageCount && hasNext) {
-            Request request = new Request.Builder()
-                    .url(Endpoint.getCommentsBeforeCommentIdByCode(code, 20, commentId))
-                    .header(Endpoint.REFERER, Endpoint.BASE_URL + "/")
-                    .build();
-
-            Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
-            PageObject<Comment> currentComments;
-            try (ResponseBody responseBody = response.body()){
-                currentComments = mapper.mapComments(responseBody.byteStream());
-            }
-
-            if(firstComments==null){
-                firstComments=currentComments;
-            } else {
-                firstComments.getNodes().addAll(currentComments.getNodes());
-                firstComments.setPageInfo(currentComments.getPageInfo());
-            }
-
-            index++;
-            hasNext = currentComments.getPageInfo().isHasNextPage();
-            commentId = Long.toString(currentComments.getNodes().get(currentComments.getNodes().size()-1).getId());
-        }
-        return firstComments;
+        GetCommentsByMediaCode getCommentsByMediaCode = new GetCommentsByMediaCode(httpClient, mapper);
+        return getCommentsByMediaCode.requestInstagramResult(new MediaCode(code), pageCount,
+                    new PageInfo(true,"0"));
     }
 
     public void likeMediaByCode(String code) throws IOException {
@@ -256,69 +152,13 @@ public class Instagram implements AuthenticatedInsta {
     }
 
     public PageObject<Account> getFollows(long userId, int pageCount) throws IOException {
-        int idx = 0;
-        boolean hasNext = true;
-        String followsLink = Endpoint.getFollowsLinkVariables(userId, 200, "");
-        PageObject<Account> firstFollows = null;
-        while (idx++ < pageCount && hasNext) {
-
-            Request request = new Request.Builder()
-                    .url(followsLink)
-                    .header(Endpoint.REFERER, Endpoint.BASE_URL + "/")
-                    .build();
-
-            Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
-            PageObject<Account> currentFollows;
-            try (ResponseBody responseBody = response.body()){
-                currentFollows = mapper.mapFollow(responseBody.byteStream());
-            }
-
-            if(firstFollows==null){
-                firstFollows = currentFollows;
-            } else {
-                firstFollows.getNodes().addAll(currentFollows.getNodes());
-                firstFollows.setPageInfo(currentFollows.getPageInfo());
-            }
-
-            hasNext = currentFollows.getPageInfo().isHasNextPage();
-            if (hasNext) {
-                followsLink = Endpoint.getFollowsLinkVariables(userId, 200, currentFollows.getPageInfo().getEndCursor());
-            }
-        }
-        return firstFollows;
+        GetFollowsRequest getFollowsRequest = new GetFollowsRequest(httpClient, mapper);
+        return getFollowsRequest.requestInstagramResult(new UserParameter(userId), pageCount, FIRST_PAGE);
     }
 
     public PageObject<Account> getFollowers(long userId, int pageCount) throws IOException {
-        int idx = 0;
-        boolean hasNext = true;
-        String followsLink = Endpoint.getFollowersLinkVariables(userId, 200, "");
-        PageObject<Account> firstFollows = null;
-        while (idx++ < pageCount && hasNext) {
-
-            Request request = new Request.Builder()
-                    .url(followsLink)
-                    .header(Endpoint.REFERER, Endpoint.BASE_URL + "/")
-                    .build();
-
-            Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
-            PageObject<Account> currentFollows;
-            try (ResponseBody responseBody = response.body()){
-                currentFollows = mapper.mapFollowers(responseBody.byteStream());
-            }
-
-            if(firstFollows==null){
-                firstFollows = currentFollows;
-            } else {
-                firstFollows.getNodes().addAll(currentFollows.getNodes());
-                firstFollows.setPageInfo(currentFollows.getPageInfo());
-            }
-
-            hasNext = currentFollows.getPageInfo().isHasNextPage();
-            if (hasNext) {
-                followsLink = Endpoint.getFollowersLinkVariables(userId, 200, currentFollows.getPageInfo().getEndCursor());
-            }
-        }
-        return firstFollows;
+        GetFollowersRequest getFollowersRequest = new GetFollowersRequest(httpClient, mapper);
+        return getFollowersRequest.requestInstagramResult(new UserParameter(userId),pageCount, FIRST_PAGE);
     }
 
     public void unlikeMediaByCode(String code) throws IOException {

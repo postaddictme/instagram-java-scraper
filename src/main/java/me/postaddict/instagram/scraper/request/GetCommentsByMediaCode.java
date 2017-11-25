@@ -1,0 +1,47 @@
+package me.postaddict.instagram.scraper.request;
+
+import me.postaddict.instagram.scraper.Endpoint;
+import me.postaddict.instagram.scraper.mapper.Mapper;
+import me.postaddict.instagram.scraper.model.Comment;
+import me.postaddict.instagram.scraper.model.PageInfo;
+import me.postaddict.instagram.scraper.model.PageObject;
+import me.postaddict.instagram.scraper.request.parameters.MediaCode;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+
+import java.io.InputStream;
+import java.util.List;
+
+public class GetCommentsByMediaCode extends PaginatedRequest<PageObject<Comment>, MediaCode> {
+
+    public GetCommentsByMediaCode(OkHttpClient httpClient, Mapper mapper) {
+        super(httpClient, mapper);
+    }
+
+    @Override
+    protected Request requestInstagram(MediaCode requestParameters, PageInfo pageInfo) {
+        return new Request.Builder()
+                .url(Endpoint.getCommentsBeforeCommentIdByCode(
+                        requestParameters.getShortcode(), 20, pageInfo.getEndCursor()))
+                .header(Endpoint.REFERER, Endpoint.BASE_URL + "/")
+                .build();
+    }
+
+    @Override
+    protected void updateResult(PageObject<Comment> result, PageObject<Comment> current) {
+        List<Comment> comments = current.getNodes();
+        result.getNodes().addAll(comments);
+        result.setPageInfo(current.getPageInfo());
+        result.getPageInfo().setEndCursor(Long.toString(comments.get(comments.size()-1).getId()));
+    }
+
+    @Override
+    protected PageInfo getPageInfo(PageObject<Comment> current) {
+        return current.getPageInfo();
+    }
+
+    @Override
+    protected PageObject<Comment> mapResponse(InputStream jsonStream) {
+        return getMapper().mapComments(jsonStream);
+    }
+}
