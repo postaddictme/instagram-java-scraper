@@ -1,7 +1,6 @@
 package me.postaddict.instagram.scraper.model;
 
 import lombok.Data;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -10,7 +9,6 @@ import java.util.List;
 
 @Entity
 @Data
-@ToString
 public class Media {
     private MediaType mediaType;
     @Id
@@ -20,6 +18,7 @@ public class Media {
     private MediaResource mediaResource;
     @Transient
     private String gatingInfo;
+    @Column(name = "caption", length = 4096)
     private String caption;
     private Integer commentCount;
     @Transient

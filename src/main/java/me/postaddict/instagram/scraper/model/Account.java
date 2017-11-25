@@ -1,7 +1,6 @@
 package me.postaddict.instagram.scraper.model;
 
 import lombok.Data;
-import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,7 +10,6 @@ import java.util.Date;
 
 @Entity
 @Data
-@ToString
 public class Account {
     @Id
     private long id;
@@ -20,7 +18,7 @@ public class Account {
     private String fullName;
     private Boolean isPrivate;
     private Boolean isVerified;
-    @Column(name = "biography", length = 2048)
+    @Column(name = "biography", length = 4096)
     private String biography;
     private String externalUrl;
     private Integer followedBy;
