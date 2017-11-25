@@ -34,7 +34,11 @@ public class ModelMapper implements Mapper{
     private final ConcurrentHashMap<String, ThreadLocal<Unmarshaller>> unmarshallerCache = new ConcurrentHashMap<>();
 
     public Account mapAccount(InputStream jsonStream){
-        return mapObject(jsonStream, "me/postaddict/instagram/scraper/model/account-binding.json");
+        Account account = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/account-binding.json");
+        if(account.getMedia()!=null && account.getMedia().getNodes()!=null){
+            account.getMedia().getNodes().forEach(this::updateMediaTime);
+        }
+        return account;
     }
 
     public Media mapMedia(InputStream jsonStream){
@@ -96,7 +100,9 @@ public class ModelMapper implements Mapper{
     @SuppressWarnings("unchecked")
     @SneakyThrows
     public ActionResponse<Comment> mapMediaCommentResponse(InputStream jsonStream) {
-        return mapObject(jsonStream, "me/postaddict/instagram/scraper/model/mediaCommentResponse.json", ActionResponse.class);
+        ActionResponse<Comment> commentActionResponse = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/mediaCommentResponse.json", ActionResponse.class);
+        updateCommentTime(commentActionResponse.getPayload());
+        return commentActionResponse;
     }
 
     private void updateMediaTime(Media media) {
