@@ -158,6 +158,10 @@
           "type" : "java.lang.Integer",
           "xml-path" : "likes/count/text()"
         }, {
+          "java-attribute" : "takenAtTimestamp",
+          "type" : "java.lang.Long",
+          "xml-path" : "date/text()"
+        }, {
           "java-attribute" : "mediaResource",
           "type" : "me.postaddict.instagram.scraper.model.MediaResource",
           "xml-path" : "."

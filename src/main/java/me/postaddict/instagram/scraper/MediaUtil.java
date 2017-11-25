@@ -4,6 +4,9 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class MediaUtil {
+
+    public static final long INSTAGRAM_BORN_YEAR = 1262304000000L;
+
     public static String getIdFromCode(String code) {
         String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
         long id = 0;
