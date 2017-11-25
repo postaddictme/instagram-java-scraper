@@ -29,15 +29,14 @@ public class GetCommentsByMediaCode extends PaginatedRequest<PageObject<Comment>
 
     @Override
     protected void updateResult(PageObject<Comment> result, PageObject<Comment> current) {
-        List<Comment> comments = current.getNodes();
-        result.getNodes().addAll(comments);
+        result.getNodes().addAll(current.getNodes());
         result.setPageInfo(current.getPageInfo());
-        result.getPageInfo().setEndCursor(Long.toString(comments.get(comments.size()-1).getId()));
     }
 
     @Override
     protected PageInfo getPageInfo(PageObject<Comment> current) {
-        return current.getPageInfo();
+        List<Comment> comments = current.getNodes();
+        return new PageInfo(current.getPageInfo().isHasNextPage(),Long.toString(comments.get(comments.size()-1).getId()));
     }
 
     @Override
