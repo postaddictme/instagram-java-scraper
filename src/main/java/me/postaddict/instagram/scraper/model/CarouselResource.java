@@ -25,6 +25,5 @@ public class CarouselResource{
     protected Boolean shouldLogClientEvent;
     @Transient
     protected String trackingToken;
-    @Transient
     protected Collection<TaggedUser> taggedUser;
 }
