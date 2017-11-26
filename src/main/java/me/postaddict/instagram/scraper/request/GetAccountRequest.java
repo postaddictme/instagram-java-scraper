@@ -10,9 +10,9 @@ import okhttp3.Request;
 
 import java.io.InputStream;
 
-public class GetMediasRequest extends PaginatedRequest<Account, UsernameParameter> {
+public class GetAccountRequest extends PaginatedRequest<Account, UsernameParameter> {
 
-    public GetMediasRequest(OkHttpClient httpClient, Mapper mapper) {
+    public GetAccountRequest(OkHttpClient httpClient, Mapper mapper) {
         super(httpClient, mapper);
     }
 
@@ -36,6 +36,6 @@ public class GetMediasRequest extends PaginatedRequest<Account, UsernameParamete
 
     @Override
     protected Account mapResponse(InputStream jsonStream) {
-        return getMapper().mapMediaList(jsonStream);
+        return getMapper().mapAccount(jsonStream);
     }
 }

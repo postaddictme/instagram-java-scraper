@@ -33,9 +33,13 @@ public class ModelMapper implements Mapper{
     @Getter(AccessLevel.PROTECTED)
     private final ConcurrentHashMap<String, ThreadLocal<Unmarshaller>> unmarshallerCache = new ConcurrentHashMap<>();
 
+    @SneakyThrows
     public Account mapAccount(InputStream jsonStream){
         Account account = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/account-binding.json");
-        if(account.getMedia()!=null && account.getMedia().getNodes()!=null){
+        Account accountCopy = (Account) BeanUtils.cloneBean(account);
+        accountCopy.setMedia(null);
+        if(account.getMedia()!=null && account.getMedia().getNodes()!=null) {
+            account.getMedia().getNodes().forEach(media -> media.setOwner(accountCopy));
             account.getMedia().getNodes().forEach(this::updateMediaTime);
         }
         return account;
@@ -65,18 +69,6 @@ public class ModelMapper implements Mapper{
         Location location = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/location.json");
         location.setCount(location.getMediaRating().getMedia().getCount());
         return location;
-    }
-
-    @SneakyThrows
-    public Account mapMediaList(InputStream jsonStream){
-        Account account = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/medias.json");
-        Account accountCopy = (Account) BeanUtils.cloneBean(account);
-        accountCopy.setMedia(null);
-        if(account.getMedia()!=null && account.getMedia().getNodes()!=null) {
-            account.getMedia().getNodes().forEach(media -> media.setOwner(accountCopy));
-            account.getMedia().getNodes().forEach(this::updateMediaTime);
-        }
-        return account;
     }
 
     public Tag mapTag(InputStream jsonStream){

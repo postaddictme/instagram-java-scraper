@@ -81,19 +81,17 @@ public class Instagram implements AuthenticatedInsta {
     }
 
     public Account getAccountByUsername(String username) throws IOException {
-        Request request = new Request.Builder()
-                .url(Endpoint.getAccountJsonInfoLinkByUsername(username))
-                .build();
-
-        Response response = this.httpClient.newCall(request).execute();
-        try (ResponseBody body = response.body()){
-            return mapper.mapAccount(body.byteStream());
-        }
+        return getAccount(username, 1, FIRST_PAGE);
     }
 
     public PageObject<Media> getMedias(String username, int pageCount) throws IOException {
-        GetMediasRequest getMediasRequest = new GetMediasRequest(httpClient, mapper);
-        return getMediasRequest.requestInstagramResult(new UsernameParameter(username), pageCount, FIRST_PAGE).getMedia();
+        Account account = getAccount(username, pageCount, FIRST_PAGE);
+        return account!=null? account.getMedia() : null;
+    }
+
+    private Account getAccount(String username, int pageCount, PageInfo pageCursor) throws IOException {
+        GetAccountRequest getAccountRequest = new GetAccountRequest(httpClient, mapper);
+        return getAccountRequest.requestInstagramResult(new UsernameParameter(username), pageCount, pageCursor);
     }
 
     public Media getMediaByUrl(String url) throws IOException {
