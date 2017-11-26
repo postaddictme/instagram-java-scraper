@@ -1,5 +1,6 @@
 package me.postaddict.instagram.scraper;
 
+import lombok.AllArgsConstructor;
 import me.postaddict.instagram.scraper.exception.InstagramAuthException;
 import me.postaddict.instagram.scraper.mapper.Mapper;
 import me.postaddict.instagram.scraper.mapper.ModelMapper;
@@ -11,20 +12,16 @@ import okhttp3.*;
 import java.io.IOException;
 import java.util.List;
 
+@AllArgsConstructor
 public class Instagram implements AuthenticatedInsta {
 
     private static final PageInfo FIRST_PAGE = new PageInfo(true, "");
-    protected OkHttpClient httpClient;
-    protected Mapper mapper;
+    protected final OkHttpClient httpClient;
+    protected final Mapper mapper;
+    protected final DelayHandler delayHandler;
 
     public Instagram(OkHttpClient httpClient) {
-        this.httpClient = httpClient;
-        this.mapper = new ModelMapper();
-    }
-
-    public Instagram(OkHttpClient httpClient, Mapper mapper) {
-        this.httpClient = httpClient;
-        this.mapper = mapper;
+        this(httpClient, new ModelMapper(), new DefaultDelayHandler());
     }
 
     private Request withCsrfToken(Request request) {
@@ -90,7 +87,7 @@ public class Instagram implements AuthenticatedInsta {
     }
 
     public Account getAccount(String username, int pageCount, PageInfo pageCursor) throws IOException {
-        GetAccountRequest getAccountRequest = new GetAccountRequest(httpClient, mapper);
+        GetAccountRequest getAccountRequest = new GetAccountRequest(httpClient, mapper, delayHandler);
         return getAccountRequest.requestInstagramResult(new UsernameParameter(username), pageCount, pageCursor);
     }
 
@@ -122,17 +119,17 @@ public class Instagram implements AuthenticatedInsta {
     }
 
     public Location getLocationMediasById(String locationId, int pageCount) throws IOException {
-        GetLocationRequest getLocationRequest = new GetLocationRequest(httpClient, mapper);
+        GetLocationRequest getLocationRequest = new GetLocationRequest(httpClient, mapper, delayHandler);
         return getLocationRequest.requestInstagramResult(new LocationParameter(locationId), pageCount, FIRST_PAGE);
     }
 
     public Tag getMediasByTag(String tag, int pageCount) throws IOException {
-        GetMediaByTagRequest getMediaByTagRequest = new GetMediaByTagRequest(httpClient, mapper);
+        GetMediaByTagRequest getMediaByTagRequest = new GetMediaByTagRequest(httpClient, mapper, delayHandler);
         return getMediaByTagRequest.requestInstagramResult(new TagName(tag), pageCount, FIRST_PAGE);
     }
 
     public PageObject<Comment> getCommentsByMediaCode(String code, int pageCount) throws IOException {
-        GetCommentsByMediaCode getCommentsByMediaCode = new GetCommentsByMediaCode(httpClient, mapper);
+        GetCommentsByMediaCode getCommentsByMediaCode = new GetCommentsByMediaCode(httpClient, mapper, delayHandler);
         return getCommentsByMediaCode.requestInstagramResult(new MediaCode(code), pageCount,
                     new PageInfo(true,"0"));
     }
@@ -150,12 +147,12 @@ public class Instagram implements AuthenticatedInsta {
     }
 
     public PageObject<Account> getFollows(long userId, int pageCount) throws IOException {
-        GetFollowsRequest getFollowsRequest = new GetFollowsRequest(httpClient, mapper);
+        GetFollowsRequest getFollowsRequest = new GetFollowsRequest(httpClient, mapper, delayHandler);
         return getFollowsRequest.requestInstagramResult(new UserParameter(userId), pageCount, FIRST_PAGE);
     }
 
     public PageObject<Account> getFollowers(long userId, int pageCount) throws IOException {
-        GetFollowersRequest getFollowersRequest = new GetFollowersRequest(httpClient, mapper);
+        GetFollowersRequest getFollowersRequest = new GetFollowersRequest(httpClient, mapper, delayHandler);
         return getFollowersRequest.requestInstagramResult(new UserParameter(userId),pageCount, FIRST_PAGE);
     }
 

@@ -12,8 +12,8 @@ import java.io.InputStream;
 
 public class GetMediaByTagRequest extends PaginatedRequest<Tag, TagName> {
 
-    public GetMediaByTagRequest(OkHttpClient httpClient, Mapper mapper) {
-        super(httpClient, mapper);
+    public GetMediaByTagRequest(OkHttpClient httpClient, Mapper mapper, DelayHandler delayHandler) {
+        super(httpClient, mapper, delayHandler);
     }
 
     @Override

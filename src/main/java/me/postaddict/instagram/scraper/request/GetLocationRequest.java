@@ -12,8 +12,8 @@ import java.io.InputStream;
 
 public class GetLocationRequest extends PaginatedRequest<Location, LocationParameter> {
 
-    public GetLocationRequest(OkHttpClient httpClient, Mapper mapper) {
-        super(httpClient, mapper);
+    public GetLocationRequest(OkHttpClient httpClient, Mapper mapper, DelayHandler delayHandler) {
+        super(httpClient, mapper, delayHandler);
     }
 
     @Override

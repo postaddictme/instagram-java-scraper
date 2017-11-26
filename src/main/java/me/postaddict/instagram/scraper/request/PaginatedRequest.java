@@ -24,6 +24,7 @@ public abstract class PaginatedRequest<R, P extends RequestParameter> {
     private final OkHttpClient httpClient;
     @Getter(AccessLevel.PROTECTED)
     private final Mapper mapper;
+    private final DelayHandler delayHandler;
 
     public R requestInstagramResult(P requestParameters, int pageCount, PageInfo pageCursor) throws IOException {
         R result = null;
@@ -42,6 +43,10 @@ public abstract class PaginatedRequest<R, P extends RequestParameter> {
                 result = current;
             } else {
                 updateResult(result, current);
+            }
+
+            if(currentPage<pageCount && pageCursor.isHasNextPage() && delayHandler!=null){
+                delayHandler.onNextPage(currentPage, pageCount, getClass(), pageCursor);
             }
 
             pageCursor = getPageInfo(current);

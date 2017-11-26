@@ -13,8 +13,8 @@ import java.io.InputStream;
 
 public class GetFollowersRequest extends PaginatedRequest<PageObject<Account>, UserParameter> {
 
-    public GetFollowersRequest(OkHttpClient httpClient, Mapper mapper) {
-        super(httpClient, mapper);
+    public GetFollowersRequest(OkHttpClient httpClient, Mapper mapper, DelayHandler delayHandler) {
+        super(httpClient, mapper, delayHandler);
     }
 
     @Override

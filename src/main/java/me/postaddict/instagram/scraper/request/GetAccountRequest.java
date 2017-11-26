@@ -12,8 +12,8 @@ import java.io.InputStream;
 
 public class GetAccountRequest extends PaginatedRequest<Account, UsernameParameter> {
 
-    public GetAccountRequest(OkHttpClient httpClient, Mapper mapper) {
-        super(httpClient, mapper);
+    public GetAccountRequest(OkHttpClient httpClient, Mapper mapper, DelayHandler delayHandler) {
+        super(httpClient, mapper, delayHandler);
     }
 
     @Override

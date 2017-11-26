@@ -14,8 +14,8 @@ import java.util.List;
 
 public class GetCommentsByMediaCode extends PaginatedRequest<PageObject<Comment>, MediaCode> {
 
-    public GetCommentsByMediaCode(OkHttpClient httpClient, Mapper mapper) {
-        super(httpClient, mapper);
+    public GetCommentsByMediaCode(OkHttpClient httpClient, Mapper mapper, DelayHandler delayHandler) {
+        super(httpClient, mapper, delayHandler);
     }
 
     @Override
