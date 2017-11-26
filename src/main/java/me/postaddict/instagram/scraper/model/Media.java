@@ -9,13 +9,11 @@ import java.util.List;
 
 @Entity
 @Data
-public class Media {
+public class Media extends MediaResource{
     private MediaType mediaType;
     @Id
     private long id;
     private String shortcode;
-    @Embedded
-    private MediaResource mediaResource;
     @Transient
     private String gatingInfo;
     @Column(name = "caption", length = 4096)

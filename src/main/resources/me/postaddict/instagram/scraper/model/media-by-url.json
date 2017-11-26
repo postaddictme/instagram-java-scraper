@@ -66,13 +66,21 @@
             {"java-attribute": "caption","type": "java.lang.String","xml-path": "edge_media_to_caption/edges/node/text/text()"},
             {"java-attribute": "commentCount","type": "java.lang.Integer","xml-path": "edge_media_to_comment/count/text()"},
             {"java-attribute": "likeCount","type": "java.lang.Integer","xml-path": "edge_media_preview_like/count/text()"},
-            {"java-attribute": "taggedUser","type": "me.postaddict.instagram.scraper.model.TaggedUser","xml-path": "edge_media_to_tagged_user/edges"},
             {"java-attribute": "firstLikes","type": "me.postaddict.instagram.scraper.model.Account","xml-path": "edge_media_preview_like/edges/node"},
             {"java-attribute": "commentPreview","type": "me.postaddict.instagram.scraper.model.PageObject","xml-path": "edge_media_to_comment"},
             {"java-attribute": "carouselMedia","type": "me.postaddict.instagram.scraper.model.CarouselResource","xml-path": "edge_sidecar_to_children/edges/node"},
             {"java-attribute": "takenAtTimestamp","type": "java.lang.Long","xml-path": "taken_at_timestamp/text()"},
-            {"java-attribute": "mediaResource","type": "me.postaddict.instagram.scraper.model.MediaResource","xml-path": "."},
-            {"java-attribute": "owner","type": "me.postaddict.instagram.scraper.model.Account","xml-path": "owner"}
+
+            {"java-attribute": "width","type": "java.lang.Integer","xml-path": "dimensions/width/text()"},
+            {"java-attribute": "height","type": "java.lang.Integer","xml-path": "dimensions/height/text()"},
+            {"java-attribute": "displayUrl","type": "java.lang.String","xml-path": "display_url/text()"},
+            {"java-attribute": "isVideo","type": "java.lang.Boolean","xml-path": "is_video/text()"},
+            {"java-attribute": "shouldLogClientEvent","type": "java.lang.Boolean","xml-path": "should_log_client_event/text()"},
+            {"java-attribute": "trackingToken","type": "java.lang.String","xml-path": "tracking_token/text()"},
+            {"java-attribute": "displayResources","type": "me.postaddict.instagram.scraper.model.DisplayResource","xml-path": "display_resources"},
+
+            {"java-attribute": "owner","type": "me.postaddict.instagram.scraper.model.Account","xml-path": "owner"},
+            {"java-attribute": "taggedUser","type": "me.postaddict.instagram.scraper.model.TaggedUser","xml-path": "edge_media_to_tagged_user/edges"}
           ]
         }
       },

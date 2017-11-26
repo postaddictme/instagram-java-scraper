@@ -41,6 +41,16 @@ public class MappingTest {
     }
 
     @Test
+    public void testMediaByUrlTagged() throws Exception {
+        Media media = modelMapper.mapMedia(
+                MappingTest.class.getResourceAsStream("/mapMediaByUrl-tagged.json"));
+
+        assertThat(media).isNotNull();
+        assertThat(toJson(media)).isEqualTo(IOUtils.toString(
+                MappingTest.class.getResourceAsStream("/expected/mapMediaByUrl-tagged.json"),"UTF-8"));
+    }
+
+    @Test
     public void testMediaByUrlCarousel() throws Exception {
         Media media = modelMapper.mapMedia(
                 MappingTest.class.getResourceAsStream("/getMediaByUrl_ac2a5f1c-6e7a-4b66-bf9a-bdaac02e1f08.json"));
@@ -52,6 +62,7 @@ public class MappingTest {
 
     @Test
     public void testMediaByUrlCarouselTagged() throws Exception {
+
         Media media = modelMapper.mapMedia(
                 MappingTest.class.getResourceAsStream("/getMediaByUrl-Carusele-Tagged.json"));
 

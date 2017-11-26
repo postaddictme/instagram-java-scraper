@@ -1,28 +1,26 @@
 {
+  "height" : 864,
+  "width" : 1080,
+  "displayUrl" : "https://instagram.fhel3-1.fna.fbcdn.net/t51.2885-15/e35/22351958_144137916205565_6923513639366295552_n.jpg",
+  "displayResources" : [ {
+    "src" : "https://instagram.fhel3-1.fna.fbcdn.net/t51.2885-15/s640x640/sh0.08/e35/22351958_144137916205565_6923513639366295552_n.jpg",
+    "width" : 640,
+    "height" : 512
+  }, {
+    "src" : "https://instagram.fhel3-1.fna.fbcdn.net/t51.2885-15/s750x750/sh0.08/e35/22351958_144137916205565_6923513639366295552_n.jpg",
+    "width" : 750,
+    "height" : 600
+  }, {
+    "src" : "https://instagram.fhel3-1.fna.fbcdn.net/t51.2885-15/e35/22351958_144137916205565_6923513639366295552_n.jpg",
+    "width" : 1080,
+    "height" : 864
+  } ],
+  "isVideo" : false,
+  "shouldLogClientEvent" : false,
+  "trackingToken" : "eyJ2ZXJzaW9uIjo1LCJwYXlsb2FkIjp7ImlzX2FuYWx5dGljc190cmFja2VkIjp0cnVlLCJ1dWlkIjoiZDkwNWNmMjFmZDc3NDQ1ZmJlZjI0MTM3MjBhMzg2YjUxNjI0MTYxMzM2NzQzMzE0NDU4In0sInNpZ25hdHVyZSI6IiJ9",
   "mediaType" : "GraphSidecar",
   "id" : 1624161336743314458,
   "shortcode" : "BaKLiFugkQa",
-  "mediaResource" : {
-    "height" : 864,
-    "width" : 1080,
-    "displayUrl" : "https://instagram.fhel3-1.fna.fbcdn.net/t51.2885-15/e35/22351958_144137916205565_6923513639366295552_n.jpg",
-    "displayResources" : [ {
-      "src" : "https://instagram.fhel3-1.fna.fbcdn.net/t51.2885-15/s640x640/sh0.08/e35/22351958_144137916205565_6923513639366295552_n.jpg",
-      "width" : 640,
-      "height" : 512
-    }, {
-      "src" : "https://instagram.fhel3-1.fna.fbcdn.net/t51.2885-15/s750x750/sh0.08/e35/22351958_144137916205565_6923513639366295552_n.jpg",
-      "width" : 750,
-      "height" : 600
-    }, {
-      "src" : "https://instagram.fhel3-1.fna.fbcdn.net/t51.2885-15/e35/22351958_144137916205565_6923513639366295552_n.jpg",
-      "width" : 1080,
-      "height" : 864
-    } ],
-    "isVideo" : false,
-    "shouldLogClientEvent" : false,
-    "trackingToken" : "eyJ2ZXJzaW9uIjo1LCJwYXlsb2FkIjp7ImlzX2FuYWx5dGljc190cmFja2VkIjp0cnVlLCJ1dWlkIjoiZDkwNWNmMjFmZDc3NDQ1ZmJlZjI0MTM3MjBhMzg2YjUxNjI0MTYxMzM2NzQzMzE0NDU4In0sInNpZ25hdHVyZSI6IiJ9"
-  },
   "caption" : "This morning, I attended Vogue’s Forces of Fashion conference, where I joined @marcjacobs and Vogue’s Sally Singer on stage to talk all things fashion and Instagram. Afterwards, I was able to meet a bunch of young fashion enthusiasts to learn how they use Instagram to find inspiration. Scroll through to see more!",
   "commentCount" : 132,
   "commentPreview" : {

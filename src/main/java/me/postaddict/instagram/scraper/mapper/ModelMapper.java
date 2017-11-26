@@ -22,9 +22,10 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.xpath.XPathFactory;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 public class ModelMapper implements Mapper{
 
@@ -51,11 +52,6 @@ public class ModelMapper implements Mapper{
         media.setCommentCount(media.getCommentPreview().getCount());
         if(media.getCommentPreview()!=null && media.getCommentPreview().getNodes()!=null) {
             media.getCommentPreview().getNodes().forEach(this::updateCommentTime);
-        }
-        if(media.getCarouselMedia()!=null && !media.getCarouselMedia().isEmpty()){
-            List<TaggedUser> taggedUsers = media.getCarouselMedia().stream().map(CarouselResource::getTaggedUser).
-                                    filter(Objects::nonNull).flatMap(Collection::stream).collect(Collectors.toList());
-            media.setTaggedUser(taggedUsers);
         }
         updateMediaTime(media);
         return graphQlResponse.getPayload();
