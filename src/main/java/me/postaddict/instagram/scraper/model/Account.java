@@ -20,11 +20,13 @@ public class Account {
     private Boolean isVerified;
     @Column(name = "biography", length = 4096)
     private String biography;
+    @Column(name = "external_url", length = 4096)
     private String externalUrl;
     private Integer followedBy;
     private Integer follows;
     private String blockedByViewer;
     private Boolean countryBlock;
+    @Transient
     private String externalUrlLinkshimmed;
     private Boolean followedByViewer;
     private Boolean followsViewer;
