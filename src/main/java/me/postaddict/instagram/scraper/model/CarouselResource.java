@@ -3,6 +3,7 @@ package me.postaddict.instagram.scraper.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -24,4 +25,6 @@ public class CarouselResource{
     protected Boolean shouldLogClientEvent;
     @Transient
     protected String trackingToken;
+    @Transient
+    protected Collection<TaggedUser> taggedUser;
 }

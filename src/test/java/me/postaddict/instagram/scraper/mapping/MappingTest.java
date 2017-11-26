@@ -51,6 +51,16 @@ public class MappingTest {
     }
 
     @Test
+    public void testMediaByUrlCarouselTagged() throws Exception {
+        Media media = modelMapper.mapMedia(
+                MappingTest.class.getResourceAsStream("/getMediaByUrl-Carusele-Tagged.json"));
+
+        assertThat(media).isNotNull();
+        assertThat(toJson(media)).isEqualTo(IOUtils.toString(
+                MappingTest.class.getResourceAsStream("/expected/mapMediaByUrlCarousel-Tagged.json"),"UTF-8"));
+    }
+
+    @Test
     public void testComments() throws Exception {
         PageObject<Comment> comments = modelMapper.mapComments(
                 MappingTest.class.getResourceAsStream("/getCommentsByMediaCode_9cc06fff-6531-4530-a76e-ff72738def57.json"));
