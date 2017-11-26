@@ -89,7 +89,7 @@ public class Instagram implements AuthenticatedInsta {
         return account!=null? account.getMedia() : null;
     }
 
-    private Account getAccount(String username, int pageCount, PageInfo pageCursor) throws IOException {
+    public Account getAccount(String username, int pageCount, PageInfo pageCursor) throws IOException {
         GetAccountRequest getAccountRequest = new GetAccountRequest(httpClient, mapper);
         return getAccountRequest.requestInstagramResult(new UsernameParameter(username), pageCount, pageCursor);
     }
