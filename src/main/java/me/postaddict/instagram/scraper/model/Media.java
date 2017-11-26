@@ -45,6 +45,31 @@ public class Media extends MediaResource{
     private Collection<TaggedUser> taggedUser;
     private Date lastUpdated = new Date();
 
+    @Column(name = "height") @Override
+    public Integer getHeight() {
+        return height;
+    }
+
+    @Column(name = "width") @Override
+    public Integer getWidth() {
+        return width;
+    }
+
+    @Column(name = "display_url") @Override
+    public String getDisplayUrl() {
+        return displayUrl;
+    }
+
+    @ElementCollection @Override
+    public List<DisplayResource> getDisplayResources() {
+        return displayResources;
+    }
+
+    @Column(name = "is_video") @Override
+    public Boolean getIsVideo() {
+        return isVideo;
+    }
+
     @Transient
     public Date getCreated(){
         return takenAtTimestamp != null ? new Date(takenAtTimestamp) : null;
