@@ -56,14 +56,6 @@
             {"java-attribute": "caption","type": "java.lang.String","xml-path": "caption/text()"},
             {"java-attribute": "commentCount","type": "java.lang.Integer","xml-path": "comments/count/text()"},
             {"java-attribute": "likeCount","type": "java.lang.Integer","xml-path": "likes/count/text()"},
-            {"java-attribute": "mediaResource","type": "me.postaddict.instagram.scraper.model.MediaResource","xml-path": "."}
-          ]
-        }
-      },
-      {
-        "name": "me.postaddict.instagram.scraper.model.MediaResource",
-        "java-attributes": {
-          "xml-element": [
             {"java-attribute": "width","type": "java.lang.Integer","xml-path": "dimensions/width/text()"},
             {"java-attribute": "height","type": "java.lang.Integer","xml-path": "dimensions/height/text()"},
             {"java-attribute": "displayUrl","type": "java.lang.String","xml-path": "display_src/text()"},

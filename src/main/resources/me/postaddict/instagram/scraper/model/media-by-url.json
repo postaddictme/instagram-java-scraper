@@ -53,6 +53,13 @@
         },
         "java-attributes": {
           "xml-element": [
+            {"java-attribute": "width","type": "java.lang.Integer","xml-path": "dimensions/width/text()"},
+            {"java-attribute": "height","type": "java.lang.Integer","xml-path": "dimensions/height/text()"},
+            {"java-attribute": "displayUrl","type": "java.lang.String","xml-path": "display_url/text()"},
+            {"java-attribute": "isVideo","type": "java.lang.Boolean","xml-path": "is_video/text()"},
+            {"java-attribute": "shouldLogClientEvent","type": "java.lang.Boolean","xml-path": "should_log_client_event/text()"},
+            {"java-attribute": "trackingToken","type": "java.lang.String","xml-path": "tracking_token/text()"},
+            {"java-attribute": "displayResources","type": "me.postaddict.instagram.scraper.model.DisplayResource","xml-path": "display_resources"},
             {"java-attribute": "mediaType","type": "me.postaddict.instagram.scraper.model.MediaType","xml-path": "__typename/text()"},
             {"java-attribute": "id","type": "java.lang.Long","xml-path": "id/text()"},
             {"java-attribute": "shortcode","type": "java.lang.String","xml-path": "shortcode/text()"},
@@ -81,20 +88,6 @@
 
             {"java-attribute": "owner","type": "me.postaddict.instagram.scraper.model.Account","xml-path": "owner"},
             {"java-attribute": "taggedUser","type": "me.postaddict.instagram.scraper.model.TaggedUser","xml-path": "edge_media_to_tagged_user/edges"}
-          ]
-        }
-      },
-      {
-        "name": "me.postaddict.instagram.scraper.model.MediaResource",
-        "java-attributes": {
-          "xml-element": [
-            {"java-attribute": "width","type": "java.lang.Integer","xml-path": "dimensions/width/text()"},
-            {"java-attribute": "height","type": "java.lang.Integer","xml-path": "dimensions/height/text()"},
-            {"java-attribute": "displayUrl","type": "java.lang.String","xml-path": "display_url/text()"},
-            {"java-attribute": "isVideo","type": "java.lang.Boolean","xml-path": "is_video/text()"},
-            {"java-attribute": "shouldLogClientEvent","type": "java.lang.Boolean","xml-path": "should_log_client_event/text()"},
-            {"java-attribute": "trackingToken","type": "java.lang.String","xml-path": "tracking_token/text()"},
-            {"java-attribute": "displayResources","type": "me.postaddict.instagram.scraper.model.DisplayResource","xml-path": "display_resources"}
           ]
         }
       },
