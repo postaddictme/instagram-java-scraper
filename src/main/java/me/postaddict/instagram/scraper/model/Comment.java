@@ -1,17 +1,16 @@
 package me.postaddict.instagram.scraper.model;
 
 import lombok.Data;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Data
-@ToString
 public class Comment {
     @Id
     private Long id;
+    @Column(name = "text", length = 4096)
     private String text;
     private Long createdAt;
     @ManyToOne

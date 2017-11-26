@@ -41,6 +41,16 @@ public class MappingTest {
     }
 
     @Test
+    public void testMediaByUrlTagged() throws Exception {
+        Media media = modelMapper.mapMedia(
+                MappingTest.class.getResourceAsStream("/mapMediaByUrl-tagged.json"));
+
+        assertThat(media).isNotNull();
+        assertThat(toJson(media)).isEqualTo(IOUtils.toString(
+                MappingTest.class.getResourceAsStream("/expected/mapMediaByUrl-tagged.json"),"UTF-8"));
+    }
+
+    @Test
     public void testMediaByUrlCarousel() throws Exception {
         Media media = modelMapper.mapMedia(
                 MappingTest.class.getResourceAsStream("/getMediaByUrl_ac2a5f1c-6e7a-4b66-bf9a-bdaac02e1f08.json"));
@@ -48,6 +58,17 @@ public class MappingTest {
         assertThat(media).isNotNull();
         assertThat(toJson(media)).isEqualTo(IOUtils.toString(
                 MappingTest.class.getResourceAsStream("/expected/mapMediaByUrlCarousel.json"),"UTF-8"));
+    }
+
+    @Test
+    public void testMediaByUrlCarouselTagged() throws Exception {
+
+        Media media = modelMapper.mapMedia(
+                MappingTest.class.getResourceAsStream("/getMediaByUrl-Carusele-Tagged.json"));
+
+        assertThat(media).isNotNull();
+        assertThat(toJson(media)).isEqualTo(IOUtils.toString(
+                MappingTest.class.getResourceAsStream("/expected/mapMediaByUrlCarousel-Tagged.json"),"UTF-8"));
     }
 
     @Test
@@ -72,19 +93,9 @@ public class MappingTest {
     }
 
     @Test
-    public void testMediaList() throws Exception {
-        InputStream mediaListStream = MappingTest.class.getResourceAsStream("/getMedias_081fffaf-f255-4cf5-85e7-5eee0f0f8902.json");
-        Account medias = modelMapper.mapMediaList(mediaListStream);
-
-        assertThat(medias).isNotNull();
-        assertThat(toJson(medias)).isEqualTo(IOUtils.toString(
-                MappingTest.class.getResourceAsStream("/expected/mapMediaList.json"),"UTF-8"));
-    }
-
-    @Test
     public void testMediaCarousel() throws Exception {
         InputStream mediaListStream = MappingTest.class.getResourceAsStream("/getMedias.json");
-        Account medias = modelMapper.mapMediaList(mediaListStream);
+        Account medias = modelMapper.mapAccount(mediaListStream);
 
         assertThat(medias).isNotNull();
         assertThat(toJson(medias)).isEqualTo(IOUtils.toString(

@@ -1,7 +1,6 @@
 package me.postaddict.instagram.scraper.model;
 
 import lombok.Data;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -10,16 +9,24 @@ import java.util.List;
 
 @Entity
 @Data
-@ToString
 public class Media {
+    protected Integer height;
+    protected Integer width;
+    protected String displayUrl;
+    @ElementCollection
+    protected List<DisplayResource> displayResources;
+    protected Boolean isVideo;
+    @Transient
+    protected Boolean shouldLogClientEvent;
+    @Transient
+    protected String trackingToken;
     private MediaType mediaType;
     @Id
     private long id;
     private String shortcode;
-    @Embedded
-    private MediaResource mediaResource;
     @Transient
     private String gatingInfo;
+    @Column(name = "caption", length = 4096)
     private String caption;
     private Integer commentCount;
     @Transient

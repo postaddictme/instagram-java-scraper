@@ -33,8 +33,16 @@ public class ModelMapper implements Mapper{
     @Getter(AccessLevel.PROTECTED)
     private final ConcurrentHashMap<String, ThreadLocal<Unmarshaller>> unmarshallerCache = new ConcurrentHashMap<>();
 
+    @SneakyThrows
     public Account mapAccount(InputStream jsonStream){
-        return mapObject(jsonStream, "me/postaddict/instagram/scraper/model/account-binding.json");
+        Account account = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/account-binding.json");
+        Account accountCopy = (Account) BeanUtils.cloneBean(account);
+        accountCopy.setMedia(null);
+        if(account.getMedia()!=null && account.getMedia().getNodes()!=null) {
+            account.getMedia().getNodes().forEach(media -> media.setOwner(accountCopy));
+            account.getMedia().getNodes().forEach(this::updateMediaTime);
+        }
+        return account;
     }
 
     public Media mapMedia(InputStream jsonStream){
@@ -63,18 +71,6 @@ public class ModelMapper implements Mapper{
         return location;
     }
 
-    @SneakyThrows
-    public Account mapMediaList(InputStream jsonStream){
-        Account account = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/medias.json");
-        Account accountCopy = (Account) BeanUtils.cloneBean(account);
-        accountCopy.setMedia(null);
-        if(account.getMedia()!=null && account.getMedia().getNodes()!=null) {
-            account.getMedia().getNodes().forEach(media -> media.setOwner(accountCopy));
-            account.getMedia().getNodes().forEach(this::updateMediaTime);
-        }
-        return account;
-    }
-
     public Tag mapTag(InputStream jsonStream){
         Tag tag = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/tag.json");
         if(tag!=null && tag.getMediaRating()!=null && tag.getMediaRating().getMedia()!=null) {
@@ -96,7 +92,9 @@ public class ModelMapper implements Mapper{
     @SuppressWarnings("unchecked")
     @SneakyThrows
     public ActionResponse<Comment> mapMediaCommentResponse(InputStream jsonStream) {
-        return mapObject(jsonStream, "me/postaddict/instagram/scraper/model/mediaCommentResponse.json", ActionResponse.class);
+        ActionResponse<Comment> commentActionResponse = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/mediaCommentResponse.json", ActionResponse.class);
+        updateCommentTime(commentActionResponse.getPayload());
+        return commentActionResponse;
     }
 
     private void updateMediaTime(Media media) {

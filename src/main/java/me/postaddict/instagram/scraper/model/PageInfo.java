@@ -1,10 +1,12 @@
 package me.postaddict.instagram.scraper.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.ToString;
+import lombok.NoArgsConstructor;
 
 @Data
-@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class PageInfo {
     private boolean hasNextPage;
     private String endCursor;

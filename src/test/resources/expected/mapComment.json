@@ -3,12 +3,13 @@
   "payload" : {
     "id" : 12345678901,
     "text" : ")))",
-    "createdAt" : 1511293501,
+    "createdAt" : 1511293501000,
     "owner" : {
       "id" : 3,
       "username" : "kevin",
       "fullName" : "Kevin Systrom",
       "profilePicUrl" : "https://instagram.fhel3-1.fna.fbcdn.net/t51.2885-19/s150x150/13732144_1764457777134045_549538515_a.jpg"
-    }
+    },
+    "created" : 1511293501000
   }
 }
