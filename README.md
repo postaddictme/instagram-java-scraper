@@ -21,7 +21,7 @@ System.out.println(account.getFullName());
 ### Get account medias
 ```java
 PageObject<Media> medias = instagram.getMedias("durov", 1);
-System.out.println(medias.getNodes().get(0).getMediaResource().getDisplayUrl());
+System.out.println(medias.getNodes().get(0).getDisplayUrl());
 ```
 
 ### Get media by code
