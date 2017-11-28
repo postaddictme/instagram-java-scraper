@@ -38,6 +38,9 @@ public abstract class PaginatedRequest<R, P extends RequestParameter> {
             try (ResponseBody responseBody = response.body()){
                 current = mapResponse(responseBody.byteStream());
             }
+            if(delayHandler!=null) {
+                delayHandler.onEachRequest();
+            }
 
             if(result==null){
                 result = current;
