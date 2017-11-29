@@ -24,7 +24,7 @@ public class Instagram implements AuthenticatedInsta {
         this(httpClient, new ModelMapper(), new DefaultDelayHandler());
     }
 
-    private Request withCsrfToken(Request request) {
+    protected Request withCsrfToken(Request request) {
         List<Cookie> cookies = httpClient.cookieJar()
                 .loadForRequest(request.url());
         cookies.removeIf(cookie -> !cookie.name().equals("csrftoken"));
@@ -42,7 +42,7 @@ public class Instagram implements AuthenticatedInsta {
                 .url(Endpoint.BASE_URL)
                 .build();
 
-        Response response = this.httpClient.newCall(request).execute();
+        Response response = executeHttpRequest(request);
         response.body().close();
     }
 
@@ -62,7 +62,7 @@ public class Instagram implements AuthenticatedInsta {
                 .post(formBody)
                 .build();
 
-        Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
+        Response response = executeHttpRequest(withCsrfToken(request));
         response.body().close();
     }
 
@@ -71,7 +71,7 @@ public class Instagram implements AuthenticatedInsta {
                 .url(Endpoint.getAccountJsonInfoLinkByAccountId(id))
                 .header(Endpoint.REFERER, Endpoint.BASE_URL + "/")
                 .build();
-        Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
+        Response response = executeHttpRequest(withCsrfToken(request));
         try (ResponseBody body = response.body()){
             return getMediaByCode(mapper.getLastMediaShortCode(body.byteStream())).getOwner();
         }
@@ -96,7 +96,7 @@ public class Instagram implements AuthenticatedInsta {
                 .url(url + "/?__a=1")
                 .build();
 
-        Response response = this.httpClient.newCall(request).execute();
+        Response response = executeHttpRequest(request);
         try (ResponseBody responseBody = response.body()){
             return mapper.mapMedia(responseBody.byteStream());
         }
@@ -111,7 +111,7 @@ public class Instagram implements AuthenticatedInsta {
                 .url(Endpoint.getTagJsonByTagName(tagName))
                 .build();
 
-        Response response = this.httpClient.newCall(request).execute();
+        Response response = executeHttpRequest(request);
         try (ResponseBody responseBody = response.body()){
             return mapper.mapTag(responseBody.byteStream());
         }
@@ -142,7 +142,7 @@ public class Instagram implements AuthenticatedInsta {
                 .post(new FormBody.Builder().build())
                 .build();
 
-        Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
+        Response response = executeHttpRequest(withCsrfToken(request));
         response.body().close();
     }
 
@@ -164,7 +164,7 @@ public class Instagram implements AuthenticatedInsta {
                 .post(new FormBody.Builder().build())
                 .build();
 
-        Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
+        Response response = executeHttpRequest(withCsrfToken(request));
         response.body().close();
     }
 
@@ -179,7 +179,7 @@ public class Instagram implements AuthenticatedInsta {
                 .post(formBody)
                 .build();
 
-        Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
+        Response response = executeHttpRequest(withCsrfToken(request));
         try (ResponseBody responseBody = response.body()){
             return mapper.mapMediaCommentResponse(responseBody.byteStream());
         }
@@ -193,7 +193,15 @@ public class Instagram implements AuthenticatedInsta {
                 .post(new FormBody.Builder().build())
                 .build();
 
-        Response response = this.httpClient.newCall(withCsrfToken(request)).execute();
+        Response response = executeHttpRequest(withCsrfToken(request));
         response.body().close();
+    }
+
+    protected Response executeHttpRequest(Request request) throws IOException {
+        Response response = this.httpClient.newCall(request).execute();
+        if(delayHandler!=null){
+            delayHandler.onEachRequest();
+        }
+        return response;
     }
 }
