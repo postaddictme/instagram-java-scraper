@@ -82,6 +82,14 @@ public class MappingTest {
     }
 
     @Test
+    public void testLikeMapping() throws Exception{
+        InputStream likesStream = MappingTest.class.getResourceAsStream("/likesByShortcode.json");
+        PageObject<Account> likes = modelMapper.mapLikes(likesStream);
+        assertThat(likes).isNotNull();
+        assertThat(likes.getNodes().size()).isEqualTo(20);
+    }
+
+    @Test
     public void testLocation() throws Exception {
         InputStream locationStream = MappingTest.class.getResourceAsStream("/getLocationMediasById_90bf84cd-10ea-4d98-a224-bb3792255439.json");
         Location location = modelMapper.mapLocation(

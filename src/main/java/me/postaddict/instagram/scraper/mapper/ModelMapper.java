@@ -97,6 +97,12 @@ public class ModelMapper implements Mapper{
         return commentActionResponse;
     }
 
+    @Override
+    public PageObject<Account> mapLikes(InputStream jsonStream) {
+        GraphQlResponse<PageObject<Account>> likesResponse = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/mediaLikes.json");
+        return likesResponse.getPayload();
+    }
+
     private void updateMediaTime(Media media) {
         if(media.getTakenAtTimestamp() < MediaUtil.INSTAGRAM_BORN_YEAR){
             media.setTakenAtTimestamp(media.getTakenAtTimestamp()*1000);
