@@ -146,6 +146,12 @@ public class Instagram implements AuthenticatedInsta {
         response.body().close();
     }
 
+    public PageObject<Account> getMediaLikes(String shortcode, int pageCount) throws IOException{
+        GetMediaLikesRequest getMediaLikesRequest = new GetMediaLikesRequest(httpClient, mapper, delayHandler);
+        return getMediaLikesRequest.requestInstagramResult(new MediaCode(shortcode), pageCount, FIRST_PAGE);
+    }
+
+
     public PageObject<Account> getFollows(long userId, int pageCount) throws IOException {
         GetFollowsRequest getFollowsRequest = new GetFollowsRequest(httpClient, mapper, delayHandler);
         return getFollowsRequest.requestInstagramResult(new UserParameter(userId), pageCount, FIRST_PAGE);

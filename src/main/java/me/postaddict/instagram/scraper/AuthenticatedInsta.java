@@ -17,6 +17,8 @@ public interface AuthenticatedInsta extends AnonymousInsta {
 
     void deleteMediaComment(String code, String commentId) throws IOException;
 
+    PageObject<Account> getMediaLikes(String shortcode, int pageCount) throws IOException;
+
     PageObject<Account> getFollows(long userId, int pageCount) throws IOException;
 
     PageObject<Account> getFollowers(long userId, int pageCount) throws IOException;

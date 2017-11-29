@@ -8,6 +8,7 @@ import me.postaddict.instagram.scraper.interceptor.UserAgents;
 import me.postaddict.instagram.scraper.model.*;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -15,6 +16,7 @@ import org.junit.Test;
 import java.util.Collection;
 
 import static me.postaddict.instagram.scraper.ContentCheck.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.Assert.*;
 
 @Ignore
@@ -173,6 +175,13 @@ public class AuthenticatedInstaTest {
     @Test
     public void testDeleteMediaComment() throws Exception {
         client.deleteMediaComment("PASTE_HERE_MEDIA_CODE", "PASTE_COMMENT_ID");
+    }
+
+    @Test
+    public void testGetMediaLikes() throws Exception {
+        PageObject<Account> likes = client.getMediaLikes("BaKLiFugkQa",2);
+        assertThat(likes).isNotNull();
+        assertThat(likes.getNodes().size()).isEqualTo(400);
     }
 
     @Test

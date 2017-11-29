@@ -22,6 +22,7 @@ public class Endpoint {
     public static final String MEDIA_UNLIKE = "https://www.instagram.com/web/likes/{{mediaId}}/unlike/";
     public static final String MEDIA_COMMENTS_ADD = "https://www.instagram.com/web/comments/{{mediaId}}/add/";
     public static final String MEDIA_COMMENTS_DELETE = "https://www.instagram.com/web/comments/{{mediaId}}/delete/{{commentId}}/";
+    public static final String LIKES_BY_SHORTCODE = "https://www.instagram.com/graphql/query/?query_id=17864450716183058&variables={\"shortcode\":\"{{shortcode}}\",\"first\":{{count}},\"after\":\"{{after}}\"}";
     public static final String FOLLOWS_URL = "https://www.instagram.com/graphql/query/?query_id=17874545323001329&variables={\"id\": {{userId}}, \"first\": {{count}}, \"after\": \"{{endCursor}}\"}";
     public static final String FOLLOWERS_URL = "https://www.instagram.com/graphql/query/?query_id=17851374694183129&variables={\"id\": {{userId}}, \"first\": {{count}}, \"after\": \"{{endCursor}}\"}";
     public static final String USERNAME = "{{username}}";
@@ -30,6 +31,7 @@ public class Endpoint {
     public static final String CODE = "{{code}}";
     public static final String TAG_NAME = "{{tag_name}}";
     public static final String COUNT = "{{count}}";
+    public static final String AFTER = "{{after}}";
     public static final String SHORTCODE = "{{shortcode}}";
     public static final String COMMENT_ID = "{{commentId}}";
     public static final String MEDIA_ID = "{{mediaId}}";
@@ -112,6 +114,13 @@ public class Endpoint {
         return MEDIA_COMMENTS_DELETE
                 .replace(MEDIA_ID, mediaId)
                 .replace(COMMENT_ID, commentId);
+    }
+
+    public static String getLikesByShortcode(String shortcode, int count, String endCursor){
+        return LIKES_BY_SHORTCODE
+                    .replace(SHORTCODE, shortcode)
+                    .replace(COUNT, String.valueOf(count))
+                    .replace(AFTER, endCursor);
     }
 
     public static String getFollowsLinkVariables(long userId, int count, String endCursor) {

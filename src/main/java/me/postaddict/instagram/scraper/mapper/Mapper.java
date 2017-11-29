@@ -14,4 +14,5 @@ public interface Mapper {
     PageObject<Account> mapFollowers(InputStream jsonStream);
     ActionResponse<Comment> mapMediaCommentResponse(InputStream jsonStream);
     String getLastMediaShortCode(InputStream jsonStream);
+    PageObject<Account> mapLikes(InputStream likesStream);
 }
