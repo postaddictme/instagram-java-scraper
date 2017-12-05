@@ -92,6 +92,10 @@ public class Instagram implements AuthenticatedInsta {
     }
 
     public Media getMediaByUrl(String url) throws IOException {
+        String urlRegexp = Endpoint.getMediaPageLinkByCodeMatcher();
+        if(url==null || !url.matches(urlRegexp)){
+            throw new IllegalArgumentException("Media URL not matches regexp: "+urlRegexp+" current value: "+url);
+        }
         Request request = new Request.Builder()
                 .url(url + "/?__a=1")
                 .build();

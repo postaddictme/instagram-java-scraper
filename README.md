@@ -63,5 +63,17 @@ TODO documentation/release
 Read more info on [jitpack page of project](https://jitpack.io/#com.github.postaddictme/instagram-java-scraper).
 Open "Commit" tab and select revision by commit hash. Just open Gradle or Maven tab copy artifact info and place it with dendency management repository in your project build configuration
 
+### Setup http client to handle errors, log response and store cookies ###
+```java
+HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+OkHttpClient httpClient = new OkHttpClient.Builder()
+        .addNetworkInterceptor(loggingInterceptor)
+        .addInterceptor(new ErrorInterceptor())
+        .cookieJar(new DefaultCookieJar(new CookieHashSet()))
+        .build();
+```
+
 ### Other
 PHP library: https://github.com/postaddictme/instagram-php-scraper
