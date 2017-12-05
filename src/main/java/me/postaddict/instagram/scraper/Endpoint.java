@@ -63,6 +63,10 @@ public class Endpoint {
         return MEDIA_LINK.replace(CODE, code);
     }
 
+    public static String getMediaPageLinkByCodeMatcher() {
+        return MEDIA_LINK.replace(CODE, "\\w+");
+    }
+
     public static String getMediaJsonLinkByShortcode(String shortcode) {
         return MEDIA_JSON_INFO.replace(CODE, shortcode);
     }

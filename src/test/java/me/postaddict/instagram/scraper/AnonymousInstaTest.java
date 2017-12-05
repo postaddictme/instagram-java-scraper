@@ -79,6 +79,11 @@ public class AnonymousInstaTest {
         System.out.println(media);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetMalformedMediaByUrl() throws Exception {
+        client.getMediaByUrl("https://www.instagram.com/p/BHaRdodBouH/");
+    }
+
     @Test
     public void testGetMediaByCode() throws Exception {
         Media media = client.getMediaByCode("BHaRdodBouH");
