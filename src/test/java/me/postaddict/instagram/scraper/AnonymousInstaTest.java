@@ -85,6 +85,12 @@ public class AnonymousInstaTest {
     }
 
     @Test
+    public void testNonLiteralMediaCode() throws Exception {
+        Media media = client.getMediaByCode("BWizrpZgg-w");
+        assertEquals("pixar", media.getOwner().getUsername());
+    }
+
+    @Test
     public void testGetMediaByCode() throws Exception {
         Media media = client.getMediaByCode("BHaRdodBouH");
         assertEquals("kevin", media.getOwner().getUsername());
