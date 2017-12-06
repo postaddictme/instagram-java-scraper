@@ -103,6 +103,11 @@ public class ModelMapper implements Mapper{
         return likesResponse.getPayload();
     }
 
+    public ActivityFeed mapActivity(InputStream jsonStream) {
+        GraphQlResponse<ActivityFeed> activityFeed = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/activity.json");
+        return activityFeed.getPayload();
+    }
+
     private void updateMediaTime(Media media) {
         if(media.getTakenAtTimestamp() < MediaUtil.INSTAGRAM_BORN_YEAR){
             media.setTakenAtTimestamp(media.getTakenAtTimestamp()*1000);

@@ -185,6 +185,14 @@ public class AuthenticatedInstaTest {
     }
 
     @Test
+    public void testGetActivityFeed() throws Exception {
+        ActivityFeed activityFeed = client.getActivityFeed();
+        assertThat(activityFeed).isNotNull();
+        assertThat(activityFeed.getCount()).isGreaterThan(3);
+        assertThat(activityFeed.getActivities().size()).isGreaterThan(3);
+    }
+
+    @Test
     public void testFollows() throws Exception {
         Account account = client.getAccountByUsername("kevin");
         PageObject<Account> follows = client.getFollows(account.getId(), 2);

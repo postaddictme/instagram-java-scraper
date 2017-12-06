@@ -1,0 +1,74 @@
+{
+  "graphql": {
+    "user": {
+      "activity_feed": {
+        "timestamp": 1512588536.6979856,
+        "edge_web_activity_feed": {
+          "count": 3,
+          "edges": [
+            {
+              "node": {
+                "id": "123445_6789_1234567687",
+                "type": 2,
+                "timestamp": 1512587261.278938,
+                "__typename": "GraphCommentMediaStory",
+                "user": {
+                  "id": "3",
+                  "username": "kevin",
+                  "full_name": "Kevin Systrom",
+                  "profile_pic_url": "https://scontent-arn2-1.cdninstagram.com/t51.2885-19/s150x150/13732144_1764457777134045_549538515_a.jpg"
+                },
+                "media": {
+                  "id": "1662145441069886076",
+                  "thumbnail_src": "https://scontent-arn2-1.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/23969991_129279851076056_7486944925477502976_n.jpg",
+                  "shortcode": "BcVEzBTgqKh",
+                  "__typename": "GraphImage"
+                },
+                "text": "example"
+              }
+            },
+            {
+              "node": {
+                "id": "-92_1234567687",
+                "type": 3,
+                "timestamp": 1512583170.414482,
+                "__typename": "GraphFollowAggregatedStory",
+                "user": {
+                  "id": "3",
+                  "username": "kevin",
+                  "full_name": "Kevin Systrom",
+                  "profile_pic_url": "https://scontent-arn2-1.cdninstagram.com/t51.2885-19/s150x150/13732144_1764457777134045_549538515_a.jpg",
+                  "requested_by_viewer": false,
+                  "followed_by_viewer": true
+                }
+              }
+            },
+            {
+              "node": {
+                "id": "876528_49077_123456787",
+                "type": 1,
+                "timestamp": 1512580191.725406,
+                "__typename": "GraphLikeAggregatedStory",
+                "user": {
+                  "id": "3",
+                  "username": "kevin",
+                  "full_name": "Kevin Systrom",
+                  "profile_pic_url": "https://scontent-arn2-1.cdninstagram.com/t51.2885-19/s150x150/13732144_1764457777134045_549538515_a.jpg"
+                },
+                "media": {
+                  "id": "1662145441069886076",
+                  "thumbnail_src": "https://scontent-arn2-1.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/23969991_129279851076056_7486944925477502976_n.jpg",
+                  "shortcode": "BcVEzBTgqKh",
+                  "__typename": "GraphImage"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "edge_follow_requests": {
+        "edges": []
+      }
+    }
+  }
+}
