@@ -82,6 +82,15 @@ public class MappingTest {
     }
 
     @Test
+    public void testActivityFeed() throws Exception {
+        ActivityFeed activityFeed = modelMapper.mapActivity(
+                MappingTest.class.getResourceAsStream("/activity.json"));
+        assertThat(activityFeed).isNotNull();
+        assertThat(toJson(activityFeed)).isEqualTo(IOUtils.toString(
+                MappingTest.class.getResourceAsStream("/expected/activity.json"),"UTF-8"));
+    }
+
+    @Test
     public void testLikeMapping() throws Exception{
         InputStream likesStream = MappingTest.class.getResourceAsStream("/likesByShortcode.json");
         PageObject<Account> likes = modelMapper.mapLikes(likesStream);

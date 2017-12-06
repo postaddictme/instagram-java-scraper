@@ -1,0 +1,61 @@
+{
+  "package-name": "me.postaddict.instagram.scraper.model",
+  "java-types": {
+    "java-type": [
+      {
+        "name": "me.postaddict.instagram.scraper.model.GraphQlResponse",
+        "xml-root-element": {
+          "name": "graphql"
+        },
+        "java-attributes": {
+          "xml-element": [
+            {"java-attribute": "payload","type": "me.postaddict.instagram.scraper.model.ActivityFeed","xml-path": "user/activity_feed"}
+          ]
+        }
+      },
+      {
+        "name": "me.postaddict.instagram.scraper.model.ActivityFeed",
+        "java-attributes": {
+          "xml-element": [
+            {"java-attribute": "count","type": "java.lang.Integer","xml-path": "edge_web_activity_feed/count/text()"},
+            {"java-attribute": "timestamp","type": "java.lang.String","xml-path": "timestamp/text()"},
+            {"java-attribute": "activities","type": "me.postaddict.instagram.scraper.model.Activity","xml-path": "edge_web_activity_feed/edges/node"}
+          ]
+        }
+      },
+      {
+        "name": "me.postaddict.instagram.scraper.model.Activity",
+        "java-attributes": {
+          "xml-element": [
+            {"java-attribute": "user","type": "me.postaddict.instagram.scraper.model.Account","xml-path": "user"},
+            {"java-attribute": "media","type": "me.postaddict.instagram.scraper.model.Media","xml-path": "media"},
+            {"java-attribute": "activityType","type": "me.postaddict.instagram.scraper.model.ActivityType","xml-path": "__typename/text()"}
+          ]
+        }
+      },
+      {
+        "name": "me.postaddict.instagram.scraper.model.Media",
+        "java-attributes": {
+          "xml-element": [
+            {"java-attribute": "displayUrl","type": "java.lang.String","xml-path": "thumbnail_src/text()"},
+            {"java-attribute": "mediaType","type": "me.postaddict.instagram.scraper.model.MediaType","xml-path": "__typename/text()"},
+            {"java-attribute": "id","type": "java.lang.Long","xml-path": "id/text()"},
+            {"java-attribute": "shortcode","type": "java.lang.String","xml-path": "shortcode/text()"}
+          ]
+        }
+      },
+      {
+        "name": "me.postaddict.instagram.scraper.model.Account",
+        "java-attributes": {
+          "xml-element": [
+            {"java-attribute": "username","type": "java.lang.String","xml-path": "username/text()"},
+            {"java-attribute": "fullName","type": "java.lang.String","xml-path": "full_name/text()"},
+            {"java-attribute": "profilePicUrl","type": "java.lang.String","xml-path": "profile_pic_url/text()"},
+            {"java-attribute": "followedByViewer","type": "java.lang.Boolean","xml-path": "followed_by_viewer/text()"},
+            {"java-attribute": "requestedByViewer","type": "java.lang.Boolean","xml-path": "requested_by_viewer/text()"}
+          ]
+        }
+      }
+    ]
+  }
+}

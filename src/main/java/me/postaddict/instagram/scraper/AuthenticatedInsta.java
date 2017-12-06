@@ -1,9 +1,6 @@
 package me.postaddict.instagram.scraper;
 
-import me.postaddict.instagram.scraper.model.Account;
-import me.postaddict.instagram.scraper.model.ActionResponse;
-import me.postaddict.instagram.scraper.model.Comment;
-import me.postaddict.instagram.scraper.model.PageObject;
+import me.postaddict.instagram.scraper.model.*;
 
 import java.io.IOException;
 
@@ -22,4 +19,6 @@ public interface AuthenticatedInsta extends AnonymousInsta {
     PageObject<Account> getFollows(long userId, int pageCount) throws IOException;
 
     PageObject<Account> getFollowers(long userId, int pageCount) throws IOException;
+
+    ActivityFeed getActivityFeed() throws IOException;
 }

@@ -207,6 +207,34 @@ public class Instagram implements AuthenticatedInsta {
         response.body().close();
     }
 
+    @Override
+    public ActivityFeed getActivityFeed() throws IOException{
+
+        Request request = new Request.Builder()
+                .url(Endpoint.ACTIVITY_FEED)
+                .header(Endpoint.REFERER, Endpoint.BASE_URL + "/")
+                .build();
+
+        Response response = executeHttpRequest(withCsrfToken(request));
+        try (ResponseBody responseBody = response.body()){
+            ActivityFeed activityFeed = mapper.mapActivity(responseBody.byteStream());
+            markActivityChecked(activityFeed);
+            return activityFeed;
+        }
+
+    }
+
+    private void markActivityChecked(ActivityFeed activityFeed) throws IOException {
+        Request request = new Request.Builder()
+                .url(Endpoint.ACTIVITY_MARK_CHECKED)
+                .header(Endpoint.REFERER, Endpoint.BASE_URL + "/")
+                .post(new FormBody.Builder().add("timestamp", activityFeed.getTimestamp()).build())
+                .build();
+        try (ResponseBody response = executeHttpRequest(withCsrfToken(request)).body()){
+            //skip
+        }
+    }
+
     protected Response executeHttpRequest(Request request) throws IOException {
         Response response = this.httpClient.newCall(request).execute();
         if(delayHandler!=null){
