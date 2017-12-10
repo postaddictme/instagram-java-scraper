@@ -63,6 +63,13 @@ TODO documentation/release
 Read more info on [jitpack page of project](https://jitpack.io/#com.github.postaddictme/instagram-java-scraper).
 Open "Commit" tab and select revision by commit hash. Just open Gradle or Maven tab copy artifact info and place it with dendency management repository in your project build configuration
 
+### IDE lombok plugin ###
+Project [Lombok](https://projectlombok.org) is a java library that automatically plugs into your editor and build tools, spicing up your java.
+Never write another getter or equals method again. 
+
+If instagram-java-scraper IDE compilation failing because of all the missing getters/setters.
+Just setup lombok plugin for [IntelliJ Idea](https://projectlombok.org/setup/intellij), [Eclipse](https://projectlombok.org/setup/eclipse) or [Netbeans](https://projectlombok.org/setup/netbeans) 
+
 ### Setup http client to handle errors, log response and store cookies ###
 ```java
 HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
