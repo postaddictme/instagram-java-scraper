@@ -185,6 +185,13 @@ public class AuthenticatedInstaTest {
     }
 
     @Test
+    public void testGetAllMediaLikes() throws Exception {
+        PageObject<Account> likes = client.getMediaLikes("BcfiQOhBSLc",Integer.MAX_VALUE);
+        assertThat(likes).isNotNull();
+        assertThat(likes.getNodes().size()).isGreaterThan(700);
+    }
+
+    @Test
     public void testGetActivityFeed() throws Exception {
         ActivityFeed activityFeed = client.getActivityFeed();
         assertThat(activityFeed).isNotNull();
