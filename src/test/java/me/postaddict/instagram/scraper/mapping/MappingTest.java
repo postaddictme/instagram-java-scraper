@@ -160,6 +160,12 @@ public class MappingTest {
                 MappingTest.class.getResourceAsStream("/expected/mapComment.json"),"UTF-8"));
     }
 
+    @Test
+    public void testIsAuthenticated() throws Exception {
+        InputStream loginStream = MappingTest.class.getResourceAsStream("/loginResponse.json");
+        boolean authenticated = modelMapper.isAuthenticated(loginStream);
+        assertThat(authenticated).isFalse();
+    }
 
     @JsonFilter("skipLastUpdated")
     private class PropertyFilterMixIn {}

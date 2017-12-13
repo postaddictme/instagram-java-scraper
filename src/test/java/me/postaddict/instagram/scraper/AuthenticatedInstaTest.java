@@ -2,6 +2,7 @@ package me.postaddict.instagram.scraper;
 
 import me.postaddict.instagram.scraper.cookie.CookieHashSet;
 import me.postaddict.instagram.scraper.cookie.DefaultCookieJar;
+import me.postaddict.instagram.scraper.exception.InstagramAuthException;
 import me.postaddict.instagram.scraper.interceptor.ErrorInterceptor;
 import me.postaddict.instagram.scraper.interceptor.UserAgentInterceptor;
 import me.postaddict.instagram.scraper.interceptor.UserAgents;
@@ -39,6 +40,21 @@ public class AuthenticatedInstaTest {
         client.basePage();
         client.login(credentials.getLogin(), credentials.getPassword());
         client.basePage();
+    }
+
+    @Test(expected = InstagramAuthException.class)
+    public void testLoginWithInvalidCredentials() throws Exception {
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
+        OkHttpClient httpClient = new OkHttpClient.Builder()
+                .addNetworkInterceptor(loggingInterceptor)
+                .addInterceptor(new UserAgentInterceptor(UserAgents.OSX_CHROME))
+                .addInterceptor(new ErrorInterceptor())
+                .cookieJar(new DefaultCookieJar(new CookieHashSet()))
+                .build();
+        Instagram instagramClient = new Instagram(httpClient);
+        instagramClient.basePage();
+        instagramClient.login("1", "2");
     }
 
     @Test
