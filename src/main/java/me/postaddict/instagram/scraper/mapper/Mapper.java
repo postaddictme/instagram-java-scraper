@@ -16,4 +16,5 @@ public interface Mapper {
     String getLastMediaShortCode(InputStream jsonStream);
     PageObject<Account> mapLikes(InputStream likesStream);
     ActivityFeed mapActivity(InputStream jsonStream);
+    boolean isAuthenticated(InputStream jsonStream);
 }

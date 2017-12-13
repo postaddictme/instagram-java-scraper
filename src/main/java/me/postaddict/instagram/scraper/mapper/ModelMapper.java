@@ -29,6 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ModelMapper implements Mapper{
 
+    private static final String AUTHENTICATED_FIELD = "authenticated";
     private final ThreadLocal<ObjectMapper> mapperThreadLocal = ThreadLocal.withInitial(ObjectMapper::new);
     @Getter(AccessLevel.PROTECTED)
     private final ConcurrentHashMap<String, ThreadLocal<Unmarshaller>> unmarshallerCache = new ConcurrentHashMap<>();
@@ -127,6 +128,14 @@ public class ModelMapper implements Mapper{
                                                                 new TypeReference<Map<String, Object>>() {});
         Node jsonDom = new DomTransformer(new NopTypeConverter()).transform(Collections.singletonMap("root",jsonMap));
         return XPathFactory.newInstance().newXPath().evaluate("//shortcode", jsonDom);
+    }
+
+    @Override
+    @SneakyThrows
+    public boolean isAuthenticated(InputStream jsonStream){
+        Map<String,Object> jsonMap = mapperThreadLocal.get().readValue(jsonStream,
+                new TypeReference<Map<String, Object>>() {});
+        return jsonMap.get(AUTHENTICATED_FIELD) instanceof Boolean && (boolean) jsonMap.get(AUTHENTICATED_FIELD);
     }
 
     @SuppressWarnings("unchecked")
