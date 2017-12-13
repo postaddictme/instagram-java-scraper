@@ -32,7 +32,7 @@ System.out.println(media.getOwner().getUsername());
 
 ### Get media by url
 ```java
-Media media = instagram.getMediaByUrl("https://www.instagram.com/p/BGY0zB4r7X2/");
+Media media = instagram.getMediaByUrl("https://www.instagram.com/p/BGY0zB4r7X2");
 System.out.println(media.getOwner().getUsername());
 ```
 ### Convert media id to shortcode
