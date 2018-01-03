@@ -153,7 +153,39 @@ public class Instagram implements AuthenticatedInsta {
         Response response = executeHttpRequest(withCsrfToken(request));
         response.body().close();
     }
-
+    
+    public void followAccountByUsername(String username) throws IOException{
+        Account account = getAccountByUsername(username);
+        followAccount(account.getId());
+    }
+    
+    public void followAccount(long userId) throws IOException {
+        String url = Endpoint.getFollowAccountLink(userId);
+        Request request = new Request.Builder()
+                 .url(url)
+                 .header(Endpoint.REFERER, Endpoint.BASE_URL + "/")
+                 .post(new FormBody.Builder().build())
+                 .build();
+        Response response = executeHttpRequest(withCsrfToken(request));
+        response.body().close();
+    }
+    
+    public void unfollowAccountByUsername(String username) throws IOException{
+        Account account = getAccountByUsername(username);
+        unfollowAccount(account.getId());
+    }
+    
+    public void unfollowAccount(long userId) throws IOException {
+        String url = Endpoint.getUnfollowAccountLink(userId);
+        Request request = new Request.Builder()
+                 .url(url)
+                 .header(Endpoint.REFERER, Endpoint.BASE_URL + "/")
+                 .post(new FormBody.Builder().build())
+                 .build();
+        Response response = executeHttpRequest(withCsrfToken(request));
+        response.body().close();
+    }
+    
     public PageObject<Account> getMediaLikes(String shortcode, int pageCount) throws IOException{
         GetMediaLikesRequest getMediaLikesRequest = new GetMediaLikesRequest(httpClient, mapper, delayHandler);
         return getMediaLikesRequest.requestInstagramResult(new MediaCode(shortcode), pageCount, FIRST_PAGE);
@@ -169,7 +201,7 @@ public class Instagram implements AuthenticatedInsta {
         GetFollowersRequest getFollowersRequest = new GetFollowersRequest(httpClient, mapper, delayHandler);
         return getFollowersRequest.requestInstagramResult(new UserParameter(userId),pageCount, FIRST_PAGE);
     }
-
+    
     public void unlikeMediaByCode(String code) throws IOException {
         String url = Endpoint.getMediaUnlikeLink(MediaUtil.getIdFromCode(code));
         Request request = new Request.Builder()

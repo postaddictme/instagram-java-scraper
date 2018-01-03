@@ -1,5 +1,7 @@
 package me.postaddict.instagram.scraper;
 
+import org.apache.commons.collections.map.StaticBucketMap;
+
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -25,6 +27,8 @@ public class Endpoint {
     public static final String LIKES_BY_SHORTCODE = "https://www.instagram.com/graphql/query/?query_id=17864450716183058&variables={\"shortcode\":\"{{shortcode}}\",\"first\":{{count}},\"after\":\"{{after}}\"}";
     public static final String FOLLOWS_URL = "https://www.instagram.com/graphql/query/?query_id=17874545323001329&variables={\"id\": {{userId}}, \"first\": {{count}}, \"after\": \"{{endCursor}}\"}";
     public static final String FOLLOWERS_URL = "https://www.instagram.com/graphql/query/?query_id=17851374694183129&variables={\"id\": {{userId}}, \"first\": {{count}}, \"after\": \"{{endCursor}}\"}";
+    public static final String FOLLOW_ACCOUNT = "https://www.instagram.com/web/friendships/{{userId}}/follow/";
+    public static final String UNFOLLOW_ACCOUNT = "https://www.instagram.com/web/friendships/{{userId}}/unfollow/";
     public static final String ACTIVITY_FEED = "https://www.instagram.com/accounts/activity/?__a=1";
     public static final String ACTIVITY_MARK_CHECKED = "https://www.instagram.com/web/activity/mark_checked/";
     public static final String USERNAME = "{{username}}";
@@ -129,6 +133,16 @@ public class Endpoint {
                     .replace(AFTER, endCursor);
     }
 
+    public static String getFollowAccountLink(long userId) {
+        return FOLLOW_ACCOUNT
+                .replace(USER_ID, String.valueOf(userId));
+    }
+    
+    public static String getUnfollowAccountLink(long userId) {
+        return UNFOLLOW_ACCOUNT
+                .replace(USER_ID, String.valueOf(userId));
+    }
+    
     public static String getFollowsLinkVariables(long userId, int count, String endCursor) {
         return FOLLOWS_URL
                 .replace(USER_ID, String.valueOf(userId))

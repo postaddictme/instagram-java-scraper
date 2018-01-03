@@ -9,7 +9,6 @@ import me.postaddict.instagram.scraper.interceptor.UserAgents;
 import me.postaddict.instagram.scraper.model.*;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
-import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -180,6 +179,16 @@ public class AuthenticatedInstaTest {
     @Test
     public void testUnlikeMediaByCode() throws Exception {
         client.unlikeMediaByCode("PASTE_HERE_MEDIA_CODE");
+    }
+    
+    @Test
+    public void testFollowAccountByUsername() throws Exception {
+        client.followAccountByUsername("PASTE_HERE_USERNAME");        
+    }
+    
+    @Test
+    public void testUnfollowAccountByUsername() throws Exception {
+        client.unfollowAccountByUsername("PASTE_HERE_USERNAME");
     }
 
     @Test
