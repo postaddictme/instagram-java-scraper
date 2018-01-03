@@ -1,7 +1,5 @@
 package me.postaddict.instagram.scraper;
 
-import org.apache.commons.collections.map.StaticBucketMap;
-
 import lombok.experimental.UtilityClass;
 
 @UtilityClass

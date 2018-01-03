@@ -191,7 +191,6 @@ public class Instagram implements AuthenticatedInsta {
         return getMediaLikesRequest.requestInstagramResult(new MediaCode(shortcode), pageCount, FIRST_PAGE);
     }
 
-
     public PageObject<Account> getFollows(long userId, int pageCount) throws IOException {
         GetFollowsRequest getFollowsRequest = new GetFollowsRequest(httpClient, mapper, delayHandler);
         return getFollowsRequest.requestInstagramResult(new UserParameter(userId), pageCount, FIRST_PAGE);
@@ -201,7 +200,7 @@ public class Instagram implements AuthenticatedInsta {
         GetFollowersRequest getFollowersRequest = new GetFollowersRequest(httpClient, mapper, delayHandler);
         return getFollowersRequest.requestInstagramResult(new UserParameter(userId),pageCount, FIRST_PAGE);
     }
-    
+
     public void unlikeMediaByCode(String code) throws IOException {
         String url = Endpoint.getMediaUnlikeLink(MediaUtil.getIdFromCode(code));
         Request request = new Request.Builder()
