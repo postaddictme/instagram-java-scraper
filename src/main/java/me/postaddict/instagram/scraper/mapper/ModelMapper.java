@@ -73,11 +73,19 @@ public class ModelMapper implements Mapper{
     }
 
     public Tag mapTag(InputStream jsonStream){
-        Tag tag = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/tag.json");
-        if(tag!=null && tag.getMediaRating()!=null && tag.getMediaRating().getMedia()!=null) {
-            tag.setCount(tag.getMediaRating().getMedia().getCount());
+        GraphQlResponse<Tag> graphQlResponse = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/tag.json");
+        if(graphQlResponse!=null && graphQlResponse.getPayload()!=null){
+            Tag tag = graphQlResponse.getPayload();
+            if(tag.getMediaRating()!=null && tag.getMediaRating().getMedia()!=null) {
+                tag.setCount(tag.getMediaRating().getMedia().getCount());
+                tag.getMediaRating().getMedia().getNodes().forEach(this::updateMediaTime);
+            }
+            if(tag.getMediaRating()!=null && tag.getMediaRating().getTopPosts()!=null){
+                tag.getMediaRating().getTopPosts().forEach(this::updateMediaTime);
+            }
+            return tag;
         }
-        return tag;
+        throw new NullPointerException();
     }
 
     public PageObject<Account> mapFollow(InputStream jsonStream){

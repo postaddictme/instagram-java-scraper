@@ -5,6 +5,7 @@ import me.postaddict.instagram.scraper.cookie.DefaultCookieJar;
 import me.postaddict.instagram.scraper.interceptor.ErrorInterceptor;
 import me.postaddict.instagram.scraper.interceptor.UserAgentInterceptor;
 import me.postaddict.instagram.scraper.interceptor.UserAgents;
+import static org.assertj.core.api.Assertions.*;
 import me.postaddict.instagram.scraper.model.*;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -111,6 +112,18 @@ public class AnonymousInstaTest {
         assertEquals("https://instagram.fhel3-1.fna.fbcdn.net/t51.2885-15/e35/22427115_152159245386313_6593256479942246400_n.jpg", carouselIterator.next().getDisplayUrl());
         System.out.println(media);
     }
+
+
+    @Test
+    public void testGetMediaByCodeVideoPost() throws Exception {
+        Media media = client.getMediaByCode("Bde90J7n6ba");
+        assertEquals("corgillection", media.getOwner().getUsername());
+        assertThat(media.getVideoUrl()).endsWith(".mp4");
+        assertThat(media.getDisplayUrl()).endsWith("jpg");
+        assertTrue(checkMedia(media));
+        System.out.println(media);
+    }
+
 
     @Test
     public void testGetLocationMediasById() throws Exception {
