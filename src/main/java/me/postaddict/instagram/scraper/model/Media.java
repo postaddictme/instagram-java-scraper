@@ -13,6 +13,7 @@ public class Media {
     protected Integer height;
     protected Integer width;
     protected String displayUrl;
+    protected String videoUrl;
     @ElementCollection
     protected List<DisplayResource> displayResources;
     protected Boolean isVideo;
@@ -37,6 +38,7 @@ public class Media {
     private Boolean captionIsEdited;
     private Long takenAtTimestamp;
     private Integer likeCount;
+    private Integer videoViewCount;
     @ManyToMany
     private List<Account> firstLikes;
     @ManyToOne
