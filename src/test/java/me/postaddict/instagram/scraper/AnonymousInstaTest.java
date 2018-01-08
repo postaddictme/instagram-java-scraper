@@ -106,10 +106,10 @@ public class AnonymousInstaTest {
         assertTrue(checkMedia(media));
         assertEquals(4, media.getCarouselMedia().size());
         Iterator<CarouselResource> carouselIterator = media.getCarouselMedia().iterator();
-        assertEquals("https://instagram.fhel3-1.fna.fbcdn.net/t51.2885-15/e35/22351958_144137916205565_6923513639366295552_n.jpg", carouselIterator.next().getDisplayUrl());
-        assertEquals("https://instagram.fhel3-1.fna.fbcdn.net/t51.2885-15/e35/22352110_177635979467060_738026920783904768_n.jpg", carouselIterator.next().getDisplayUrl());
-        assertEquals("https://instagram.fhel3-1.fna.fbcdn.net/t51.2885-15/e35/22352158_840551796104469_8224611081893445632_n.jpg", carouselIterator.next().getDisplayUrl());
-        assertEquals("https://instagram.fhel3-1.fna.fbcdn.net/t51.2885-15/e35/22427115_152159245386313_6593256479942246400_n.jpg", carouselIterator.next().getDisplayUrl());
+        assertEquals("https://scontent-arn2-1.cdninstagram.com/t51.2885-15/e35/22351958_144137916205565_6923513639366295552_n.jpg", carouselIterator.next().getDisplayUrl());
+        assertEquals("https://scontent-arn2-1.cdninstagram.com/t51.2885-15/e35/22352110_177635979467060_738026920783904768_n.jpg", carouselIterator.next().getDisplayUrl());
+        assertEquals("https://scontent-arn2-1.cdninstagram.com/t51.2885-15/e35/22352158_840551796104469_8224611081893445632_n.jpg", carouselIterator.next().getDisplayUrl());
+        assertEquals("https://scontent-arn2-1.cdninstagram.com/t51.2885-15/e35/22427115_152159245386313_6593256479942246400_n.jpg", carouselIterator.next().getDisplayUrl());
         System.out.println(media);
     }
 
