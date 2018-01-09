@@ -112,6 +112,8 @@
             {"java-attribute": "isVideo","type": "java.lang.Boolean","xml-path": "is_video/text()"},
             {"java-attribute": "shouldLogClientEvent","type": "java.lang.Boolean","xml-path": "should_log_client_event/text()"},
             {"java-attribute": "displayUrl","type": "java.lang.String","xml-path": "display_url/text()"},
+            {"java-attribute": "videoUrl","type": "java.lang.String","xml-path": "video_url/text()"},
+            {"java-attribute": "videoViewCount","type": "java.lang.String","xml-path": "video_view_count/text()"},
             {"java-attribute": "trackingToken","type": "java.lang.String","xml-path": "tracking_token/text()"},
             {"java-attribute": "displayResources","type": "me.postaddict.instagram.scraper.model.DisplayResource","xml-path": "display_resources"},
             {"java-attribute": "taggedUser","type": "me.postaddict.instagram.scraper.model.TaggedUser","xml-path": "edge_media_to_tagged_user/edges"}
