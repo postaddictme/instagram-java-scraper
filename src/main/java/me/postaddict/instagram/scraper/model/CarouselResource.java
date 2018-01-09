@@ -18,9 +18,11 @@ public class CarouselResource{
     protected Integer height;
     protected Integer width;
     protected String displayUrl;
+    protected String videoUrl;
     @ElementCollection
     protected List<DisplayResource> displayResources;
     protected Boolean isVideo;
+    private Integer videoViewCount;
     @Transient
     protected Boolean shouldLogClientEvent;
     @Transient
