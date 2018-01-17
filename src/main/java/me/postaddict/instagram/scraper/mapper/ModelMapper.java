@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class ModelMapper implements Mapper{
 
@@ -76,7 +77,11 @@ public class ModelMapper implements Mapper{
         GraphQlResponse<Tag> graphQlResponse = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/tag.json");
         if(graphQlResponse!=null && graphQlResponse.getPayload()!=null){
             Tag tag = graphQlResponse.getPayload();
-            if(tag.getMediaRating()!=null && tag.getMediaRating().getMedia()!=null) {
+            if(tag==null){
+                return tag;
+            }
+            if(tag.getMediaRating()!=null && tag.getMediaRating().getMedia()!=null
+                    && tag.getMediaRating().getMedia().getNodes()!=null) {
                 tag.setCount(tag.getMediaRating().getMedia().getCount());
                 tag.getMediaRating().getMedia().getNodes().forEach(this::updateMediaTime);
             }
@@ -118,14 +123,14 @@ public class ModelMapper implements Mapper{
     }
 
     private void updateMediaTime(Media media) {
-        if(media.getTakenAtTimestamp() < MediaUtil.INSTAGRAM_BORN_YEAR){
-            media.setTakenAtTimestamp(media.getTakenAtTimestamp()*1000);
+        if(media.getTakenAtTimestamp()!=null && media.getTakenAtTimestamp() < MediaUtil.INSTAGRAM_BORN_YEAR){
+            media.setTakenAtTimestamp(media.getTakenAtTimestamp() * TimeUnit.SECONDS.toMillis(1));
         }
     }
 
     private void updateCommentTime(Comment comment) {
-        if(comment.getCreatedAt() < MediaUtil.INSTAGRAM_BORN_YEAR){
-            comment.setCreatedAt(comment.getCreatedAt()*1000);
+        if(comment.getCreatedAt()!=null && comment.getCreatedAt() < MediaUtil.INSTAGRAM_BORN_YEAR){
+            comment.setCreatedAt(comment.getCreatedAt() * TimeUnit.SECONDS.toMillis(1));
         }
     }
 
