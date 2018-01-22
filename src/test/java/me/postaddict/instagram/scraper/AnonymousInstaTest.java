@@ -106,10 +106,14 @@ public class AnonymousInstaTest {
         assertTrue(checkMedia(media));
         assertEquals(4, media.getCarouselMedia().size());
         Iterator<CarouselResource> carouselIterator = media.getCarouselMedia().iterator();
-        assertEquals("https://instagram.fhel3-1.fna.fbcdn.net/t51.2885-15/e35/22351958_144137916205565_6923513639366295552_n.jpg", carouselIterator.next().getDisplayUrl());
-        assertEquals("https://instagram.fhel3-1.fna.fbcdn.net/t51.2885-15/e35/22352110_177635979467060_738026920783904768_n.jpg", carouselIterator.next().getDisplayUrl());
-        assertEquals("https://instagram.fhel3-1.fna.fbcdn.net/t51.2885-15/e35/22352158_840551796104469_8224611081893445632_n.jpg", carouselIterator.next().getDisplayUrl());
-        assertEquals("https://instagram.fhel3-1.fna.fbcdn.net/t51.2885-15/e35/22427115_152159245386313_6593256479942246400_n.jpg", carouselIterator.next().getDisplayUrl());
+        assertThat(carouselIterator.next().getDisplayUrl()).
+                endsWith("/t51.2885-15/e35/22351958_144137916205565_6923513639366295552_n.jpg");
+        assertThat(carouselIterator.next().getDisplayUrl()).
+                endsWith("/t51.2885-15/e35/22352110_177635979467060_738026920783904768_n.jpg");
+        assertThat(carouselIterator.next().getDisplayUrl()).
+                endsWith("/t51.2885-15/e35/22352158_840551796104469_8224611081893445632_n.jpg");
+        assertThat(carouselIterator.next().getDisplayUrl()).
+                endsWith("/t51.2885-15/e35/22427115_152159245386313_6593256479942246400_n.jpg");
         System.out.println(media);
     }
 
@@ -151,6 +155,11 @@ public class AnonymousInstaTest {
             assertTrue(checkMedia(media));
         }
         System.out.println(list);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetMediasByTagError() throws Exception {
+        client.getMediasByTag("#HarryWright", 20);
     }
 
     @Test

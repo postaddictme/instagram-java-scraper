@@ -115,6 +115,7 @@ public class Instagram implements AuthenticatedInsta {
     }
 
     public Tag getTagByName(String tagName) throws IOException {
+        validateTagName(tagName);
         Request request = new Request.Builder()
                 .url(Endpoint.getTagJsonByTagName(tagName))
                 .build();
@@ -132,6 +133,7 @@ public class Instagram implements AuthenticatedInsta {
     }
 
     public Tag getMediasByTag(String tag, int pageCount) throws IOException {
+        validateTagName(tag);
         GetMediaByTagRequest getMediaByTagRequest = new GetMediaByTagRequest(httpClient, mapper, delayHandler);
         return getMediaByTagRequest.requestInstagramResult(new TagName(tag), pageCount, FIRST_PAGE);
     }
@@ -153,12 +155,12 @@ public class Instagram implements AuthenticatedInsta {
         Response response = executeHttpRequest(withCsrfToken(request));
         response.body().close();
     }
-    
+
     public void followAccountByUsername(String username) throws IOException{
         Account account = getAccountByUsername(username);
         followAccount(account.getId());
     }
-    
+
     public void followAccount(long userId) throws IOException {
         String url = Endpoint.getFollowAccountLink(userId);
         Request request = new Request.Builder()
@@ -169,12 +171,12 @@ public class Instagram implements AuthenticatedInsta {
         Response response = executeHttpRequest(withCsrfToken(request));
         response.body().close();
     }
-    
+
     public void unfollowAccountByUsername(String username) throws IOException{
         Account account = getAccountByUsername(username);
         unfollowAccount(account.getId());
     }
-    
+
     public void unfollowAccount(long userId) throws IOException {
         String url = Endpoint.getUnfollowAccountLink(userId);
         Request request = new Request.Builder()
@@ -185,7 +187,7 @@ public class Instagram implements AuthenticatedInsta {
         Response response = executeHttpRequest(withCsrfToken(request));
         response.body().close();
     }
-    
+
     public PageObject<Account> getMediaLikes(String shortcode, int pageCount) throws IOException{
         GetMediaLikesRequest getMediaLikesRequest = new GetMediaLikesRequest(httpClient, mapper, delayHandler);
         return getMediaLikesRequest.requestInstagramResult(new MediaCode(shortcode), pageCount, FIRST_PAGE);
@@ -276,5 +278,11 @@ public class Instagram implements AuthenticatedInsta {
             delayHandler.onEachRequest();
         }
         return response;
+    }
+
+    private void validateTagName(String tag) {
+        if(tag==null || tag.isEmpty() || tag.startsWith("#")){
+            throw new IllegalArgumentException("Please provide non empty tag name that not starts with #");
+        }
     }
 }
