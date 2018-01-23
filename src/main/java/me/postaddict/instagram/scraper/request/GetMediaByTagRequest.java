@@ -26,8 +26,23 @@ public class GetMediaByTagRequest extends PaginatedRequest<Tag, TagName> {
 
     @Override
     protected void updateResult(Tag result, Tag current) {
+        if(isResultMediaEmpty(result) || isCurrentMediaEmpty(current)){
+            return;
+        }
         result.getMediaRating().getMedia().getNodes().addAll(current.getMediaRating().getMedia().getNodes());
+        if(result.getMediaRating().getMedia().getPageInfo()==null){
+            return;
+        }
         result.getMediaRating().getMedia().setPageInfo(current.getMediaRating().getMedia().getPageInfo());
+    }
+
+    private boolean isResultMediaEmpty(Tag result) {
+        return result == null || result.getMediaRating() == null || result.getMediaRating().getMedia() == null
+                || result.getMediaRating().getMedia().getNodes() == null;
+    }
+
+    private boolean isCurrentMediaEmpty(Tag current) {
+        return isResultMediaEmpty(current);
     }
 
     @Override
