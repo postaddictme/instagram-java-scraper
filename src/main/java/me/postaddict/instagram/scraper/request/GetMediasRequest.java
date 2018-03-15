@@ -2,7 +2,6 @@ package me.postaddict.instagram.scraper.request;
 
 import me.postaddict.instagram.scraper.Endpoint;
 import me.postaddict.instagram.scraper.mapper.Mapper;
-import me.postaddict.instagram.scraper.model.Account;
 import me.postaddict.instagram.scraper.model.Media;
 import me.postaddict.instagram.scraper.model.PageInfo;
 import me.postaddict.instagram.scraper.model.PageObject;
