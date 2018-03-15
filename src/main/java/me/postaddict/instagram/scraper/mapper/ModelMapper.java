@@ -36,15 +36,12 @@ public class ModelMapper implements Mapper{
     private final ConcurrentHashMap<String, ThreadLocal<Unmarshaller>> unmarshallerCache = new ConcurrentHashMap<>();
 
     @SneakyThrows
-    public Account mapAccount(InputStream jsonStream){
-        Account account = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/account-binding.json");
-        Account accountCopy = (Account) BeanUtils.cloneBean(account);
-        accountCopy.setMedia(null);
-        if(account.getMedia()!=null && account.getMedia().getNodes()!=null) {
-            account.getMedia().getNodes().forEach(media -> media.setOwner(accountCopy));
-            account.getMedia().getNodes().forEach(this::updateMediaTime);
+    public PageObject<Media> mapMedias(InputStream jsonStream){
+        GraphQlResponse<PageObject<Media>> medias = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/medias.json");
+        if(medias.getPayload()!=null && medias.getPayload().getNodes()!=null) {
+            medias.getPayload().getNodes().forEach(this::updateMediaTime);
         }
-        return account;
+        return medias.getPayload();
     }
 
     public Media mapMedia(InputStream jsonStream){
@@ -137,10 +134,29 @@ public class ModelMapper implements Mapper{
     @Override
     @SneakyThrows
     public String getLastMediaShortCode(InputStream jsonStream) {
-        Map<String,Object> jsonMap = mapperThreadLocal.get().readValue(jsonStream,
-                                                                new TypeReference<Map<String, Object>>() {});
-        Node jsonDom = new DomTransformer(new NopTypeConverter()).transform(Collections.singletonMap("root",jsonMap));
+        Node jsonDom = getDomModel(jsonStream);
         return XPathFactory.newInstance().newXPath().evaluate("//shortcode", jsonDom);
+    }
+
+    @Override
+    @SneakyThrows
+    public Account mapAccount(InputStream jsonStream) {
+        GraphQlResponse<Account> graphQlResponse = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/account-binding.json", GraphQlResponse.class);
+        Account account = graphQlResponse.getPayload();
+        Account accountCopy = (Account) BeanUtils.cloneBean(account);
+        accountCopy.setMedia(null);
+        if(account.getMedia()!=null && account.getMedia().getNodes()!=null) {
+            account.getMedia().getNodes().forEach(media -> media.setOwner(accountCopy));
+            account.getMedia().getNodes().forEach(this::updateMediaTime);
+        }
+        return account;
+    }
+
+
+    private Node getDomModel(InputStream jsonStream) throws java.io.IOException {
+        Map<String,Object> jsonMap = mapperThreadLocal.get().readValue(jsonStream,
+                new TypeReference<Map<String, Object>>() {});
+        return new DomTransformer(new NopTypeConverter()).transform(Collections.singletonMap("root",jsonMap));
     }
 
     @Override

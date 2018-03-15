@@ -3,6 +3,14 @@
   "java-types": {
     "java-type": [
       {
+        "name": "me.postaddict.instagram.scraper.model.GraphQlResponse",
+        "java-attributes": {
+          "xml-element": [
+            {"java-attribute": "payload","type": "me.postaddict.instagram.scraper.model.Account","xml-path": "graphql/user"}
+          ]
+        }
+      },
+      {
         "name": "me.postaddict.instagram.scraper.model.Account",
         "xml-root-element": {
           "name": "user"

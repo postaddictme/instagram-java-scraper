@@ -112,7 +112,7 @@ public class MappingTest {
     @Test
     public void testMediaCarousel() throws Exception {
         InputStream mediaListStream = MappingTest.class.getResourceAsStream("/getMedias.json");
-        Account medias = modelMapper.mapAccount(mediaListStream);
+        PageObject<Media> medias = modelMapper.mapMedias(mediaListStream);
 
         assertThat(medias).isNotNull();
         assertThat(toJson(medias)).isEqualTo(IOUtils.toString(
