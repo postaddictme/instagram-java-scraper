@@ -50,9 +50,15 @@ MediaUtil.getIdFromCode('BGiDkHAgBF_');
 // Output: 1270593720437182847
 ```
 
+### If you use this library in your project and want to help us ###
+
+* Mark project repository by star on github 
+* Make pull request with bug fix
+* Follow project contributors
+
 ### How to use release version of Instagram Java scraper ###
 
-Released as [com.github.igor-suhorukov:instagramscraper:2.0](http://repo1.maven.org/maven2/com/github/igor-suhorukov/instagramscraper/2.0/) into [maven central](https://mvnrepository.com/artifact/com.github.igor-suhorukov/instagramscraper/2.0) 
+Released as [com.github.igor-suhorukov:instagramscraper:2.1](http://repo1.maven.org/maven2/com/github/igor-suhorukov/instagramscraper/2.1/) into [maven central](https://mvnrepository.com/artifact/com.github.igor-suhorukov/instagramscraper/2.1) 
 
 ### How to use development version of Instagram Java scraper ###
 
