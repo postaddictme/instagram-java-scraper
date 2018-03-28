@@ -36,7 +36,7 @@ public class GetCommentsByMediaCode extends PaginatedRequest<PageObject<Comment>
     @Override
     protected PageInfo getPageInfo(PageObject<Comment> current) {
         List<Comment> comments = current.getNodes();
-        return new PageInfo(current.getPageInfo().isHasNextPage(),Long.toString(comments.get(comments.size()-1).getId()));
+        return new PageInfo(current.getPageInfo().isHasNextPage(),Long.toString(comments.get(0).getId()));
     }
 
     @Override
