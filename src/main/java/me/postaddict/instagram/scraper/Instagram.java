@@ -10,6 +10,7 @@ import me.postaddict.instagram.scraper.request.parameters.*;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @AllArgsConstructor
@@ -43,7 +44,9 @@ public class Instagram implements AuthenticatedInsta {
                 .build();
 
         Response response = executeHttpRequest(request);
-        response.body().close();
+        try (ResponseBody body = response.body()){
+            //release connection
+        }
     }
 
     public void login(String username, String password) throws IOException {
@@ -63,8 +66,8 @@ public class Instagram implements AuthenticatedInsta {
                 .build();
 
         Response response = executeHttpRequest(withCsrfToken(request));
-        try (ResponseBody body = response.body()){
-            if(!mapper.isAuthenticated(body.byteStream())){
+        try(InputStream jsonStream = response.body().byteStream()) {
+            if(!mapper.isAuthenticated(jsonStream)){
                 throw new InstagramAuthException("Credentials rejected by instagram");
             }
         }
@@ -76,8 +79,8 @@ public class Instagram implements AuthenticatedInsta {
                 .header(Endpoint.REFERER, Endpoint.BASE_URL + "/")
                 .build();
         Response response = executeHttpRequest(withCsrfToken(request));
-        try (ResponseBody body = response.body()){
-            return getMediaByCode(mapper.getLastMediaShortCode(body.byteStream())).getOwner();
+        try(InputStream jsonStream = response.body().byteStream()) {
+            return getMediaByCode(mapper.getLastMediaShortCode(jsonStream)).getOwner();
         }
     }
 
@@ -86,7 +89,9 @@ public class Instagram implements AuthenticatedInsta {
                 .url(Endpoint.getAccountId(username))
                 .build();
         Response response = executeHttpRequest(request);
-        return mapper.mapAccount(response.body().byteStream());
+        try(InputStream jsonStream = response.body().byteStream()) {
+            return mapper.mapAccount(jsonStream);
+        }
     }
 
     public PageObject<Media> getMedias(String username, int pageCount) throws IOException {
@@ -109,8 +114,8 @@ public class Instagram implements AuthenticatedInsta {
                 .build();
 
         Response response = executeHttpRequest(request);
-        try (ResponseBody responseBody = response.body()){
-            return mapper.mapMedia(responseBody.byteStream());
+        try(InputStream jsonStream = response.body().byteStream()) {
+            return mapper.mapMedia(jsonStream);
         }
     }
 
@@ -125,8 +130,8 @@ public class Instagram implements AuthenticatedInsta {
                 .build();
 
         Response response = executeHttpRequest(request);
-        try (ResponseBody responseBody = response.body()){
-            return mapper.mapTag(responseBody.byteStream());
+        try(InputStream jsonStream = response.body().byteStream()) {
+            return mapper.mapTag(jsonStream);
         }
 
     }
@@ -231,8 +236,8 @@ public class Instagram implements AuthenticatedInsta {
                 .build();
 
         Response response = executeHttpRequest(withCsrfToken(request));
-        try (ResponseBody responseBody = response.body()){
-            return mapper.mapMediaCommentResponse(responseBody.byteStream());
+        try(InputStream jsonStream = response.body().byteStream()) {
+            return mapper.mapMediaCommentResponse(jsonStream);
         }
     }
 
@@ -257,8 +262,8 @@ public class Instagram implements AuthenticatedInsta {
                 .build();
 
         Response response = executeHttpRequest(withCsrfToken(request));
-        try (ResponseBody responseBody = response.body()){
-            ActivityFeed activityFeed = mapper.mapActivity(responseBody.byteStream());
+        try(InputStream jsonStream = response.body().byteStream()) {
+            ActivityFeed activityFeed = mapper.mapActivity(jsonStream);
             markActivityChecked(activityFeed);
             return activityFeed;
         }
