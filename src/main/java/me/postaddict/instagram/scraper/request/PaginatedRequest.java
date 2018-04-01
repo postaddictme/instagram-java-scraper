@@ -35,8 +35,8 @@ public abstract class PaginatedRequest<R, P extends RequestParameter> {
 
             Response response = httpClient.newCall(request).execute();
             R current;
-            try (ResponseBody responseBody = response.body()){
-                current = mapResponse(responseBody.byteStream());
+            try(InputStream jsonStream = response.body().byteStream()) {
+                current = mapResponse(jsonStream);
             }
             if(delayHandler!=null) {
                 delayHandler.onEachRequest();
