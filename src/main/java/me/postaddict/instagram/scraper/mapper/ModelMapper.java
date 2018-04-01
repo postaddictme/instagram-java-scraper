@@ -65,8 +65,11 @@ public class ModelMapper implements Mapper{
     }
 
     public Location mapLocation(InputStream jsonStream){
-        Location location = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/location.json");
+        GraphQlResponse<Location> graphQlResponse = mapObject(jsonStream, "me/postaddict/instagram/scraper/model/location.json");
+        Location location = graphQlResponse.getPayload();
         location.setCount(location.getMediaRating().getMedia().getCount());
+        location.getMediaRating().getMedia().getNodes().forEach(this::updateMediaTime);
+        location.getMediaRating().getTopPosts().forEach(this::updateMediaTime);
         return location;
     }
 
