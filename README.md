@@ -1,6 +1,5 @@
 Instagram Java scraper
 ======================
-(Need an update to work properly since Instagram APIs changed a bit. PHP version up-to-date fine though) 
 Instagram Java Scraper. Get account information, photos and videos without any authorization.
 
  
