@@ -1,6 +1,7 @@
 package me.postaddict.instagram.scraper;
 
 import lombok.AllArgsConstructor;
+import me.postaddict.instagram.scraper.cookie.CookieUtil;
 import me.postaddict.instagram.scraper.exception.InstagramAuthException;
 import me.postaddict.instagram.scraper.mapper.Mapper;
 import me.postaddict.instagram.scraper.mapper.ModelMapper;
@@ -9,6 +10,7 @@ import me.postaddict.instagram.scraper.request.*;
 import me.postaddict.instagram.scraper.request.parameters.*;
 import okhttp3.*;
 
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -20,24 +22,18 @@ public class Instagram implements AuthenticatedInsta {
     protected final OkHttpClient httpClient;
     protected final Mapper mapper;
     protected final DelayHandler delayHandler;
+    protected String csrf_token;
 
     public Instagram(OkHttpClient httpClient) {
-        this(httpClient, new ModelMapper(), new DefaultDelayHandler());
+        this(httpClient, new ModelMapper(), new DefaultDelayHandler(),"");
     }
 
     protected Request withCsrfToken(Request request) {
-        List<Cookie> cookies = httpClient.cookieJar()
-                .loadForRequest(request.url());
-        cookies.removeIf(cookie -> !cookie.name().equals("csrftoken"));
-        if (!cookies.isEmpty()) {
-            Cookie cookie = cookies.get(0);
-            return request.newBuilder()
-                    .addHeader("X-CSRFToken", cookie.value())
-                    .build();
-        }
-        return request;
+    	return request.newBuilder()
+              .addHeader("X-CSRFToken", csrf_token)
+              .build();
     }
-
+    
     public void basePage() throws IOException {
         Request request = new Request.Builder()
                 .url(Endpoint.BASE_URL)
@@ -45,13 +41,30 @@ public class Instagram implements AuthenticatedInsta {
 
         Response response = executeHttpRequest(request);
         try (ResponseBody body = response.body()){
-            //release connection
+        	if(this.csrf_token.isEmpty())
+        		this.csrf_token=getCSRFToken(body);
         }
     }
+    
+    public String getCSRFToken(ResponseBody body) throws IOException {
+		String seek = "\"csrf_token\":\"";
+		DataInputStream in = new DataInputStream(body.byteStream());
+		
+		String line;
+		while((line = in.readLine())!=null) {
+			int index = line.indexOf(seek);
+			if(index != -1) {
+				return line.substring(index+seek.length(),index+seek.length()+32);
+			}
+		}
+		throw new NullPointerException("Couldn't find CSRFToken");
+	}
 
     public void login(String username, String password) throws IOException {
         if (username == null || password == null) {
             throw new InstagramAuthException("Specify username and password");
+        }else if(this.csrf_token.isEmpty()) {
+        	throw new NullPointerException("Please run before base()");
         }
 
         RequestBody formBody = new FormBody.Builder()
