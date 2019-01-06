@@ -1,19 +1,41 @@
 package me.postaddict.instagram.scraper;
 
-import lombok.AllArgsConstructor;
-import me.postaddict.instagram.scraper.cookie.CookieUtil;
-import me.postaddict.instagram.scraper.exception.InstagramAuthException;
-import me.postaddict.instagram.scraper.mapper.Mapper;
-import me.postaddict.instagram.scraper.mapper.ModelMapper;
-import me.postaddict.instagram.scraper.model.*;
-import me.postaddict.instagram.scraper.request.*;
-import me.postaddict.instagram.scraper.request.parameters.*;
-import okhttp3.*;
-
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
+
+import lombok.AllArgsConstructor;
+import me.postaddict.instagram.scraper.exception.InstagramAuthException;
+import me.postaddict.instagram.scraper.mapper.Mapper;
+import me.postaddict.instagram.scraper.mapper.ModelMapper;
+import me.postaddict.instagram.scraper.model.Account;
+import me.postaddict.instagram.scraper.model.ActionResponse;
+import me.postaddict.instagram.scraper.model.ActivityFeed;
+import me.postaddict.instagram.scraper.model.Comment;
+import me.postaddict.instagram.scraper.model.Location;
+import me.postaddict.instagram.scraper.model.Media;
+import me.postaddict.instagram.scraper.model.PageInfo;
+import me.postaddict.instagram.scraper.model.PageObject;
+import me.postaddict.instagram.scraper.model.Tag;
+import me.postaddict.instagram.scraper.request.DefaultDelayHandler;
+import me.postaddict.instagram.scraper.request.DelayHandler;
+import me.postaddict.instagram.scraper.request.GetCommentsByMediaCode;
+import me.postaddict.instagram.scraper.request.GetFollowersRequest;
+import me.postaddict.instagram.scraper.request.GetFollowsRequest;
+import me.postaddict.instagram.scraper.request.GetLocationRequest;
+import me.postaddict.instagram.scraper.request.GetMediaByTagRequest;
+import me.postaddict.instagram.scraper.request.GetMediaLikesRequest;
+import me.postaddict.instagram.scraper.request.GetMediasRequest;
+import me.postaddict.instagram.scraper.request.parameters.LocationParameter;
+import me.postaddict.instagram.scraper.request.parameters.MediaCode;
+import me.postaddict.instagram.scraper.request.parameters.TagName;
+import me.postaddict.instagram.scraper.request.parameters.UserParameter;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 @AllArgsConstructor
 public class Instagram implements AuthenticatedInsta {
