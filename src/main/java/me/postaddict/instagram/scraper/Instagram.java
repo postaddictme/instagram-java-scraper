@@ -45,14 +45,16 @@ public class Instagram implements AuthenticatedInsta {
     protected final Mapper mapper;
     protected final DelayHandler delayHandler;
     protected String csrf_token;
+    protected String rollout_hash;
 
     public Instagram(OkHttpClient httpClient) {
-        this(httpClient, new ModelMapper(), new DefaultDelayHandler(),"");
+        this(httpClient, new ModelMapper(), new DefaultDelayHandler(),"","");
     }
 
     protected Request withCsrfToken(Request request) {
     	return request.newBuilder()
               .addHeader("X-CSRFToken", csrf_token)
+              .addHeader("X-Instagram-AJAX", (rollout_hash.isEmpty() ? "1" : rollout_hash))
               .build();
     }
     
@@ -64,22 +66,35 @@ public class Instagram implements AuthenticatedInsta {
         Response response = executeHttpRequest(request);
         try (ResponseBody body = response.body()){
         	if(this.csrf_token.isEmpty())
-        		this.csrf_token=getCSRFToken(body);
+        		getCSRFToken(body);
+        	else if(this.rollout_hash.isEmpty())
+        		getRolloutHash(body);
         }
     }
     
-    public String getCSRFToken(ResponseBody body) throws IOException {
-		String seek = "\"csrf_token\":\"";
-		DataInputStream in = new DataInputStream(body.byteStream());
+    private void getCSRFToken(ResponseBody body) throws IOException {
+    	this.csrf_token=getToken("\"csrf_token\":\"",32,body.byteStream());
+    }
+    
+    private void getRolloutHash(ResponseBody body){
+    	try {
+			this.rollout_hash=getToken("\"rollout_hash\":\"",12,body.byteStream());
+		} catch (IOException e) {
+			this.rollout_hash="1";
+		}
+    }
+    
+    private String getToken(String seek, int length ,InputStream stream) throws IOException {
+		DataInputStream in = new DataInputStream(stream);
 		
 		String line;
 		while((line = in.readLine())!=null) {
 			int index = line.indexOf(seek);
 			if(index != -1) {
-				return line.substring(index+seek.length(),index+seek.length()+32);
+				return line.substring(index+seek.length(),index+seek.length()+length);
 			}
 		}
-		throw new NullPointerException("Couldn't find CSRFToken");
+		throw new NullPointerException("Couldn't find "+seek);
 	}
 
     public void login(String username, String password) throws IOException {
