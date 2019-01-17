@@ -1,17 +1,41 @@
 package me.postaddict.instagram.scraper;
 
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import lombok.AllArgsConstructor;
 import me.postaddict.instagram.scraper.exception.InstagramAuthException;
 import me.postaddict.instagram.scraper.mapper.Mapper;
 import me.postaddict.instagram.scraper.mapper.ModelMapper;
-import me.postaddict.instagram.scraper.model.*;
-import me.postaddict.instagram.scraper.request.*;
-import me.postaddict.instagram.scraper.request.parameters.*;
-import okhttp3.*;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
+import me.postaddict.instagram.scraper.model.Account;
+import me.postaddict.instagram.scraper.model.ActionResponse;
+import me.postaddict.instagram.scraper.model.ActivityFeed;
+import me.postaddict.instagram.scraper.model.Comment;
+import me.postaddict.instagram.scraper.model.Location;
+import me.postaddict.instagram.scraper.model.Media;
+import me.postaddict.instagram.scraper.model.PageInfo;
+import me.postaddict.instagram.scraper.model.PageObject;
+import me.postaddict.instagram.scraper.model.Tag;
+import me.postaddict.instagram.scraper.request.DefaultDelayHandler;
+import me.postaddict.instagram.scraper.request.DelayHandler;
+import me.postaddict.instagram.scraper.request.GetCommentsByMediaCode;
+import me.postaddict.instagram.scraper.request.GetFollowersRequest;
+import me.postaddict.instagram.scraper.request.GetFollowsRequest;
+import me.postaddict.instagram.scraper.request.GetLocationRequest;
+import me.postaddict.instagram.scraper.request.GetMediaByTagRequest;
+import me.postaddict.instagram.scraper.request.GetMediaLikesRequest;
+import me.postaddict.instagram.scraper.request.GetMediasRequest;
+import me.postaddict.instagram.scraper.request.parameters.LocationParameter;
+import me.postaddict.instagram.scraper.request.parameters.MediaCode;
+import me.postaddict.instagram.scraper.request.parameters.TagName;
+import me.postaddict.instagram.scraper.request.parameters.UserParameter;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 @AllArgsConstructor
 public class Instagram implements AuthenticatedInsta {
@@ -20,24 +44,20 @@ public class Instagram implements AuthenticatedInsta {
     protected final OkHttpClient httpClient;
     protected final Mapper mapper;
     protected final DelayHandler delayHandler;
+    protected String csrf_token;
+    protected String rollout_hash;
 
     public Instagram(OkHttpClient httpClient) {
-        this(httpClient, new ModelMapper(), new DefaultDelayHandler());
+        this(httpClient, new ModelMapper(), new DefaultDelayHandler(),"","");
     }
 
     protected Request withCsrfToken(Request request) {
-        List<Cookie> cookies = httpClient.cookieJar()
-                .loadForRequest(request.url());
-        cookies.removeIf(cookie -> !cookie.name().equals("csrftoken"));
-        if (!cookies.isEmpty()) {
-            Cookie cookie = cookies.get(0);
-            return request.newBuilder()
-                    .addHeader("X-CSRFToken", cookie.value())
-                    .build();
-        }
-        return request;
+    	return request.newBuilder()
+              .addHeader("X-CSRFToken", csrf_token)
+              .addHeader("X-Instagram-AJAX", (rollout_hash.isEmpty() ? "1" : rollout_hash))
+              .build();
     }
-
+    
     public void basePage() throws IOException {
         Request request = new Request.Builder()
                 .url(Endpoint.BASE_URL)
@@ -45,13 +65,43 @@ public class Instagram implements AuthenticatedInsta {
 
         Response response = executeHttpRequest(request);
         try (ResponseBody body = response.body()){
-            //release connection
+        	if(this.csrf_token.isEmpty())
+        		getCSRFToken(body);
+        	else if(this.rollout_hash.isEmpty())
+        		getRolloutHash(body);
         }
     }
+    
+    private void getCSRFToken(ResponseBody body) throws IOException {
+    	this.csrf_token=getToken("\"csrf_token\":\"",32,body.byteStream());
+    }
+    
+    private void getRolloutHash(ResponseBody body){
+    	try {
+			this.rollout_hash=getToken("\"rollout_hash\":\"",12,body.byteStream());
+		} catch (IOException e) {
+			this.rollout_hash="1";
+		}
+    }
+    
+    private String getToken(String seek, int length ,InputStream stream) throws IOException {
+		DataInputStream in = new DataInputStream(stream);
+		
+		String line;
+		while((line = in.readLine())!=null) {
+			int index = line.indexOf(seek);
+			if(index != -1) {
+				return line.substring(index+seek.length(),index+seek.length()+length);
+			}
+		}
+		throw new NullPointerException("Couldn't find "+seek);
+	}
 
     public void login(String username, String password) throws IOException {
         if (username == null || password == null) {
             throw new InstagramAuthException("Specify username and password");
+        }else if(this.csrf_token.isEmpty()) {
+        	throw new NullPointerException("Please run before base()");
         }
 
         RequestBody formBody = new FormBody.Builder()
