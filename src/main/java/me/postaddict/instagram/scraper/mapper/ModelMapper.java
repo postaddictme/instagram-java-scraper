@@ -48,8 +48,8 @@ public class ModelMapper implements Mapper{
         GraphQlResponse<Media> graphQlResponse = mapObject(jsonStream,
                 "me/postaddict/instagram/scraper/model/media-by-url.json");
         Media media = graphQlResponse.getPayload();
-        media.setCommentCount(media.getCommentPreview().getCount());
         if(media.getCommentPreview()!=null && media.getCommentPreview().getNodes()!=null) {
+            media.setCommentCount(media.getCommentPreview().getCount());
             media.getCommentPreview().getNodes().forEach(this::updateCommentTime);
         }
         updateMediaTime(media);
