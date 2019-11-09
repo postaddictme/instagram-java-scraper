@@ -28,7 +28,7 @@ public class ErrorInterceptor implements Interceptor {
             case 404:
                 throw new InstagramNotFoundException("Resource does not exist");
             default:
-                throw new InstagramException(String.format("Response code: %d message: %ss", code, response.message()));
+                throw new InstagramException(String.format("Response code: %d message: %s", code, response.message()));
         }
     }
 }
