@@ -73,10 +73,10 @@
             {"java-attribute": "isAdvertising","type": "java.lang.Boolean","xml-path": "is_ad/text()"},
             {"java-attribute": "gatingInfo","type": "java.lang.String","xml-path": "gating_info/text()"},
             {"java-attribute": "caption","type": "java.lang.String","xml-path": "edge_media_to_caption/edges/node/text/text()"},
-            {"java-attribute": "commentCount","type": "java.lang.Integer","xml-path": "edge_media_to_comment/count/text()"},
+            {"java-attribute": "commentCount","type": "java.lang.Integer","xml-path": "edge_media_to_parent_comment/count/text()"},
             {"java-attribute": "likeCount","type": "java.lang.Integer","xml-path": "edge_media_preview_like/count/text()"},
             {"java-attribute": "firstLikes","type": "me.postaddict.instagram.scraper.model.Account","xml-path": "edge_media_preview_like/edges/node"},
-            {"java-attribute": "commentPreview","type": "me.postaddict.instagram.scraper.model.PageObject","xml-path": "edge_media_to_comment"},
+            {"java-attribute": "commentPreview","type": "me.postaddict.instagram.scraper.model.PageObject","xml-path": "edge_media_to_parent_comment"},
             {"java-attribute": "carouselMedia","type": "me.postaddict.instagram.scraper.model.CarouselResource","xml-path": "edge_sidecar_to_children/edges/node"},
             {"java-attribute": "takenAtTimestamp","type": "java.lang.Long","xml-path": "taken_at_timestamp/text()"},
 

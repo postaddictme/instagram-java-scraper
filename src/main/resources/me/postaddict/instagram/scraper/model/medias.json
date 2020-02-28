@@ -45,7 +45,7 @@
             {"java-attribute": "commentsDisabled","type": "java.lang.Boolean","xml-path": "comments_disabled/text()"},
             {"java-attribute": "gatingInfo","type": "java.lang.String","xml-path": "gating_info/text()"},
             {"java-attribute": "caption","type": "java.lang.String","xml-path": "edge_media_to_caption/edges/node/text/text()"},
-            {"java-attribute": "commentCount","type": "java.lang.Integer","xml-path": "edge_media_to_comment/count/text()"},
+            {"java-attribute": "commentCount","type": "java.lang.Integer","xml-path": "edge_media_to_parent_comment/count/text()"},
             {"java-attribute": "likeCount","type": "java.lang.Integer","xml-path": "edge_media_preview_like/count/text()"},
             {"java-attribute": "takenAtTimestamp","type": "java.lang.Long","xml-path": "taken_at_timestamp/text()"},
             {"java-attribute": "width","type": "java.lang.Integer","xml-path": "dimensions/width/text()"},
