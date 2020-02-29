@@ -4,7 +4,7 @@ import lombok.experimental.UtilityClass;
 import me.postaddict.instagram.scraper.cookie.CookieHashSet;
 import me.postaddict.instagram.scraper.cookie.DefaultCookieJar;
 import me.postaddict.instagram.scraper.interceptor.ErrorInterceptor;
-import me.postaddict.instagram.scraper.interceptor.UserAgentInterceptor;
+import me.postaddict.instagram.scraper.interceptor.FakeBrowserInterceptor;
 import okhttp3.OkHttpClient;
 
 import java.io.IOException;
@@ -16,7 +16,7 @@ public class InstagramFactory {
             throws IOException{
 
         OkHttpClient httpClient = new OkHttpClient.Builder()
-                .addInterceptor(new UserAgentInterceptor(userAgent))
+                .addInterceptor(new FakeBrowserInterceptor(userAgent))
                 .addInterceptor(new ErrorInterceptor())
                 .cookieJar(new DefaultCookieJar(new CookieHashSet()))
                 .build();

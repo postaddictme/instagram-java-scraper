@@ -40,4 +40,5 @@ public class Account {
     @Transient
     private PageObject<Media> media;
     private Date lastUpdated = new Date();
+    private Boolean isBusinessAccount;
 }

@@ -9,7 +9,7 @@
         },
         "java-attributes": {
           "xml-element": [
-            {"java-attribute": "payload","type": "me.postaddict.instagram.scraper.model.PageObject","xml-path": "shortcode_media/edge_media_to_comment"}
+            {"java-attribute": "payload","type": "me.postaddict.instagram.scraper.model.PageObject","xml-path": "shortcode_media/edge_media_to_parent_comment"}
           ]
         }
       },

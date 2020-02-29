@@ -6,11 +6,11 @@ import okhttp3.Response;
 
 import java.io.IOException;
 
-public class UserAgentInterceptor implements Interceptor {
+public class FakeBrowserInterceptor implements Interceptor {
 
     private final String userAgent;
 
-    public UserAgentInterceptor(String userAgent) {
+    public FakeBrowserInterceptor(String userAgent) {
         this.userAgent = userAgent;
     }
 
@@ -23,6 +23,9 @@ public class UserAgentInterceptor implements Interceptor {
         Request originalRequest = chain.request();
         Request newRequest = originalRequest.newBuilder()
                 .header("User-Agent", userAgent)
+                .header("Accept", "*/*")
+                .header("Accept-Language", "ja,en-US;q=0.7,en;q=0.3")
+                .header("DNT", "1")
                 .build();
         return chain.proceed(newRequest);
     }

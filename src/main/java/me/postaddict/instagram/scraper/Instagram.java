@@ -30,7 +30,9 @@ import me.postaddict.instagram.scraper.request.parameters.LocationParameter;
 import me.postaddict.instagram.scraper.request.parameters.MediaCode;
 import me.postaddict.instagram.scraper.request.parameters.TagName;
 import me.postaddict.instagram.scraper.request.parameters.UserParameter;
+import okhttp3.Cookie;
 import okhttp3.FormBody;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -53,8 +55,10 @@ public class Instagram implements AuthenticatedInsta {
 
     protected Request withCsrfToken(Request request) {
     	return request.newBuilder()
-              .addHeader("X-CSRFToken", csrf_token)
+              .addHeader("X-CSRFToken", getCSRFToken())
               .addHeader("X-Instagram-AJAX", (rollout_hash.isEmpty() ? "1" : rollout_hash))
+              .addHeader("X-Requested-With", "XMLHttpRequest")
+              .addHeader("X-IG-App-ID", "936619743392459")
               .build();
     }
     
@@ -74,6 +78,15 @@ public class Instagram implements AuthenticatedInsta {
     
     private void getCSRFToken(ResponseBody body) throws IOException {
     	this.csrf_token=getToken("\"csrf_token\":\"",32,body.byteStream());
+    }
+    
+    private String getCSRFToken() {
+        for (Cookie cookie : this.httpClient.cookieJar().loadForRequest(HttpUrl.parse(Endpoint.BASE_URL))) {
+            if ("csrftoken".equals(cookie.name())) {
+                return cookie.value();
+            }
+        }
+        return csrf_token;
     }
     
     private void getRolloutHash(ResponseBody body){
@@ -107,18 +120,20 @@ public class Instagram implements AuthenticatedInsta {
         RequestBody formBody = new FormBody.Builder()
                 .add("username", username)
                 .add("password", password)
+                .add("queryParams", "{}")
+                .add("optIntoOneTap", "true")
                 .build();
 
         Request request = new Request.Builder()
                 .url(Endpoint.LOGIN_URL)
-                .header(Endpoint.REFERER, Endpoint.BASE_URL + "/")
+                .header(Endpoint.REFERER, Endpoint.BASE_URL + "/accounts/login/")
                 .post(formBody)
                 .build();
 
         Response response = executeHttpRequest(withCsrfToken(request));
         try(InputStream jsonStream = response.body().byteStream()) {
             if(!mapper.isAuthenticated(jsonStream)){
-                throw new InstagramAuthException("Credentials rejected by instagram");
+                throw new InstagramAuthException("Credentials rejected by instagram", ErrorType.UNAUTHORIZED);
             }
         }
     }
@@ -130,7 +145,7 @@ public class Instagram implements AuthenticatedInsta {
                 .build();
         Response response = executeHttpRequest(withCsrfToken(request));
         try(InputStream jsonStream = response.body().byteStream()) {
-            return getMediaByCode(mapper.getLastMediaShortCode(jsonStream)).getOwner();
+            return getAccountByUsername(getMediaByCode(mapper.getLastMediaShortCode(jsonStream)).getOwner().getUsername());
         }
     }
 
@@ -343,5 +358,15 @@ public class Instagram implements AuthenticatedInsta {
         if(tag==null || tag.isEmpty() || tag.startsWith("#")){
             throw new IllegalArgumentException("Please provide non empty tag name that not starts with #");
         }
+    }
+
+    @Override
+    public Long getLoginUserId() {
+        for (Cookie cookie : this.httpClient.cookieJar().loadForRequest(HttpUrl.parse(Endpoint.BASE_URL))) {
+            if ("ds_user_id".equals(cookie.name())) {
+                return Long.parseLong(cookie.value());
+            }
+        }
+        return null;
     }
 }

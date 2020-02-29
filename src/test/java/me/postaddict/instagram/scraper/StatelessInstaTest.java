@@ -1,7 +1,7 @@
 package me.postaddict.instagram.scraper;
 
 import me.postaddict.instagram.scraper.interceptor.ErrorInterceptor;
-import me.postaddict.instagram.scraper.interceptor.UserAgentInterceptor;
+import me.postaddict.instagram.scraper.interceptor.FakeBrowserInterceptor;
 import me.postaddict.instagram.scraper.interceptor.UserAgents;
 import me.postaddict.instagram.scraper.model.Account;
 import me.postaddict.instagram.scraper.model.Media;
@@ -29,7 +29,7 @@ public class StatelessInstaTest {
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
         OkHttpClient httpClient = new OkHttpClient.Builder()
                 .addNetworkInterceptor(loggingInterceptor)
-                .addInterceptor(new UserAgentInterceptor(UserAgents.OSX_CHROME))
+                .addInterceptor(new FakeBrowserInterceptor(UserAgents.OSX_CHROME))
                 .addInterceptor(new ErrorInterceptor())
                 .build();
         client = new Instagram(httpClient);

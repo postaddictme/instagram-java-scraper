@@ -3,7 +3,7 @@ package me.postaddict.instagram.scraper;
 import me.postaddict.instagram.scraper.cookie.CookieHashSet;
 import me.postaddict.instagram.scraper.cookie.DefaultCookieJar;
 import me.postaddict.instagram.scraper.interceptor.ErrorInterceptor;
-import me.postaddict.instagram.scraper.interceptor.UserAgentInterceptor;
+import me.postaddict.instagram.scraper.interceptor.FakeBrowserInterceptor;
 import me.postaddict.instagram.scraper.interceptor.UserAgents;
 import static org.assertj.core.api.Assertions.*;
 import me.postaddict.instagram.scraper.model.*;
@@ -30,7 +30,7 @@ public class AnonymousInstaTest {
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient httpClient = new OkHttpClient.Builder()
                 .addNetworkInterceptor(loggingInterceptor)
-                .addInterceptor(new UserAgentInterceptor(UserAgents.OSX_CHROME))
+                .addInterceptor(new FakeBrowserInterceptor(UserAgents.OSX_CHROME))
                 .addInterceptor(new ErrorInterceptor())
                 .cookieJar(new DefaultCookieJar(new CookieHashSet()))
                 .build();

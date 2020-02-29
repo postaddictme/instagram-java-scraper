@@ -25,4 +25,6 @@ public interface AuthenticatedInsta extends AnonymousInsta {
     PageObject<Account> getFollowers(long userId, int pageCount) throws IOException;
 
     ActivityFeed getActivityFeed() throws IOException;
+
+    Long getLoginUserId();
 }
