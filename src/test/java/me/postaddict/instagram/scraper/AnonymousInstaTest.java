@@ -5,21 +5,19 @@ import me.postaddict.instagram.scraper.cookie.DefaultCookieJar;
 import me.postaddict.instagram.scraper.interceptor.ErrorInterceptor;
 import me.postaddict.instagram.scraper.interceptor.FakeBrowserInterceptor;
 import me.postaddict.instagram.scraper.interceptor.UserAgents;
-import static org.assertj.core.api.Assertions.*;
 import me.postaddict.instagram.scraper.model.*;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Collection;
 import java.util.Iterator;
 
 import static me.postaddict.instagram.scraper.ContentCheck.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
-@Ignore
 public class AnonymousInstaTest {
 
     private static AnonymousInsta client;
