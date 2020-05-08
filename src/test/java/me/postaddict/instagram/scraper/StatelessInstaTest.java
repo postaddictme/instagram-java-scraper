@@ -23,6 +23,17 @@ public class StatelessInstaTest {
     }
 
     @Test
+    public void testGetMediasByTag() throws Exception {
+        Tag tag = client.getMediasByTag("Moscow", 2);
+        Collection<Media> list = tag.getMediaRating().getMedia().getNodes();
+        assertTrue(list.size() > 18);
+        for (Media media : list) {
+            assertTrue(checkMedia(media));
+        }
+        System.out.println(list.size());
+    }
+
+    @Test
     public void testGetAccountByUsername() throws Exception {
         Account account = client.getAccountByUsername("kevin");
         assertEquals("kevin", account.getUsername());
