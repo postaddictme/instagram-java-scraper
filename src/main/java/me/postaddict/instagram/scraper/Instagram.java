@@ -1,9 +1,5 @@
 package me.postaddict.instagram.scraper;
 
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import lombok.AllArgsConstructor;
 import me.postaddict.instagram.scraper.exception.InstagramAuthException;
 import me.postaddict.instagram.scraper.mapper.Mapper;
@@ -38,6 +34,10 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 @AllArgsConstructor
 public class Instagram implements AuthenticatedInsta {
@@ -188,22 +188,13 @@ public class Instagram implements AuthenticatedInsta {
         return getMediaByUrl(Endpoint.getMediaPageLinkByCode(code));
     }
 
-    public Tag getTagByName(String tagName) throws IOException {
-        validateTagName(tagName);
-        Request request = new Request.Builder()
-                .url(Endpoint.getTagJsonByTagName(tagName))
-                .build();
-
-        Response response = executeHttpRequest(request);
-        try(InputStream jsonStream = response.body().byteStream()) {
-            return mapper.mapTag(jsonStream);
-        }
-
-    }
-
     public Location getLocationMediasById(String locationId, int pageCount) throws IOException {
         GetLocationRequest getLocationRequest = new GetLocationRequest(httpClient, mapper, delayHandler);
         return getLocationRequest.requestInstagramResult(new LocationParameter(locationId), pageCount, FIRST_PAGE);
+    }
+
+    public Tag getMediasByTag(String tag) throws IOException {
+        return getMediasByTag(tag, 1);
     }
 
     public Tag getMediasByTag(String tag, int pageCount) throws IOException {
@@ -346,7 +337,9 @@ public class Instagram implements AuthenticatedInsta {
         }
     }
 
-    protected Response executeHttpRequest(Request request) throws IOException {
+    public Response executeHttpRequest(Request request) throws IOException {
+        // TODO: 08.05.2020: Add LOGGER
+        System.out.println(request.url());
         Response response = this.httpClient.newCall(request).execute();
         if(delayHandler!=null){
             delayHandler.onEachRequest();
