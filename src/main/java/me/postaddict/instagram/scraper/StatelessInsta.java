@@ -7,6 +7,8 @@ import java.io.IOException;
 public interface StatelessInsta {
 
     void basePage() throws IOException;
+
+    Tag getMediasByTag(String tag, int pageCount) throws IOException;
     Account getAccountByUsername(String username) throws IOException;
     PageObject<Media> getMedias(String username, int pageCount) throws IOException;
     PageObject<Media> getMedias(long userId, int pageCount, PageInfo pageCursor) throws IOException;
