@@ -1,16 +1,28 @@
 package me.postaddict.instagram.scraper;
 
 import me.postaddict.instagram.scraper.client.InstaClientFactory;
-import me.postaddict.instagram.scraper.model.*;
+import me.postaddict.instagram.scraper.model.Account;
+import me.postaddict.instagram.scraper.model.CarouselResource;
+import me.postaddict.instagram.scraper.model.Comment;
+import me.postaddict.instagram.scraper.model.Location;
+import me.postaddict.instagram.scraper.model.Media;
+import me.postaddict.instagram.scraper.model.PageObject;
+import me.postaddict.instagram.scraper.model.Tag;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Collection;
 import java.util.Iterator;
 
-import static me.postaddict.instagram.scraper.ContentCheck.*;
+import static me.postaddict.instagram.scraper.ContentCheck.checkAccount;
+import static me.postaddict.instagram.scraper.ContentCheck.checkComment;
+import static me.postaddict.instagram.scraper.ContentCheck.checkMedia;
+import static me.postaddict.instagram.scraper.ContentCheck.checkTag;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class AnonymousInstaTest {
 
@@ -39,7 +51,7 @@ public class AnonymousInstaTest {
 
     @Test
     public void testGetTagByName() throws Exception {
-        Tag tag = client.getTagByName("corgi");
+        Tag tag = client.getMediasByTag("corgi");
         assertEquals("corgi", tag.getName());
         assertTrue(checkTag(tag));
         System.out.println(tag);

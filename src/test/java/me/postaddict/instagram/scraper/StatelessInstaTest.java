@@ -10,8 +10,11 @@ import org.junit.Test;
 
 import java.util.Collection;
 
-import static me.postaddict.instagram.scraper.ContentCheck.*;
-import static org.junit.Assert.*;
+import static me.postaddict.instagram.scraper.ContentCheck.checkAccount;
+import static me.postaddict.instagram.scraper.ContentCheck.checkMedia;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class StatelessInstaTest {
 
@@ -24,6 +27,17 @@ public class StatelessInstaTest {
 
     @Test
     public void testGetMediasByTag() throws Exception {
+        Tag tag = client.getMediasByTag("Moscow");
+        Collection<Media> list = tag.getMediaRating().getMedia().getNodes();
+        assertTrue(list.size() > 18);
+        for (Media media : list) {
+            assertTrue(checkMedia(media));
+        }
+        System.out.println(list.size());
+    }
+
+    @Test
+    public void testGetMediasByTagFewPages() throws Exception {
         Tag tag = client.getMediasByTag("Moscow", 2);
         Collection<Media> list = tag.getMediaRating().getMedia().getNodes();
         assertTrue(list.size() > 18);
@@ -34,19 +48,19 @@ public class StatelessInstaTest {
     }
 
     @Test
-    public void testGetAccountByUsername() throws Exception {
-        Account account = client.getAccountByUsername("kevin");
+    public void testGetAccountById() throws Exception {
+        Account account = client.getAccountById(3);
         assertEquals("kevin", account.getUsername());
         assertTrue(checkAccount(account));
         System.out.println(account);
     }
 
     @Test
-    public void testGetTagByName() throws Exception {
-        Tag tag = client.getTagByName("corgi");
-        assertEquals("corgi", tag.getName());
-        assertTrue(checkTag(tag));
-        System.out.println(tag);
+    public void testGetAccountByUsername() throws Exception {
+        Account account = client.getAccountByUsername("kevin");
+        assertEquals("kevin", account.getUsername());
+        assertTrue(checkAccount(account));
+        System.out.println(account);
     }
 
     @Test
