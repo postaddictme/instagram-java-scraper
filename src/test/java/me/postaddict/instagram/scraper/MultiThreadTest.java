@@ -1,16 +1,9 @@
 package me.postaddict.instagram.scraper;
 
-import me.postaddict.instagram.scraper.cookie.CookieHashSet;
-import me.postaddict.instagram.scraper.cookie.DefaultCookieJar;
-import me.postaddict.instagram.scraper.interceptor.ErrorInterceptor;
-import me.postaddict.instagram.scraper.interceptor.FakeBrowserInterceptor;
-import me.postaddict.instagram.scraper.interceptor.UserAgents;
+import me.postaddict.instagram.scraper.client.InstaClientFactory;
 import me.postaddict.instagram.scraper.model.Media;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -22,25 +15,12 @@ import java.util.concurrent.*;
 
 import static me.postaddict.instagram.scraper.ContentCheck.checkMedia;
 
-/**
- * Created by vasily on 27.04.17.
- */
-@Ignore
 public class MultiThreadTest {
     private static AnonymousInsta client;
 
     @BeforeClass
-    public static void setUp() throws Exception {
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient httpClient = new OkHttpClient.Builder()
-                .addNetworkInterceptor(loggingInterceptor)
-                .addInterceptor(new FakeBrowserInterceptor(UserAgents.OSX_CHROME))
-                .addInterceptor(new ErrorInterceptor())
-                .cookieJar(new DefaultCookieJar(new CookieHashSet()))
-                .build();
-        client = new Instagram(httpClient);
-        client.basePage();
+    public static void setUp() {
+        client = new InstaClientFactory(InstaClientFactory.InstaClientType.ANONYMOUS).getClient();
     }
 
     @Test
@@ -83,7 +63,7 @@ public class MultiThreadTest {
                 public List<Media> call() throws Exception {
                     List<Media> medias = new ArrayList<Media>();
                     try {
-                        medias.addAll(client.getMediasByTag(s,1).getMediaRating().getTopPosts());
+                        medias.addAll(client.getMediasByTag(s, 1).getMediaRating().getTopPosts());
                         Thread.sleep(1000);
                         medias.addAll(client.getMediasByTag(s, 3).getMediaRating().getMedia().getNodes());
                     } catch (IOException e) {

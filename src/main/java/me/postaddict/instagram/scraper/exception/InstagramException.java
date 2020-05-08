@@ -1,11 +1,9 @@
 package me.postaddict.instagram.scraper.exception;
 
-import java.io.IOException;
-
 import me.postaddict.instagram.scraper.ErrorType;
 
-public class InstagramException extends IOException {
-	
+public class InstagramException extends RuntimeException {
+
     private ErrorType errorType;
 
     public InstagramException() {

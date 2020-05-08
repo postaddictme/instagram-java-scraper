@@ -1,20 +1,19 @@
-package me.postaddict.instagram.scraper;
+package me.postaddict.instagram.scraper.client;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
 /**
- * Created by vasily on 27.04.17.
  * Login and password which stores in external file. Create a file in PATH which contains login and password
  */
-final class Credentials {
+public final class Credentials {
 
-    private final static String PATH = "credentials.properties";
+    private static final String PATH = "credentials.properties";
     private String login;
     private String password;
 
-    Credentials() throws IOException {
+    public Credentials() throws IOException {
         InputStream is = null;
         Properties properties = new Properties();
         try {
@@ -32,11 +31,11 @@ final class Credentials {
         }
     }
 
-    String getLogin() {
+    public String getLogin() {
         return login;
     }
 
-    String getPassword() {
+    public String getPassword() {
         return password;
     }
 
