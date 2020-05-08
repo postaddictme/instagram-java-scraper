@@ -1,13 +1,7 @@
 package me.postaddict.instagram.scraper;
 
-import me.postaddict.instagram.scraper.cookie.CookieHashSet;
-import me.postaddict.instagram.scraper.cookie.DefaultCookieJar;
-import me.postaddict.instagram.scraper.interceptor.ErrorInterceptor;
-import me.postaddict.instagram.scraper.interceptor.FakeBrowserInterceptor;
-import me.postaddict.instagram.scraper.interceptor.UserAgents;
+import me.postaddict.instagram.scraper.client.InstaClientFactory;
 import me.postaddict.instagram.scraper.model.*;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -23,17 +17,8 @@ public class AnonymousInstaTest {
     private static AnonymousInsta client;
 
     @BeforeClass
-    public static void setUp() throws Exception {
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient httpClient = new OkHttpClient.Builder()
-                .addNetworkInterceptor(loggingInterceptor)
-                .addInterceptor(new FakeBrowserInterceptor(UserAgents.OSX_CHROME))
-                .addInterceptor(new ErrorInterceptor())
-                .cookieJar(new DefaultCookieJar(new CookieHashSet()))
-                .build();
-        client = new Instagram(httpClient);
-        client.basePage();
+    public static void setUp() {
+        client = new InstaClientFactory(InstaClientFactory.InstaClientType.ANONYMOUS).getClient();
     }
 
     @Test
@@ -152,7 +137,7 @@ public class AnonymousInstaTest {
         for (Media media : list) {
             assertTrue(checkMedia(media));
         }
-        System.out.println(list);
+        System.out.println(list.size());
     }
 
     @Test(expected = IllegalArgumentException.class)

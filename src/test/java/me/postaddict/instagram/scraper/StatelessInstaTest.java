@@ -1,16 +1,11 @@
 package me.postaddict.instagram.scraper;
 
-import me.postaddict.instagram.scraper.interceptor.ErrorInterceptor;
-import me.postaddict.instagram.scraper.interceptor.FakeBrowserInterceptor;
-import me.postaddict.instagram.scraper.interceptor.UserAgents;
+import me.postaddict.instagram.scraper.client.InstaClientFactory;
 import me.postaddict.instagram.scraper.model.Account;
 import me.postaddict.instagram.scraper.model.Media;
 import me.postaddict.instagram.scraper.model.PageObject;
 import me.postaddict.instagram.scraper.model.Tag;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -18,22 +13,13 @@ import java.util.Collection;
 import static me.postaddict.instagram.scraper.ContentCheck.*;
 import static org.junit.Assert.*;
 
-@Ignore
 public class StatelessInstaTest {
 
     private static StatelessInsta client;
 
     @BeforeClass
-    public static void setUp() throws Exception {
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
-        OkHttpClient httpClient = new OkHttpClient.Builder()
-                .addNetworkInterceptor(loggingInterceptor)
-                .addInterceptor(new FakeBrowserInterceptor(UserAgents.OSX_CHROME))
-                .addInterceptor(new ErrorInterceptor())
-                .build();
-        client = new Instagram(httpClient);
-        client.basePage();
+    public static void setUp() {
+        client = new InstaClientFactory(InstaClientFactory.InstaClientType.STATELESS).getClient();
     }
 
     @Test
@@ -96,7 +82,7 @@ public class StatelessInstaTest {
     @Test
     public void testPreviewComments() throws Exception {
         Media media = client.getMediaByCode("Ba63OW3hAKq");
-        if (media.getCommentCount() > 0){
+        if (media.getCommentCount() > 0) {
             assertTrue(media.getCommentPreview().getNodes().size() > 0);
         } else {
             assertFalse(media.getCommentPreview().getNodes().size() > 0);
