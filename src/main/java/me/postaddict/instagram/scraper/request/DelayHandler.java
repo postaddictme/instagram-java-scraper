@@ -4,5 +4,6 @@ import me.postaddict.instagram.scraper.model.PageInfo;
 
 public interface DelayHandler {
     void onEachRequest();
-    void onNextPage(int currentPage, int pageCount, Class<? extends PaginatedRequest> pageOperation, PageInfo pageCursor);
+
+    void onNextPage(long currentPage, long pageCount, Class<? extends PaginatedRequest> pageOperation, PageInfo pageCursor);
 }

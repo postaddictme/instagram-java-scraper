@@ -30,7 +30,7 @@ public abstract class PaginatedRequest<R, P extends RequestParameter> {
     private final Mapper mapper;
     private final DelayHandler delayHandler;
 
-    public R requestInstagramResult(P requestParameters, int pageCount, PageInfo pageCursor) throws IOException {
+    public R requestInstagramResult(P requestParameters, long pageCount, PageInfo pageCursor) throws IOException {
         R result = null;
         int currentPage = 0;
         while (currentPage++ < pageCount && pageCursor.isHasNextPage()) {

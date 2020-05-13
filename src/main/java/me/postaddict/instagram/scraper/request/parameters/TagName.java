@@ -4,5 +4,5 @@ import lombok.Value;
 
 @Value
 public class TagName implements RequestParameter {
-    private String tag;
+    String tag;
 }

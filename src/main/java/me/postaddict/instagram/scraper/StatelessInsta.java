@@ -18,10 +18,26 @@ public interface StatelessInsta {
 
     Account getAccountByUsername(String username) throws IOException;
 
+    /**
+     * @deprecated send tree request, but should be only one
+     */
+    @Deprecated
     Account getAccountById(long id) throws IOException;
 
+    PageObject<Media> getMediaByUserId(long userId) throws IOException;
+
+    PageObject<Media> getMediaByUserId(long userId, long mediaListSize) throws IOException;
+
+    /**
+     * @deprecated use getMediaByUserId
+     */
+    @Deprecated
     PageObject<Media> getMedias(String username, int pageCount) throws IOException;
 
+    /**
+     * @deprecated use getMediaByUserId, because it is private method by 'pageCursor'
+     */
+    @Deprecated
     PageObject<Media> getMedias(long userId, int pageCount, PageInfo pageCursor) throws IOException;
 
     Media getMediaByUrl(String url) throws IOException;

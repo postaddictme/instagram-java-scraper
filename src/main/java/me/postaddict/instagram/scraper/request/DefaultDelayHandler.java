@@ -22,7 +22,7 @@ public class DefaultDelayHandler implements DelayHandler {
 
     @Override
     @SneakyThrows
-    public void onNextPage(int currentPage, int pageCount, Class<? extends PaginatedRequest> pageOperation, PageInfo pageCursor) {
+    public void onNextPage(long currentPage, long pageCount, Class<? extends PaginatedRequest> pageOperation, PageInfo pageCursor) {
         Thread.sleep(200L + random.nextInt(200));
     }
 }

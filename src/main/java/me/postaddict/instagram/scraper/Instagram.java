@@ -22,9 +22,11 @@ import me.postaddict.instagram.scraper.request.GetLocationRequest;
 import me.postaddict.instagram.scraper.request.GetMediaByTagRequest;
 import me.postaddict.instagram.scraper.request.GetMediaLikesRequest;
 import me.postaddict.instagram.scraper.request.GetMediasRequest;
+import me.postaddict.instagram.scraper.request.GetUserMediaRequest;
 import me.postaddict.instagram.scraper.request.parameters.LocationParameter;
 import me.postaddict.instagram.scraper.request.parameters.MediaCode;
 import me.postaddict.instagram.scraper.request.parameters.TagName;
+import me.postaddict.instagram.scraper.request.parameters.UserMediaListParameter;
 import me.postaddict.instagram.scraper.request.parameters.UserParameter;
 import okhttp3.Cookie;
 import okhttp3.FormBody;
@@ -48,12 +50,14 @@ public class Instagram implements AuthenticatedInsta {
     protected final DelayHandler delayHandler;
     protected String csrf_token;
     protected String rollout_hash;
+    public static final int MAX_USER_MEDIA_PAGE_SIZE = 50;
+
 
     public Instagram(OkHttpClient httpClient) {
         this(httpClient, new ModelMapper(), new DefaultDelayHandler(),"","");
     }
 
-    protected Request withCsrfToken(Request request) {
+    private Request withCsrfToken(Request request) {
     	return request.newBuilder()
               .addHeader("X-CSRFToken", getCSRFToken())
               .addHeader("X-Instagram-AJAX", (rollout_hash.isEmpty() ? "1" : rollout_hash))
@@ -147,6 +151,32 @@ public class Instagram implements AuthenticatedInsta {
         try(InputStream jsonStream = response.body().byteStream()) {
             return getAccountByUsername(getMediaByCode(mapper.getLastMediaShortCode(jsonStream)).getOwner().getUsername());
         }
+    }
+
+    /**
+     * Return 24 first posts by user id - it is first user page size
+     *
+     * @param userId - user id
+     * @return PageObject<Media> with media list
+     * @throws IOException
+     */
+    public PageObject<Media> getMediaByUserId(long userId) throws IOException {
+        return getMediaByUserId(userId, 24);
+    }
+
+    /**
+     * @param userId        - account userId
+     * @param mediaListSize - posts count.
+     * @return PageObject<Media> with media list
+     * @throws IOException
+     */
+    public PageObject<Media> getMediaByUserId(long userId, long mediaListSize) throws IOException {
+        long pageCount = (long) Math.ceil((double) mediaListSize / MAX_USER_MEDIA_PAGE_SIZE);
+        int lastPageSize = (int) mediaListSize % MAX_USER_MEDIA_PAGE_SIZE;
+        lastPageSize = lastPageSize == 0 && mediaListSize > 0 ? MAX_USER_MEDIA_PAGE_SIZE : lastPageSize;
+        GetUserMediaRequest getMediasRequest = new GetUserMediaRequest(httpClient, mapper, delayHandler);
+        return getMediasRequest
+                .requestInstagramResult(new UserMediaListParameter(userId, pageCount, lastPageSize), pageCount, FIRST_PAGE);
     }
 
     public Account getAccountByUsername(String username) throws IOException {

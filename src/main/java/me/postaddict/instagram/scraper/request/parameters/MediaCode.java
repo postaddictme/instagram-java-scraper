@@ -4,5 +4,5 @@ import lombok.Value;
 
 @Value
 public class MediaCode implements RequestParameter {
-    private String shortcode;
+    String shortcode;
 }
