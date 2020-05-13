@@ -9,6 +9,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Collection;
+import java.util.List;
 
 import static me.postaddict.instagram.scraper.ContentCheck.checkAccount;
 import static me.postaddict.instagram.scraper.ContentCheck.checkMedia;
@@ -48,6 +49,64 @@ public class StatelessInstaTest {
     }
 
     @Test
+    public void testGetMediaByUserId() throws Exception {
+        int userId = 3;
+        int size = 33;
+        PageObject<Media> mediaList1 = client.getMediaByUserId(userId, size);
+        List<Media> mediaList = mediaList1.getNodes();
+        assertEquals(size, mediaList.size());
+        for (Media media : mediaList) {
+            assertTrue(checkMedia(media));
+        }
+        assertEquals(userId, mediaList.get(0).getOwner().getId());
+        System.out.println(mediaList.size());
+
+        userId = 4;
+        size = 50;
+        PageObject<Media> mediaList2 = client.getMediaByUserId(userId, size);
+        mediaList = mediaList2.getNodes();
+        assertEquals(size, mediaList.size());
+        for (Media media : mediaList) {
+            assertTrue(checkMedia(media));
+        }
+        assertEquals(userId, mediaList.get(0).getOwner().getId());
+        System.out.println(mediaList.size());
+
+        userId = 5;
+        size = 100;
+        PageObject<Media> mediaList3 = client.getMediaByUserId(userId, size);
+        mediaList = mediaList3.getNodes();
+        assertEquals(size, mediaList.size());
+        for (Media media : mediaList) {
+            assertTrue(checkMedia(media));
+        }
+        assertEquals(userId, mediaList.get(0).getOwner().getId());
+        System.out.println(mediaList.size());
+
+        userId = 6;
+        size = 125;
+        PageObject<Media> mediaList4 = client.getMediaByUserId(userId, size);
+        mediaList = mediaList4.getNodes();
+        assertEquals(size, mediaList.size());
+        for (Media media : mediaList) {
+            assertTrue(checkMedia(media));
+        }
+        assertEquals(userId, mediaList.get(0).getOwner().getId());
+        System.out.println(mediaList.size());
+
+        userId = 11;
+        int defaultSize = 24;
+        PageObject<Media> mediaList5 = client.getMediaByUserId(userId);
+        mediaList = mediaList5.getNodes();
+        assertEquals(defaultSize, mediaList.size());
+        for (Media media : mediaList) {
+            assertTrue(checkMedia(media));
+        }
+        assertEquals(userId, mediaList.get(0).getOwner().getId());
+        System.out.println(mediaList.size());
+    }
+
+    @Test
     public void testGetAccountById() throws Exception {
         Account account = client.getAccountById(3);
         assertEquals("kevin", account.getUsername());
@@ -64,7 +123,7 @@ public class StatelessInstaTest {
     }
 
     @Test
-    public void testGetMedias() throws Exception {
+    public void testGetMediaByUserName() throws Exception {
         PageObject<Media> medias = client.getMedias("kevin", 2);
         Collection<Media> mediaList = medias.getNodes();
         assertEquals(50, mediaList.size());
@@ -91,7 +150,7 @@ public class StatelessInstaTest {
     }
 
     @Test
-    public void testGetIdFromCode() throws Exception {
+    public void testGetIdFromCode() {
         String code = MediaUtil.getCodeFromId("1270593720437182847");
         assertEquals("BGiDkHAgBF_", code);
         code = MediaUtil.getCodeFromId("1270593720437182847_3");
@@ -99,7 +158,7 @@ public class StatelessInstaTest {
     }
 
     @Test
-    public void testGetCodeFromId() throws Exception {
+    public void testGetCodeFromId() {
         String id = MediaUtil.getIdFromCode("BGiDkHAgBF_");
         assertEquals("1270593720437182847", id);
     }

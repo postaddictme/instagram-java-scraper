@@ -1,30 +1,35 @@
 package me.postaddict.instagram.scraper.request;
 
 import me.postaddict.instagram.scraper.Endpoint;
+import me.postaddict.instagram.scraper.Instagram;
 import me.postaddict.instagram.scraper.mapper.Mapper;
 import me.postaddict.instagram.scraper.model.Media;
 import me.postaddict.instagram.scraper.model.PageInfo;
 import me.postaddict.instagram.scraper.model.PageObject;
-import me.postaddict.instagram.scraper.request.parameters.UserParameter;
+import me.postaddict.instagram.scraper.request.parameters.UserMediaListParameter;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
 import java.io.InputStream;
 
-/**
- * @deprecated use GetUserMediaRequest, because this class hardcode 30 posts
- */
-@Deprecated
-public class GetMediasRequest extends PaginatedRequest<PageObject<Media>, UserParameter> {
+public class GetUserMediaRequest extends PaginatedRequest<PageObject<Media>, UserMediaListParameter> {
+    private long pageCount = 0;
 
-    public GetMediasRequest(OkHttpClient httpClient, Mapper mapper, DelayHandler delayHandler) {
+    public GetUserMediaRequest(OkHttpClient httpClient, Mapper mapper, DelayHandler delayHandler) {
         super(httpClient, mapper, delayHandler);
     }
 
     @Override
-    protected Request requestInstagram(UserParameter requestParameters, PageInfo pageCursor) {
-        return  new Request.Builder()
-                .url(Endpoint.getAccountMediasJsonLink(requestParameters.getUserId(), pageCursor.getEndCursor()))
+    protected Request requestInstagram(UserMediaListParameter requestParameters, PageInfo pageCursor) {
+        pageCount++;
+        int mediaListSize = pageCount < requestParameters.getPageCount() ?
+                Instagram.MAX_USER_MEDIA_PAGE_SIZE : requestParameters.getLastPageSize();
+        return new Request.Builder()
+                .url(Endpoint.getUserMediaJsonByUserId(
+                        requestParameters.getUserId(),
+                        mediaListSize,
+                        pageCursor.getEndCursor())
+                )
                 .build();
     }
 
