@@ -37,9 +37,10 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-import java.io.DataInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 @AllArgsConstructor
 public class Instagram implements AuthenticatedInsta {
@@ -83,7 +84,7 @@ public class Instagram implements AuthenticatedInsta {
     private void getCSRFToken(ResponseBody body) throws IOException {
     	this.csrf_token=getToken("\"csrf_token\":\"",32,body.byteStream());
     }
-    
+
     private String getCSRFToken() {
         for (Cookie cookie : this.httpClient.cookieJar().loadForRequest(HttpUrl.parse(Endpoint.BASE_URL))) {
             if ("csrftoken".equals(cookie.name())) {
@@ -102,28 +103,28 @@ public class Instagram implements AuthenticatedInsta {
     }
     
     private String getToken(String seek, int length ,InputStream stream) throws IOException {
-		DataInputStream in = new DataInputStream(stream);
-		
-		String line;
-		while((line = in.readLine())!=null) {
-			int index = line.indexOf(seek);
-			if(index != -1) {
-				return line.substring(index+seek.length(),index+seek.length()+length);
-			}
-		}
-		throw new NullPointerException("Couldn't find "+seek);
-	}
+        BufferedReader in = new BufferedReader(new InputStreamReader(stream));
 
-    public void login(String username, String password) throws IOException {
-        if (username == null || password == null) {
-            throw new InstagramAuthException("Specify username and password");
-        }else if(this.csrf_token.isEmpty()) {
-        	throw new NullPointerException("Please run before base()");
+        String line;
+        while ((line = in.readLine()) != null) {
+            int index = line.indexOf(seek);
+            if (index != -1) {
+                return line.substring(index + seek.length(), index + seek.length() + length);
+            }
+        }
+        throw new NullPointerException("Couldn't find " + seek);
+    }
+
+    public void login(String username, String encPassword) throws IOException {
+        if (username == null || encPassword == null) {
+            throw new InstagramAuthException("Specify username and enc_password");
+        } else if (this.csrf_token.isEmpty()) {
+            throw new NullPointerException("Please run before base()");
         }
 
         RequestBody formBody = new FormBody.Builder()
                 .add("username", username)
-                .add("password", password)
+                .add("enc_password", encPassword)
                 .add("queryParams", "{}")
                 .add("optIntoOneTap", "true")
                 .build();

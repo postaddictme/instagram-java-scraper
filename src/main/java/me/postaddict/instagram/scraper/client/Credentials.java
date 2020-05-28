@@ -9,9 +9,11 @@ import java.util.Properties;
  */
 public final class Credentials {
 
-    private static final String PATH = "credentials.properties";
+    private static final String PATH = "credentials__.properties";
     private String login;
+    private String phone;
     private String password;
+    private String encPassword;
 
     public Credentials() throws IOException {
         InputStream is = null;
@@ -22,8 +24,10 @@ public final class Credentials {
                 throw new IOException("can't find credentials file");
             }
             properties.load(is);
-            login = properties.getProperty("login");
-            password = properties.getProperty("password");
+            this.login = properties.getProperty("login");
+            this.phone = properties.getProperty("phone");
+            this.password = properties.getProperty("password");
+            this.encPassword = properties.getProperty("enc_password");
         } finally {
             if (is != null) {
                 is.close();
@@ -32,11 +36,18 @@ public final class Credentials {
     }
 
     public String getLogin() {
-        return login;
+        return this.login;
+    }
+
+    public String getPhone() {
+        return this.phone;
     }
 
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
+    public String getEncPassword() {
+        return this.encPassword;
+    }
 }

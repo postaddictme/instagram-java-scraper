@@ -69,7 +69,7 @@ public class InstaClientFactory {
 
             if (intaClientType == InstaClientType.AUTHENTICATED) {
                 Credentials credentials = getCredentials();
-                instaClient.login(credentials.getLogin(), credentials.getPassword());
+                instaClient.login(credentials.getLogin(), credentials.getEncPassword());
                 instaClient.basePage();
             }
 

@@ -8,7 +8,15 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import me.postaddict.instagram.scraper.MediaUtil;
-import me.postaddict.instagram.scraper.model.*;
+import me.postaddict.instagram.scraper.model.Account;
+import me.postaddict.instagram.scraper.model.ActionResponse;
+import me.postaddict.instagram.scraper.model.ActivityFeed;
+import me.postaddict.instagram.scraper.model.Comment;
+import me.postaddict.instagram.scraper.model.GraphQlResponse;
+import me.postaddict.instagram.scraper.model.Location;
+import me.postaddict.instagram.scraper.model.Media;
+import me.postaddict.instagram.scraper.model.PageObject;
+import me.postaddict.instagram.scraper.model.Tag;
 import org.apache.commons.beanutils.BeanUtils;
 import org.eclipse.persistence.jaxb.JAXBContextProperties;
 import org.eclipse.persistence.jaxb.UnmarshallerProperties;
@@ -166,9 +174,12 @@ public class ModelMapper implements Mapper{
 
     @Override
     @SneakyThrows
-    public boolean isAuthenticated(InputStream jsonStream){
-        Map<String,Object> jsonMap = mapperThreadLocal.get().readValue(jsonStream,
-                new TypeReference<Map<String, Object>>() {});
+    public boolean isAuthenticated(InputStream jsonStream) {
+        Map<String, Object> jsonMap = mapperThreadLocal.get().readValue(
+                jsonStream,
+                new TypeReference<Map<String, Object>>() {
+                }
+        );
         return jsonMap.get(AUTHENTICATED_FIELD) instanceof Boolean && (boolean) jsonMap.get(AUTHENTICATED_FIELD);
     }
 
