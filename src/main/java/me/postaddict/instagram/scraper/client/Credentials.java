@@ -9,7 +9,7 @@ import java.util.Properties;
  */
 public final class Credentials {
 
-    private static final String PATH = "credentials__.properties";
+    private static final String PATH = "credentials.properties";
     private String login;
     private String phone;
     private String password;

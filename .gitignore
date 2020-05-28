@@ -1,9 +1,11 @@
 .idea
 build
 .gradle
-**/credentials.properties
 out
 .classpath
 .project
 .settings/
 /target/
+# original credentials file and exemple files
+**/credentials.properties
+**/credentials_exemple.properties
