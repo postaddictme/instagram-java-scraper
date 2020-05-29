@@ -12,6 +12,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class InstaClientFactory {
@@ -21,6 +25,11 @@ public class InstaClientFactory {
 
     public InstaClientFactory(InstaClientType intaClientType) {
         this.intaClientType = intaClientType;
+    }
+
+    public Instagram getRandomClient() {
+        this.intaClientType = InstaClientType.randomClientType();
+        return getClient();
     }
 
     public Instagram getClient() {
@@ -92,6 +101,15 @@ public class InstaClientFactory {
         /**
          * Client with login
          */
-        AUTHENTICATED
+        AUTHENTICATED;
+
+        private static final List<InstaClientType> TYPE_LIST =
+                Collections.unmodifiableList(Arrays.asList(values()));
+        private static final int SIZE = TYPE_LIST.size();
+        private static final Random RANDOM = new Random();
+
+        public static InstaClientType randomClientType() {
+            return TYPE_LIST.get(RANDOM.nextInt(SIZE));
+        }
     }
 }
