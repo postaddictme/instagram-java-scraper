@@ -46,7 +46,8 @@ public class InstaClientFactory {
                 .addNetworkInterceptor(loggingInterceptor)
                 .addInterceptor(new FakeBrowserInterceptor(userAgent.userAgentValue))
                 // TODO: 08.05.2020: Move to config
-                .connectTimeout(60, TimeUnit.SECONDS)
+                .connectTimeout(120, TimeUnit.SECONDS)
+                .readTimeout(120, TimeUnit.SECONDS)
                 .addInterceptor(new ErrorInterceptor());
 
         switch (intaClientType) {
