@@ -37,7 +37,7 @@ public class RandomInstaTest {
 
     @BeforeClass
     public static void setUp() {
-        client = new InstaClientFactory(InstaClientFactory.InstaClientType.AUTHENTICATED).getRandomClient();
+        client = new InstaClientFactory(InstaClientFactory.InstaClientType.randomClientType()).getClient();
     }
 
     @Test(expected = InstagramAuthException.class)
@@ -57,11 +57,11 @@ public class RandomInstaTest {
 
     @Test
     public void testGetRandomClient() throws Exception {
-        client = new InstaClientFactory(InstaClientFactory.InstaClientType.AUTHENTICATED).getRandomClient();
-        client = new InstaClientFactory(InstaClientFactory.InstaClientType.AUTHENTICATED).getRandomClient();
-        client = new InstaClientFactory(InstaClientFactory.InstaClientType.AUTHENTICATED).getRandomClient();
-        client = new InstaClientFactory(InstaClientFactory.InstaClientType.AUTHENTICATED).getRandomClient();
-        client = new InstaClientFactory(InstaClientFactory.InstaClientType.AUTHENTICATED).getRandomClient();
+        client = new InstaClientFactory(InstaClientFactory.InstaClientType.randomClientType()).getClient();
+        client = new InstaClientFactory(InstaClientFactory.InstaClientType.randomClientType()).getClient();
+        client = new InstaClientFactory(InstaClientFactory.InstaClientType.randomClientType()).getClient();
+        client = new InstaClientFactory(InstaClientFactory.InstaClientType.randomClientType()).getClient();
+        client = new InstaClientFactory(InstaClientFactory.InstaClientType.randomClientType()).getClient();
     }
 
     @Test

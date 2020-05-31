@@ -20,15 +20,11 @@ import java.util.concurrent.TimeUnit;
 public class InstaClientFactory {
     private OkHttpClient httpClient;
     private Instagram instaClient;
-    private InstaClientType intaClientType;
+    private InstaClientType instaClientType;
 
-    public InstaClientFactory(InstaClientType intaClientType) {
-        this.intaClientType = intaClientType;
-    }
 
-    public Instagram getRandomClient() {
-        this.intaClientType = InstaClientType.randomClientType();
-        return getClient();
+    public InstaClientFactory(InstaClientType instaClientType) {
+        this.instaClientType = instaClientType;
     }
 
     public Instagram getClient() {
@@ -36,7 +32,7 @@ public class InstaClientFactory {
         // TODO: 29.05.2020: Add logger
         System.out.println(String.format("User Agent: [%s] %s", userAgent, userAgent.userAgentValue));
         // TODO: 29.05.2020: Add logger
-        System.out.println("Instagram Client Type: " + intaClientType);
+        System.out.println("Instagram Client Type: " + instaClientType);
 
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         // TODO: 08.05.2020: Move to config
@@ -50,7 +46,7 @@ public class InstaClientFactory {
                 .readTimeout(120, TimeUnit.SECONDS)
                 .addInterceptor(new ErrorInterceptor());
 
-        switch (intaClientType) {
+        switch (instaClientType) {
             case STATELESS:
                 break;
             case ANONYMOUS:
@@ -58,7 +54,7 @@ public class InstaClientFactory {
                 builder.cookieJar(new DefaultCookieJar(new CookieHashSet()));
                 break;
             default:
-                String message = String.format("Instagram client is not found:%s", intaClientType);
+                String message = String.format("Instagram client is not found:%s", instaClientType);
                 throw new InstagramException(message, ErrorType.UNKNOWN_ERROR);
         }
 
@@ -81,7 +77,7 @@ public class InstaClientFactory {
         try {
             instaClient.basePage();
 
-            if (intaClientType == InstaClientType.AUTHENTICATED) {
+            if (instaClientType == InstaClientType.AUTHENTICATED) {
                 Credentials credentials = getCredentials();
                 instaClient.login(credentials.getLogin(), credentials.getEncPassword());
                 instaClient.basePage();
