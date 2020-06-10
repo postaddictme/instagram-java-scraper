@@ -66,6 +66,9 @@ public class InstaClientFactory {
 
     private Credentials getCredentials() {
         try {
+            Credentials credentials = new Credentials();
+            // TODO: 10.06.2020: Add logger
+            System.out.println(String.format("User: %s/ %s", credentials.getLogin(), credentials.getPassword()));
             return new Credentials();
         } catch (IOException e) {
             String message = String.format("Can not create credentials:%n%s", e);
