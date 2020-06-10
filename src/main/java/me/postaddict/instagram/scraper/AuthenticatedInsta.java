@@ -1,6 +1,10 @@
 package me.postaddict.instagram.scraper;
 
-import me.postaddict.instagram.scraper.model.*;
+import me.postaddict.instagram.scraper.model.Account;
+import me.postaddict.instagram.scraper.model.ActionResponse;
+import me.postaddict.instagram.scraper.model.ActivityFeed;
+import me.postaddict.instagram.scraper.model.Comment;
+import me.postaddict.instagram.scraper.model.PageObject;
 
 import java.io.IOException;
 
