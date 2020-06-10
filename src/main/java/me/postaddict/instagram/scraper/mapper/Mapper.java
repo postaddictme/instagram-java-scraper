@@ -1,6 +1,13 @@
 package me.postaddict.instagram.scraper.mapper;
 
-import me.postaddict.instagram.scraper.model.*;
+import me.postaddict.instagram.scraper.model.Account;
+import me.postaddict.instagram.scraper.model.ActionResponse;
+import me.postaddict.instagram.scraper.model.ActivityFeed;
+import me.postaddict.instagram.scraper.model.Comment;
+import me.postaddict.instagram.scraper.model.Location;
+import me.postaddict.instagram.scraper.model.Media;
+import me.postaddict.instagram.scraper.model.PageObject;
+import me.postaddict.instagram.scraper.model.Tag;
 
 import java.io.InputStream;
 
