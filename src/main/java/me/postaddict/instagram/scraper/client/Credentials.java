@@ -28,8 +28,7 @@ public final class Credentials {
                 throw new IOException("can't find credentials file");
             }
             ObjectMapper mapper = new ObjectMapper();
-            List<User> users = mapper.readValue(is, new TypeReference<List<User>>() {
-            });
+            List<User> users = mapper.readValue(is, new TypeReference<List<User>>() {});
             Collections.shuffle(users);
             User user = users.get(0);
 
