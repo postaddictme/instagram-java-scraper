@@ -372,8 +372,10 @@ public class Instagram implements AuthenticatedInsta {
     public Response executeHttpRequest(Request request) throws IOException {
         // TODO: 08.05.2020: Add LOGGER
         System.out.println(String.format("%s: %s", Utils.getCurrentTime(), request.url()));
+        System.out.println(String.format("csrf_token: %s", csrf_token));
+        System.out.println(String.format("rollout_hash: %s", rollout_hash));
         Response response = this.httpClient.newCall(request).execute();
-        if(delayHandler!=null){
+        if (delayHandler != null) {
             delayHandler.onEachRequest();
         }
         return response;
