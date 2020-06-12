@@ -3,6 +3,7 @@ package me.postaddict.instagram.scraper.cookie;
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
 import okhttp3.HttpUrl;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,6 +19,8 @@ public class DefaultCookieJar implements CookieJar {
 
     @Override
     public synchronized void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+        System.out.println("cookies:");
+        System.out.println(StringUtils.join(cookies, "\r\n"));
         cache.addAll(cookies);
     }
 

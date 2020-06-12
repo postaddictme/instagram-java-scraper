@@ -374,6 +374,7 @@ public class Instagram implements AuthenticatedInsta {
         System.out.println(String.format("%s: %s", Utils.getCurrentTime(), request.url()));
         System.out.println(String.format("csrf_token: %s", csrf_token));
         System.out.println(String.format("rollout_hash: %s", rollout_hash));
+
         Response response = this.httpClient.newCall(request).execute();
         if (delayHandler != null) {
             delayHandler.onEachRequest();
