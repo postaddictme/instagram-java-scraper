@@ -16,6 +16,7 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.9.2'
     compile 'com.github.igor-suhorukov:dom-transformation:1.1'
     compile 'commons-io:commons-io:2.6'
+    compile 'org.apache.commons:commons-lang3:3.10'
     compile 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final'
     compile 'org.eclipse.persistence:org.eclipse.persistence.moxy:2.7.0'
     compile 'commons-beanutils:commons-beanutils:1.9.3'
