@@ -96,19 +96,19 @@ public class AnonymousInstaTest {
 
     @Test
     public void testGetMediaByCodeCarousel() throws Exception {
-        Media media = client.getMediaByCode("BaKLiFugkQa");
-        assertEquals("kevin", media.getOwner().getUsername());
+        Media media = client.getMediaByCode("CBizCfxHdsk");
+        assertEquals("m.pechennikova", media.getOwner().getUsername());
         assertTrue(checkMedia(media));
         assertEquals(4, media.getCarouselMedia().size());
         Iterator<CarouselResource> carouselIterator = media.getCarouselMedia().iterator();
         assertThat(carouselIterator.next().getDisplayUrl()).
-                endsWith("/t51.2885-15/e35/22351958_144137916205565_6923513639366295552_n.jpg");
+                contains("/t51.2885-15/e35/s1080x1080/104218734_612831389332362_1574222533739090610_n.jpg");
         assertThat(carouselIterator.next().getDisplayUrl()).
-                endsWith("/t51.2885-15/e35/22352110_177635979467060_738026920783904768_n.jpg");
+                contains("/t51.2885-15/e35/s1080x1080/103535418_301618131014269_461318135598219361_n.jpg");
         assertThat(carouselIterator.next().getDisplayUrl()).
-                endsWith("/t51.2885-15/e35/22352158_840551796104469_8224611081893445632_n.jpg");
+                contains("/t51.2885-15/e35/s1080x1080/104055511_322181605622243_3584951769058175602_n.jpg");
         assertThat(carouselIterator.next().getDisplayUrl()).
-                endsWith("/t51.2885-15/e35/22427115_152159245386313_6593256479942246400_n.jpg");
+                contains("/t51.2885-15/e35/s1080x1080/103940314_1198920703801651_2533723929517596122_n.jpg");
         System.out.println(media);
     }
 
@@ -117,8 +117,8 @@ public class AnonymousInstaTest {
     public void testGetMediaByCodeVideoPost() throws Exception {
         Media media = client.getMediaByCode("Bde90J7n6ba");
         assertEquals("corgillection", media.getOwner().getUsername());
-        assertThat(media.getVideoUrl()).endsWith(".mp4");
-        assertThat(media.getDisplayUrl()).endsWith("jpg");
+        assertThat(media.getVideoUrl()).contains(".mp4");
+        assertThat(media.getDisplayUrl()).contains(".jpg");
         assertTrue(checkMedia(media));
         System.out.println(media);
     }
