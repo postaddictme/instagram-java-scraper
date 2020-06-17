@@ -117,8 +117,8 @@ public class AnonymousInstaTest {
     public void testGetMediaByCodeVideoPost() throws Exception {
         Media media = client.getMediaByCode("Bde90J7n6ba");
         assertEquals("corgillection", media.getOwner().getUsername());
-        assertThat(media.getVideoUrl()).endsWith(".mp4");
-        assertThat(media.getDisplayUrl()).endsWith("jpg");
+        assertThat(media.getVideoUrl()).contains(".mp4");
+        assertThat(media.getDisplayUrl()).contains(".jpg");
         assertTrue(checkMedia(media));
         System.out.println(media);
     }
