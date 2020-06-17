@@ -1,6 +1,7 @@
 package me.postaddict.instagram.scraper.request;
 
 import me.postaddict.instagram.scraper.Endpoint;
+import me.postaddict.instagram.scraper.client.InstaClient;
 import me.postaddict.instagram.scraper.mapper.Mapper;
 import me.postaddict.instagram.scraper.model.Account;
 import me.postaddict.instagram.scraper.model.PageInfo;
@@ -13,8 +14,8 @@ import java.io.InputStream;
 
 public class GetFollowersRequest extends PaginatedRequest<PageObject<Account>, UserParameter> {
 
-    public GetFollowersRequest(OkHttpClient httpClient, Mapper mapper, DelayHandler delayHandler) {
-        super(httpClient, mapper, delayHandler);
+    public GetFollowersRequest(InstaClient instaClient, Mapper mapper, DelayHandler delayHandler) {
+        super(instaClient, mapper, delayHandler);
     }
 
     @Override

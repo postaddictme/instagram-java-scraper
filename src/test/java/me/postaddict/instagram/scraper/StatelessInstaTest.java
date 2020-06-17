@@ -1,5 +1,6 @@
 package me.postaddict.instagram.scraper;
 
+import me.postaddict.instagram.scraper.client.InstaClient;
 import me.postaddict.instagram.scraper.client.InstaClientFactory;
 import me.postaddict.instagram.scraper.model.Account;
 import me.postaddict.instagram.scraper.model.Media;
@@ -23,7 +24,8 @@ public class StatelessInstaTest {
 
     @BeforeClass
     public static void setUp() {
-        client = new InstaClientFactory(InstaClientFactory.InstaClientType.STATELESS).getClient();
+        InstaClient instaClient = new InstaClientFactory(InstaClientFactory.InstaClientType.STATELESS).getClient();
+        client = new Instagram(instaClient);
     }
 
     @Test

@@ -1,5 +1,6 @@
 package me.postaddict.instagram.scraper;
 
+import me.postaddict.instagram.scraper.client.InstaClient;
 import me.postaddict.instagram.scraper.client.InstaClientFactory;
 import me.postaddict.instagram.scraper.model.Media;
 import org.junit.Assert;
@@ -20,7 +21,8 @@ public class MultiThreadTest {
 
     @BeforeClass
     public static void setUp() {
-        client = new InstaClientFactory(InstaClientFactory.InstaClientType.ANONYMOUS).getClient();
+        InstaClient instaClient = new InstaClientFactory(InstaClientFactory.InstaClientType.ANONYMOUS).getClient();
+        client = new Instagram(instaClient);
     }
 
     @Test

@@ -1,47 +1,52 @@
 package me.postaddict.instagram.scraper;
 
+import me.postaddict.instagram.scraper.client.InstaClient;
 import me.postaddict.instagram.scraper.model.Account;
 import me.postaddict.instagram.scraper.model.Media;
 import me.postaddict.instagram.scraper.model.PageInfo;
 import me.postaddict.instagram.scraper.model.PageObject;
 import me.postaddict.instagram.scraper.model.Tag;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import java.io.IOException;
 
-public interface StatelessInsta {
+public abstract class StatelessInsta extends BasicInsta {
+    public StatelessInsta(InstaClient instaClient) {
+        super(instaClient);
+    }
 
-    void basePage() throws IOException;
+    abstract void basePage() throws IOException;
 
-    Tag getMediasByTag(String tag) throws IOException;
+    abstract Tag getMediasByTag(String tag) throws IOException;
 
-    Tag getMediasByTag(String tag, int pageCount) throws IOException;
+    abstract Tag getMediasByTag(String tag, int pageCount) throws IOException;
 
-    Account getAccountByUsername(String username) throws IOException;
+    abstract Account getAccountByUsername(String username) throws IOException;
 
     /**
      * @deprecated send tree request, but should be only one
      */
     @Deprecated
-    Account getAccountById(long id) throws IOException;
+    abstract Account getAccountById(long id) throws IOException;
 
-    PageObject<Media> getMediaByUserId(long userId) throws IOException;
+    abstract PageObject<Media> getMediaByUserId(long userId) throws IOException;
 
-    PageObject<Media> getMediaByUserId(long userId, long mediaListSize) throws IOException;
+    abstract PageObject<Media> getMediaByUserId(long userId, long mediaListSize) throws IOException;
 
     /**
      * @deprecated use getMediaByUserId
      */
     @Deprecated
-    PageObject<Media> getMedias(String username, int pageCount) throws IOException;
+    abstract PageObject<Media> getMedias(String username, int pageCount) throws IOException;
 
     /**
      * @deprecated use getMediaByUserId, because it is private method by 'pageCursor'
      */
     @Deprecated
-    PageObject<Media> getMedias(long userId, int pageCount, PageInfo pageCursor) throws IOException;
+    abstract PageObject<Media> getMedias(long userId, int pageCount, PageInfo pageCursor) throws IOException;
 
-    Media getMediaByUrl(String url) throws IOException;
+    abstract Media getMediaByUrl(String url) throws IOException;
 
-    Media getMediaByCode(String code) throws IOException;
-
+    abstract Media getMediaByCode(String code) throws IOException;
 }

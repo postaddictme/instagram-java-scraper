@@ -18,16 +18,20 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class InstaClientFactory {
+    private final InstaClientType instaClientType;
     private OkHttpClient httpClient;
-    private Instagram instaClient;
-    private InstaClientType instaClientType;
+
+    private final InstaClient instaClient;
+    private Instagram instagram;
 
 
     public InstaClientFactory(InstaClientType instaClientType) {
         this.instaClientType = instaClientType;
+        this.instaClient = new InstaClient(this.httpClient);
+        this.instagram = new Instagram(instaClient);
     }
 
-    public Instagram getClient() {
+    public InstaClient getClient() {
         UserAgent userAgent = UserAgent.randomUserAgent();
         // TODO: 29.05.2020: Add logger
         System.out.println(String.format("User Agent: [%s] %s", userAgent, userAgent.userAgentValue));
@@ -46,7 +50,7 @@ public class InstaClientFactory {
                 .readTimeout(120, TimeUnit.SECONDS)
                 .addInterceptor(new ErrorInterceptor());
 
-        switch (instaClientType) {
+        switch (this.instaClientType) {
             case STATELESS:
                 break;
             case ANONYMOUS:
@@ -59,8 +63,8 @@ public class InstaClientFactory {
         }
 
         httpClient = builder.build();
-        instaClient = new Instagram(httpClient);
-        instaClient = getBasePage();
+        instaClient.setHttpClient(httpClient);
+        instagram = getBasePage();
         return instaClient;
     }
 
@@ -78,19 +82,19 @@ public class InstaClientFactory {
 
     private Instagram getBasePage() {
         try {
-            instaClient.basePage();
+            instagram.basePage();
 
             if (instaClientType == InstaClientType.AUTHENTICATED) {
                 Credentials credentials = getCredentials();
-                instaClient.login(credentials.getLogin(), credentials.getEncPassword());
-                instaClient.basePage();
+                instagram.login(credentials.getLogin(), credentials.getEncPassword());
+                instagram.basePage();
             }
 
         } catch (IOException e) {
             String message = String.format("Can not get base page data:%n%s", e);
             throw new InstagramException(message, ErrorType.UNKNOWN_ERROR);
         }
-        return instaClient;
+        return instagram;
     }
 
     public enum InstaClientType {

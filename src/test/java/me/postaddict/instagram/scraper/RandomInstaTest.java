@@ -1,5 +1,6 @@
 package me.postaddict.instagram.scraper;
 
+import me.postaddict.instagram.scraper.client.InstaClient;
 import me.postaddict.instagram.scraper.client.InstaClientFactory;
 import me.postaddict.instagram.scraper.cookie.CookieHashSet;
 import me.postaddict.instagram.scraper.cookie.DefaultCookieJar;
@@ -37,7 +38,8 @@ public class RandomInstaTest {
 
     @BeforeClass
     public static void setUp() {
-        client = new InstaClientFactory(InstaClientFactory.InstaClientType.randomClientType()).getClient();
+        InstaClient instaClient = new InstaClientFactory(InstaClientFactory.InstaClientType.randomClientType()).getClient();
+        client = new Instagram(instaClient);
     }
 
     @Test(expected = InstagramAuthException.class)
@@ -50,18 +52,18 @@ public class RandomInstaTest {
                 .addInterceptor(new ErrorInterceptor())
                 .cookieJar(new DefaultCookieJar(new CookieHashSet()))
                 .build();
-        Instagram instagramClient = new Instagram(httpClient);
+        Instagram instagramClient = new Instagram(new InstaClient(httpClient));
         instagramClient.basePage();
         instagramClient.login("1", "2");
     }
 
     @Test
-    public void testGetRandomClient() throws Exception {
-        client = new InstaClientFactory(InstaClientFactory.InstaClientType.randomClientType()).getClient();
-        client = new InstaClientFactory(InstaClientFactory.InstaClientType.randomClientType()).getClient();
-        client = new InstaClientFactory(InstaClientFactory.InstaClientType.randomClientType()).getClient();
-        client = new InstaClientFactory(InstaClientFactory.InstaClientType.randomClientType()).getClient();
-        client = new InstaClientFactory(InstaClientFactory.InstaClientType.randomClientType()).getClient();
+    public void testGetRandomClient() {
+        InstaClient instaClient = new InstaClientFactory(InstaClientFactory.InstaClientType.randomClientType()).getClient();
+        instaClient = new InstaClientFactory(InstaClientFactory.InstaClientType.randomClientType()).getClient();
+        instaClient = new InstaClientFactory(InstaClientFactory.InstaClientType.randomClientType()).getClient();
+        instaClient = new InstaClientFactory(InstaClientFactory.InstaClientType.randomClientType()).getClient();
+        instaClient = new InstaClientFactory(InstaClientFactory.InstaClientType.randomClientType()).getClient();
     }
 
 }

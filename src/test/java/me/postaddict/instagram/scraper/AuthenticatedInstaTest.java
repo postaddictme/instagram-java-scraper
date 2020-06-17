@@ -1,5 +1,6 @@
 package me.postaddict.instagram.scraper;
 
+import me.postaddict.instagram.scraper.client.InstaClient;
 import me.postaddict.instagram.scraper.client.InstaClientFactory;
 import me.postaddict.instagram.scraper.cookie.CookieHashSet;
 import me.postaddict.instagram.scraper.cookie.DefaultCookieJar;
@@ -37,7 +38,8 @@ public class AuthenticatedInstaTest {
 
     @BeforeClass
     public static void setUp() {
-        client = new InstaClientFactory(InstaClientFactory.InstaClientType.AUTHENTICATED).getClient();
+        InstaClient instaClient = new InstaClientFactory(InstaClientFactory.InstaClientType.AUTHENTICATED).getClient();
+        client = new Instagram(instaClient);
     }
 
     @Test(expected = InstagramAuthException.class)
@@ -50,7 +52,7 @@ public class AuthenticatedInstaTest {
                 .addInterceptor(new ErrorInterceptor())
                 .cookieJar(new DefaultCookieJar(new CookieHashSet()))
                 .build();
-        Instagram instagramClient = new Instagram(httpClient);
+        Instagram instagramClient = new Instagram(new InstaClient(httpClient));
         instagramClient.basePage();
         instagramClient.login("1", "2");
     }

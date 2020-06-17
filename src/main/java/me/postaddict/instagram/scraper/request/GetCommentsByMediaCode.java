@@ -1,6 +1,7 @@
 package me.postaddict.instagram.scraper.request;
 
 import me.postaddict.instagram.scraper.Endpoint;
+import me.postaddict.instagram.scraper.client.InstaClient;
 import me.postaddict.instagram.scraper.mapper.Mapper;
 import me.postaddict.instagram.scraper.model.Comment;
 import me.postaddict.instagram.scraper.model.PageInfo;
@@ -14,8 +15,8 @@ import java.util.List;
 
 public class GetCommentsByMediaCode extends PaginatedRequest<PageObject<Comment>, MediaCode> {
 
-    public GetCommentsByMediaCode(OkHttpClient httpClient, Mapper mapper, DelayHandler delayHandler) {
-        super(httpClient, mapper, delayHandler);
+    public GetCommentsByMediaCode(InstaClient instaClient, Mapper mapper, DelayHandler delayHandler) {
+        super(instaClient, mapper, delayHandler);
     }
 
     @Override
