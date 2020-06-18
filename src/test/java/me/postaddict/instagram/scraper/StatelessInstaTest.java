@@ -126,7 +126,7 @@ public class StatelessInstaTest {
     public void testGetMediaByUserName() throws Exception {
         PageObject<Media> medias = client.getMedias("kevin", 2);
         Collection<Media> mediaList = medias.getNodes();
-        assertEquals(50, mediaList.size());
+        assertEquals(60, mediaList.size());
         for (Media media : mediaList) {
             assertTrue(checkMedia(media));
         }
