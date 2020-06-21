@@ -82,7 +82,7 @@ public class MultiThreadTest {
             for (Media media : result) {
                 Assert.assertTrue(checkMedia(media));
             }
-            Assert.assertEquals(63, result.size());
+            Assert.assertTrue(result.size() > 200);
         }
     }
 }
