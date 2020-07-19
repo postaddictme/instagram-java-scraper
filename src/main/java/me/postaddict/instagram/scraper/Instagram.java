@@ -2,7 +2,6 @@ package me.postaddict.instagram.scraper;
 
 import me.postaddict.instagram.scraper.client.InstaClient;
 import me.postaddict.instagram.scraper.exception.InstagramAuthException;
-import me.postaddict.instagram.scraper.mapper.Mapper;
 import me.postaddict.instagram.scraper.model.Account;
 import me.postaddict.instagram.scraper.model.ActionResponse;
 import me.postaddict.instagram.scraper.model.ActivityFeed;
@@ -12,7 +11,6 @@ import me.postaddict.instagram.scraper.model.Media;
 import me.postaddict.instagram.scraper.model.PageInfo;
 import me.postaddict.instagram.scraper.model.PageObject;
 import me.postaddict.instagram.scraper.model.Tag;
-import me.postaddict.instagram.scraper.request.DelayHandler;
 import me.postaddict.instagram.scraper.request.GetCommentsByMediaCode;
 import me.postaddict.instagram.scraper.request.GetFollowersRequest;
 import me.postaddict.instagram.scraper.request.GetFollowsRequest;
@@ -29,16 +27,15 @@ import me.postaddict.instagram.scraper.request.parameters.UserParameter;
 import okhttp3.Cookie;
 import okhttp3.FormBody;
 import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.apache.commons.io.IOUtils;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 
 //@AllArgsConstructor
@@ -70,11 +67,11 @@ public class Instagram extends AuthenticatedInsta {
                 .build();
 
         Response response = executeHttpRequest(request);
-        try (ResponseBody body = response.body()) {
-            if (instaClient.getCsrfToken().isEmpty())
-                getCSRFToken(body);
-            else if (instaClient.getRolloutHash().isEmpty())
-                getRolloutHash(body);
+        try (ResponseBody responseBody = response.body()) {
+            String body = IOUtils.toString(responseBody.byteStream(), StandardCharsets.UTF_8);
+
+            getCSRFToken(body);
+            getRolloutHash(body);
         }
     }
 
@@ -99,8 +96,8 @@ public class Instagram extends AuthenticatedInsta {
                 .build();
 
         Response response = executeHttpRequest(withCsrfToken(request));
-        try(InputStream jsonStream = response.body().byteStream()) {
-            if(!mapper.isAuthenticated(jsonStream)){
+        try (InputStream jsonStream = response.body().byteStream()) {
+            if (!mapper.isAuthenticated(jsonStream)) {
                 throw new InstagramAuthException("Credentials rejected by instagram", ErrorType.UNAUTHORIZED);
             }
         }

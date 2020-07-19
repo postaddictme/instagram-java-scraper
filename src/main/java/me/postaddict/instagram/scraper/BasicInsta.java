@@ -1,23 +1,21 @@
 package me.postaddict.instagram.scraper;
 
 import me.postaddict.instagram.scraper.client.InstaClient;
-import me.postaddict.instagram.scraper.exception.InstagramAuthException;
 import me.postaddict.instagram.scraper.mapper.Mapper;
 import me.postaddict.instagram.scraper.mapper.ModelMapper;
 import me.postaddict.instagram.scraper.request.DefaultDelayHandler;
 import me.postaddict.instagram.scraper.request.DelayHandler;
 import okhttp3.Cookie;
-import okhttp3.FormBody;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
+import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 public abstract class BasicInsta {
     protected final InstaClient instaClient;
@@ -29,8 +27,10 @@ public abstract class BasicInsta {
     }
 
 
-    protected void getCSRFToken(ResponseBody body) throws IOException {
-        String csrf_token = getToken("\"csrf_token\":\"", 32, body.byteStream());
+    protected void getCSRFToken(String body) throws IOException {
+        // TODO: p.saharchuk: 19.07.2020: Get JSON from '<script type="text/javascript">window._sharedData ='
+        //  and pars it
+        String csrf_token = getToken("\"csrf_token\":\"", 32, IOUtils.toInputStream(body, StandardCharsets.UTF_8));
         instaClient.setCsrfToken(csrf_token);
     }
 
@@ -43,11 +43,14 @@ public abstract class BasicInsta {
         return instaClient.getCsrfToken();
     }
 
-    protected void getRolloutHash(ResponseBody body) {
+    protected void getRolloutHash(String body) throws IOException {
         try {
-            String rollout_hash = getToken("\"rollout_hash\":\"", 12, body.byteStream());
+            // TODO: p.saharchuk: 19.07.2020: Get JSON from '<script type="text/javascript">window._sharedData ='
+            //  and pars it
+            String rollout_hash = getToken("\"rollout_hash\":\"", 12, IOUtils.toInputStream(body, StandardCharsets.UTF_8));
             instaClient.setRolloutHash(rollout_hash);
         } catch (IOException e) {
+            // TODO: p.saharchuk: 19.07.2020: Check it
             instaClient.setRolloutHash("1");
         }
     }
@@ -80,11 +83,18 @@ public abstract class BasicInsta {
         String rollout_hash = instaClient.getRolloutHash();
 
         // TODO: 08.05.2020: Add LOGGER
+        System.out.println(String.format("%nRequest >>>"));
         System.out.println(String.format("%s: %s", Utils.getCurrentTime(), request.url()));
-        System.out.println(String.format("csrf_token: %s", csrf_token));
-        System.out.println(String.format("rollout_hash: %s", rollout_hash));
+        // TODO: 08.05.2020: Temp logs
+//        System.out.println(String.format("csrf_token: %s", csrf_token));
+//        System.out.println(String.format("rollout_hash: %s", rollout_hash));
+
+        // TODO: 08.05.2020: Add LOGGER
+        System.out.println(String.format("headers:%n%s", request.headers()));
 
         Response response = instaClient.getHttpClient().newCall(request).execute();
+        // TODO: 08.05.2020: Add LOGGER
+        System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
         if (delayHandler != null) {
             delayHandler.onEachRequest();
         }

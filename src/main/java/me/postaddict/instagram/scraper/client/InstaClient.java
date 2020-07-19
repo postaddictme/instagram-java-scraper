@@ -1,13 +1,11 @@
 package me.postaddict.instagram.scraper.client;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import okhttp3.OkHttpClient;
 
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 public class InstaClient {
 

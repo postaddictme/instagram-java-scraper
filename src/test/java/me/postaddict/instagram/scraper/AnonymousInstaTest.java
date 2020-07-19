@@ -99,7 +99,7 @@ public class AnonymousInstaTest {
     @Test
     public void testGetMediaByCodeCarousel() throws Exception {
         Media media = client.getMediaByCode("CBizCfxHdsk");
-        assertEquals("m.pechennikova", media.getOwner().getUsername());
+        assertEquals("pechennikova_m", media.getOwner().getUsername());
         assertTrue(checkMedia(media));
         assertEquals(4, media.getCarouselMedia().size());
         Iterator<CarouselResource> carouselIterator = media.getCarouselMedia().iterator();

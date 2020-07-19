@@ -11,7 +11,7 @@ import java.util.List;
 
 public class DefaultCookieJar implements CookieJar {
 
-    private CookieCache cache;
+    private final CookieCache cache;
 
     public DefaultCookieJar(CookieCache cache) {
         this.cache = cache;
@@ -19,8 +19,6 @@ public class DefaultCookieJar implements CookieJar {
 
     @Override
     public synchronized void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
-        System.out.println("cookies:");
-        System.out.println(StringUtils.join(cookies, "\r\n"));
         cache.addAll(cookies);
     }
 
@@ -35,6 +33,8 @@ public class DefaultCookieJar implements CookieJar {
                 cookies.add(cookie);
             }
         }
+        System.out.println(String.format("%nCookies:"));
+        System.out.println(StringUtils.join(cookies, "\r\n"));
         return cookies;
     }
 
