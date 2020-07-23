@@ -20,17 +20,17 @@ import static org.junit.Assert.assertTrue;
 
 public class StatelessInstaTest {
 
-    private static StatelessInsta client;
+    private static StatelessInsta instagram;
 
     @BeforeClass
     public static void setUp() {
         InstaClient instaClient = new InstaClientFactory(InstaClientFactory.InstaClientType.STATELESS).getClient();
-        client = new Instagram(instaClient);
+        instagram = new Instagram(instaClient);
     }
 
     @Test
     public void testGetMediasByTag() throws Exception {
-        Tag tag = client.getMediasByTag("Moscow");
+        Tag tag = instagram.getMediasByTag("Moscow");
         Collection<Media> list = tag.getMediaRating().getMedia().getNodes();
         assertTrue(list.size() > 18);
         for (Media media : list) {
@@ -41,7 +41,7 @@ public class StatelessInstaTest {
 
     @Test
     public void testGetMediasByTagFewPages() throws Exception {
-        Tag tag = client.getMediasByTag("Moscow", 2);
+        Tag tag = instagram.getMediasByTag("Moscow", 2);
         Collection<Media> list = tag.getMediaRating().getMedia().getNodes();
         assertTrue(list.size() > 18);
         for (Media media : list) {
@@ -54,7 +54,7 @@ public class StatelessInstaTest {
     public void testGetMediaByUserId() throws Exception {
         int userId = 3;
         int size = 33;
-        PageObject<Media> mediaList1 = client.getMediaByUserId(userId, size);
+        PageObject<Media> mediaList1 = instagram.getMediaByUserId(userId, size);
         List<Media> mediaList = mediaList1.getNodes();
         assertEquals(size, mediaList.size());
         for (Media media : mediaList) {
@@ -65,7 +65,7 @@ public class StatelessInstaTest {
 
         userId = 4;
         size = 50;
-        PageObject<Media> mediaList2 = client.getMediaByUserId(userId, size);
+        PageObject<Media> mediaList2 = instagram.getMediaByUserId(userId, size);
         mediaList = mediaList2.getNodes();
         assertEquals(size, mediaList.size());
         for (Media media : mediaList) {
@@ -76,7 +76,7 @@ public class StatelessInstaTest {
 
         userId = 5;
         size = 100;
-        PageObject<Media> mediaList3 = client.getMediaByUserId(userId, size);
+        PageObject<Media> mediaList3 = instagram.getMediaByUserId(userId, size);
         mediaList = mediaList3.getNodes();
         assertEquals(size, mediaList.size());
         for (Media media : mediaList) {
@@ -87,7 +87,7 @@ public class StatelessInstaTest {
 
         userId = 6;
         size = 125;
-        PageObject<Media> mediaList4 = client.getMediaByUserId(userId, size);
+        PageObject<Media> mediaList4 = instagram.getMediaByUserId(userId, size);
         mediaList = mediaList4.getNodes();
         assertEquals(size, mediaList.size());
         for (Media media : mediaList) {
@@ -98,7 +98,7 @@ public class StatelessInstaTest {
 
         userId = 11;
         int defaultSize = 24;
-        PageObject<Media> mediaList5 = client.getMediaByUserId(userId);
+        PageObject<Media> mediaList5 = instagram.getMediaByUserId(userId);
         mediaList = mediaList5.getNodes();
         assertEquals(defaultSize, mediaList.size());
         for (Media media : mediaList) {
@@ -110,7 +110,7 @@ public class StatelessInstaTest {
 
     @Test
     public void testGetAccountById() throws Exception {
-        Account account = client.getAccountById(3);
+        Account account = instagram.getAccountById(3);
         assertEquals("kevin", account.getUsername());
         assertTrue(checkAccount(account));
         System.out.println(account);
@@ -118,7 +118,7 @@ public class StatelessInstaTest {
 
     @Test
     public void testGetAccountByUsername() throws Exception {
-        Account account = client.getAccountByUsername("kevin");
+        Account account = instagram.getAccountByUsername("kevin");
         assertEquals("kevin", account.getUsername());
         assertTrue(checkAccount(account));
         System.out.println(account);
@@ -126,7 +126,7 @@ public class StatelessInstaTest {
 
     @Test
     public void testGetMediaByUserName() throws Exception {
-        PageObject<Media> medias = client.getMedias("kevin", 2);
+        PageObject<Media> medias = instagram.getMedias("kevin", 2);
         Collection<Media> mediaList = medias.getNodes();
         assertEquals(60, mediaList.size());
         for (Media media : mediaList) {
@@ -137,7 +137,7 @@ public class StatelessInstaTest {
 
     @Test
     public void testGetMediaByUrl() throws Exception {
-        Media media = client.getMediaByUrl("https://www.instagram.com/p/BHaRdodBouH");
+        Media media = instagram.getMediaByUrl("https://www.instagram.com/p/BHaRdodBouH");
         assertEquals("kevin", media.getOwner().getUsername());
         assertTrue(checkMedia(media));
         System.out.println(media);
@@ -145,7 +145,7 @@ public class StatelessInstaTest {
 
     @Test
     public void testGetMediaByCode() throws Exception {
-        Media media = client.getMediaByCode("BHaRdodBouH");
+        Media media = instagram.getMediaByCode("BHaRdodBouH");
         assertEquals("kevin", media.getOwner().getUsername());
         assertTrue(checkMedia(media));
         System.out.println(media);
@@ -167,7 +167,7 @@ public class StatelessInstaTest {
 
     @Test
     public void testPreviewComments() throws Exception {
-        Media media = client.getMediaByCode("Ba63OW3hAKq");
+        Media media = instagram.getMediaByCode("Ba63OW3hAKq");
         if (media.getCommentCount() > 0) {
             assertTrue(media.getCommentPreview().getNodes().size() > 0);
         } else {

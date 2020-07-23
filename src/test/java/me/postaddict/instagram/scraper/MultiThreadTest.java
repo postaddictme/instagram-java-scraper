@@ -17,12 +17,12 @@ import java.util.concurrent.*;
 import static me.postaddict.instagram.scraper.ContentCheck.checkMedia;
 
 public class MultiThreadTest {
-    private static AnonymousInsta client;
+    private static AnonymousInsta instagram;
 
     @BeforeClass
     public static void setUp() {
         InstaClient instaClient = new InstaClientFactory(InstaClientFactory.InstaClientType.ANONYMOUS).getClient();
-        client = new Instagram(instaClient);
+        instagram = new Instagram(instaClient);
     }
 
     @Test
@@ -65,9 +65,9 @@ public class MultiThreadTest {
                 public List<Media> call() throws Exception {
                     List<Media> medias = new ArrayList<Media>();
                     try {
-                        medias.addAll(client.getMediasByTag(s, 1).getMediaRating().getTopPosts());
+                        medias.addAll(instagram.getMediasByTag(s, 1).getMediaRating().getTopPosts());
                         Thread.sleep(1000);
-                        medias.addAll(client.getMediasByTag(s, 3).getMediaRating().getMedia().getNodes());
+                        medias.addAll(instagram.getMediasByTag(s, 3).getMediaRating().getMedia().getNodes());
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (InterruptedException e) {

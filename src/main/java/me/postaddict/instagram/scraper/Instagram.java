@@ -38,29 +38,16 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 
-//@AllArgsConstructor
 public class Instagram extends AuthenticatedInsta {
 
     public static final int MAX_USER_MEDIA_PAGE_SIZE = 50;
-    // TODO: 14.06.2020: p.saharchuk: move to InstaClient and private
-//    protected final OkHttpClient httpClient;
-//    protected final Mapper mapper;
-//    protected final DelayHandler delayHandler;
-//    protected OkHttpClient httpClient;
-    //    protected String csrf_token;
-//    protected String rollout_hash;
-//    protected Mapper mapper;
     private static final PageInfo FIRST_PAGE = new PageInfo(true, "");
 
     public Instagram(InstaClient instaClient) {
         super(instaClient);
     }
 
-    // TODO: 14.06.2020: p.saharchuk: delete
-//    public Instagram(OkHttpClient httpClient) {
-//        this(httpClient, new ModelMapper(), new DefaultDelayHandler(),"","");
-//    }
-
+    @Override
     public void basePage() throws IOException {
         Request request = new Request.Builder()
                 .url(Endpoint.BASE_URL)
@@ -75,6 +62,7 @@ public class Instagram extends AuthenticatedInsta {
         }
     }
 
+    @Override
     public void login(String username, String encPassword) throws IOException {
         if (username == null || encPassword == null) {
             throw new InstagramAuthException("Specify username and enc_password");
@@ -122,6 +110,7 @@ public class Instagram extends AuthenticatedInsta {
      * @return PageObject<Media> with media list
      * @throws IOException
      */
+    @Override
     public PageObject<Media> getMediaByUserId(long userId) throws IOException {
         return getMediaByUserId(userId, 24);
     }
@@ -132,6 +121,7 @@ public class Instagram extends AuthenticatedInsta {
      * @return PageObject<Media> with media list
      * @throws IOException
      */
+    @Override
     public PageObject<Media> getMediaByUserId(long userId, long mediaListSize) throws IOException {
         long pageCount = (long) Math.ceil((double) mediaListSize / MAX_USER_MEDIA_PAGE_SIZE);
         int lastPageSize = (int) mediaListSize % MAX_USER_MEDIA_PAGE_SIZE;
@@ -141,6 +131,7 @@ public class Instagram extends AuthenticatedInsta {
                 .requestInstagramResult(new UserMediaListParameter(userId, pageCount, lastPageSize), pageCount, FIRST_PAGE);
     }
 
+    @Override
     public Account getAccountByUsername(String username) throws IOException {
         Request request = new Request.Builder()
                 .url(Endpoint.getAccountId(username))
@@ -151,16 +142,19 @@ public class Instagram extends AuthenticatedInsta {
         }
     }
 
+    @Override
     public PageObject<Media> getMedias(String username, int pageCount) throws IOException {
         long userId = getAccountByUsername(username).getId();
         return getMedias(userId, pageCount, FIRST_PAGE);
     }
 
+    @Override
     public PageObject<Media> getMedias(long userId, int pageCount, PageInfo pageCursor) throws IOException {
         GetMediasRequest getMediasRequest = new GetMediasRequest(instaClient, mapper, delayHandler);
         return getMediasRequest.requestInstagramResult(new UserParameter(userId), pageCount, pageCursor);
     }
 
+    @Override
     public Media getMediaByUrl(String url) throws IOException {
         String urlRegexp = Endpoint.getMediaPageLinkByCodeMatcher();
         if (url == null || !url.matches(urlRegexp)) {
@@ -176,31 +170,37 @@ public class Instagram extends AuthenticatedInsta {
         }
     }
 
+    @Override
     public Media getMediaByCode(String code) throws IOException {
         return getMediaByUrl(Endpoint.getMediaPageLinkByCode(code));
     }
 
+    @Override
     public Location getLocationMediasById(String locationId, int pageCount) throws IOException {
         GetLocationRequest getLocationRequest = new GetLocationRequest(instaClient, mapper, delayHandler);
         return getLocationRequest.requestInstagramResult(new LocationParameter(locationId), pageCount, FIRST_PAGE);
     }
 
+    @Override
     public Tag getMediasByTag(String tag) throws IOException {
         return getMediasByTag(tag, 1);
     }
 
+    @Override
     public Tag getMediasByTag(String tag, int pageCount) throws IOException {
         validateTagName(tag);
         GetMediaByTagRequest getMediaByTagRequest = new GetMediaByTagRequest(instaClient, mapper, delayHandler);
         return getMediaByTagRequest.requestInstagramResult(new TagName(tag), pageCount, FIRST_PAGE);
     }
 
+    @Override
     public PageObject<Comment> getCommentsByMediaCode(String code, int pageCount) throws IOException {
         GetCommentsByMediaCode getCommentsByMediaCode = new GetCommentsByMediaCode(instaClient, mapper, delayHandler);
         return getCommentsByMediaCode.requestInstagramResult(new MediaCode(code), pageCount,
                 new PageInfo(true, "0"));
     }
 
+    @Override
     public void likeMediaByCode(String code) throws IOException {
         String url = Endpoint.getMediaLikeLink(MediaUtil.getIdFromCode(code));
         Request request = new Request.Builder()
@@ -213,11 +213,13 @@ public class Instagram extends AuthenticatedInsta {
         response.body().close();
     }
 
+    @Override
     public void followAccountByUsername(String username) throws IOException {
         Account account = getAccountByUsername(username);
         followAccount(account.getId());
     }
 
+    @Override
     public void followAccount(long userId) throws IOException {
         String url = Endpoint.getFollowAccountLink(userId);
         Request request = new Request.Builder()
@@ -229,11 +231,13 @@ public class Instagram extends AuthenticatedInsta {
         response.body().close();
     }
 
+    @Override
     public void unfollowAccountByUsername(String username) throws IOException {
         Account account = getAccountByUsername(username);
         unfollowAccount(account.getId());
     }
 
+    @Override
     public void unfollowAccount(long userId) throws IOException {
         String url = Endpoint.getUnfollowAccountLink(userId);
         Request request = new Request.Builder()
@@ -245,21 +249,25 @@ public class Instagram extends AuthenticatedInsta {
         response.body().close();
     }
 
+    @Override
     public PageObject<Account> getMediaLikes(String shortcode, int pageCount) throws IOException {
         GetMediaLikesRequest getMediaLikesRequest = new GetMediaLikesRequest(instaClient, mapper, delayHandler);
         return getMediaLikesRequest.requestInstagramResult(new MediaCode(shortcode), pageCount, FIRST_PAGE);
     }
 
+    @Override
     public PageObject<Account> getFollows(long userId, int pageCount) throws IOException {
         GetFollowsRequest getFollowsRequest = new GetFollowsRequest(instaClient, mapper, delayHandler);
         return getFollowsRequest.requestInstagramResult(new UserParameter(userId), pageCount, FIRST_PAGE);
     }
 
+    @Override
     public PageObject<Account> getFollowers(long userId, int pageCount) throws IOException {
         GetFollowersRequest getFollowersRequest = new GetFollowersRequest(instaClient, mapper, delayHandler);
         return getFollowersRequest.requestInstagramResult(new UserParameter(userId), pageCount, FIRST_PAGE);
     }
 
+    @Override
     public void unlikeMediaByCode(String code) throws IOException {
         String url = Endpoint.getMediaUnlikeLink(MediaUtil.getIdFromCode(code));
         Request request = new Request.Builder()
@@ -272,6 +280,7 @@ public class Instagram extends AuthenticatedInsta {
         response.body().close();
     }
 
+    @Override
     public ActionResponse<Comment> addMediaComment(String code, String commentText) throws IOException {
         String url = Endpoint.addMediaCommentLink(MediaUtil.getIdFromCode(code));
         FormBody formBody = new FormBody.Builder()
@@ -289,6 +298,7 @@ public class Instagram extends AuthenticatedInsta {
         }
     }
 
+    @Override
     public void deleteMediaComment(String code, String commentId) throws IOException {
         String url = Endpoint.deleteMediaCommentLink(MediaUtil.getIdFromCode(code), commentId);
         Request request = new Request.Builder()

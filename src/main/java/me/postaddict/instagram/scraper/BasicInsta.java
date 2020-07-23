@@ -79,17 +79,9 @@ public abstract class BasicInsta {
     }
 
     public Response executeHttpRequest(Request request) throws IOException {
-        String csrf_token = instaClient.getCsrfToken();
-        String rollout_hash = instaClient.getRolloutHash();
-
         // TODO: 08.05.2020: Add LOGGER
         System.out.println(String.format("%nRequest >>>"));
         System.out.println(String.format("%s: %s", Utils.getCurrentTime(), request.url()));
-        // TODO: 08.05.2020: Temp logs
-//        System.out.println(String.format("csrf_token: %s", csrf_token));
-//        System.out.println(String.format("rollout_hash: %s", rollout_hash));
-
-        // TODO: 08.05.2020: Add LOGGER
         System.out.println(String.format("headers:%n%s", request.headers()));
 
         Response response = instaClient.getHttpClient().newCall(request).execute();
