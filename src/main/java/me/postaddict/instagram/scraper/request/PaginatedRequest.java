@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.postaddict.instagram.scraper.Instagram;
+import me.postaddict.instagram.scraper.client.InstaClient;
 import me.postaddict.instagram.scraper.mapper.Mapper;
 import me.postaddict.instagram.scraper.model.PageInfo;
 import me.postaddict.instagram.scraper.request.parameters.RequestParameter;
@@ -25,7 +26,7 @@ public abstract class PaginatedRequest<R, P extends RequestParameter> {
 
     protected abstract R mapResponse(InputStream jsonStream);
 
-    private final OkHttpClient httpClient;
+    private final InstaClient instaClient;
     @Getter(AccessLevel.PROTECTED)
     private final Mapper mapper;
     private final DelayHandler delayHandler;
@@ -36,7 +37,7 @@ public abstract class PaginatedRequest<R, P extends RequestParameter> {
         while (currentPage++ < pageCount && pageCursor.isHasNextPage()) {
 
             Request request = requestInstagram(requestParameters, pageCursor);
-            Response response = new Instagram(httpClient).executeHttpRequest(request);
+            Response response = new Instagram(instaClient).executeHttpRequest(request);
 
             R current;
             try (InputStream jsonStream = response.body().byteStream()) {

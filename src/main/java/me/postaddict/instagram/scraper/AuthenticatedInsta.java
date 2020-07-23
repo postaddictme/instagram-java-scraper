@@ -1,5 +1,6 @@
 package me.postaddict.instagram.scraper;
 
+import me.postaddict.instagram.scraper.client.InstaClient;
 import me.postaddict.instagram.scraper.model.Account;
 import me.postaddict.instagram.scraper.model.ActionResponse;
 import me.postaddict.instagram.scraper.model.ActivityFeed;
@@ -8,27 +9,39 @@ import me.postaddict.instagram.scraper.model.PageObject;
 
 import java.io.IOException;
 
-public interface AuthenticatedInsta extends AnonymousInsta {
+public abstract class AuthenticatedInsta extends AnonymousInsta {
 
-    void login(String username, String password) throws IOException;
-    void likeMediaByCode(String code) throws IOException;
-    void unlikeMediaByCode(String code) throws IOException;
-    void followAccountByUsername(String username) throws IOException;
-    void unfollowAccountByUsername(String username) throws IOException;
-    void followAccount(long userId) throws IOException;
-    void unfollowAccount(long userId) throws IOException;
-    
-    ActionResponse<Comment> addMediaComment(String code, String commentText) throws IOException;
 
-    void deleteMediaComment(String code, String commentId) throws IOException;
+    public AuthenticatedInsta(InstaClient instaClient) {
+        super(instaClient);
+    }
 
-    PageObject<Account> getMediaLikes(String shortcode, int pageCount) throws IOException;
 
-    PageObject<Account> getFollows(long userId, int pageCount) throws IOException;
+    abstract void login(String username, String password) throws IOException;
 
-    PageObject<Account> getFollowers(long userId, int pageCount) throws IOException;
+    abstract void likeMediaByCode(String code) throws IOException;
 
-    ActivityFeed getActivityFeed() throws IOException;
+    abstract void unlikeMediaByCode(String code) throws IOException;
 
-    Long getLoginUserId();
+    abstract void followAccountByUsername(String username) throws IOException;
+
+    abstract void unfollowAccountByUsername(String username) throws IOException;
+
+    abstract void followAccount(long userId) throws IOException;
+
+    abstract void unfollowAccount(long userId) throws IOException;
+
+    abstract ActionResponse<Comment> addMediaComment(String code, String commentText) throws IOException;
+
+    abstract void deleteMediaComment(String code, String commentId) throws IOException;
+
+    abstract PageObject<Account> getMediaLikes(String shortcode, int pageCount) throws IOException;
+
+    abstract PageObject<Account> getFollows(long userId, int pageCount) throws IOException;
+
+    abstract PageObject<Account> getFollowers(long userId, int pageCount) throws IOException;
+
+    abstract ActivityFeed getActivityFeed() throws IOException;
+
+    abstract Long getLoginUserId();
 }

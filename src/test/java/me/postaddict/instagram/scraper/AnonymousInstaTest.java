@@ -1,5 +1,6 @@
 package me.postaddict.instagram.scraper;
 
+import me.postaddict.instagram.scraper.client.InstaClient;
 import me.postaddict.instagram.scraper.client.InstaClientFactory;
 import me.postaddict.instagram.scraper.model.Account;
 import me.postaddict.instagram.scraper.model.CarouselResource;
@@ -26,16 +27,17 @@ import static org.junit.Assert.assertTrue;
 
 public class AnonymousInstaTest {
 
-    private static AnonymousInsta client;
+    private static AnonymousInsta instagram;
 
     @BeforeClass
     public static void setUp() {
-        client = new InstaClientFactory(InstaClientFactory.InstaClientType.ANONYMOUS).getClient();
+        InstaClient instaClient = new InstaClientFactory(InstaClientFactory.InstaClientType.ANONYMOUS).getClient();
+        instagram = new Instagram(instaClient);
     }
 
     @Test
     public void testGetAccountById() throws Exception {
-        Account account = client.getAccountById(3);
+        Account account = instagram.getAccountById(3);
         assertEquals("kevin", account.getUsername());
         assertTrue(checkAccount(account));
         System.out.println(account);
@@ -43,7 +45,7 @@ public class AnonymousInstaTest {
 
     @Test
     public void testGetAccountByUsername() throws Exception {
-        Account account = client.getAccountByUsername("kevin");
+        Account account = instagram.getAccountByUsername("kevin");
         assertEquals("kevin", account.getUsername());
         assertTrue(checkAccount(account));
         System.out.println(account);
@@ -51,7 +53,7 @@ public class AnonymousInstaTest {
 
     @Test
     public void testGetTagByName() throws Exception {
-        Tag tag = client.getMediasByTag("corgi");
+        Tag tag = instagram.getMediasByTag("corgi");
         assertEquals("corgi", tag.getName());
         assertTrue(checkTag(tag));
         System.out.println(tag);
@@ -59,7 +61,7 @@ public class AnonymousInstaTest {
 
     @Test
     public void testGetMedias() throws Exception {
-        PageObject<Media> mediaList = client.getMedias("kevin", 2);
+        PageObject<Media> mediaList = instagram.getMedias("kevin", 2);
         assertEquals(60, mediaList.getNodes().size());
         for (Media media : mediaList.getNodes()) {
             assertTrue(checkMedia(media));
@@ -69,7 +71,7 @@ public class AnonymousInstaTest {
 
     @Test
     public void testGetMediaByUrl() throws Exception {
-        Media media = client.getMediaByUrl("https://www.instagram.com/p/BHaRdodBouH");
+        Media media = instagram.getMediaByUrl("https://www.instagram.com/p/BHaRdodBouH");
         assertEquals("kevin", media.getOwner().getUsername());
         assertTrue(checkMedia(media));
         System.out.println(media);
@@ -77,18 +79,18 @@ public class AnonymousInstaTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testGetMalformedMediaByUrl() throws Exception {
-        client.getMediaByUrl("https://www.instagram.com/p/BHaRdodBouH/");
+        instagram.getMediaByUrl("https://www.instagram.com/p/BHaRdodBouH/");
     }
 
     @Test
     public void testNonLiteralMediaCode() throws Exception {
-        Media media = client.getMediaByCode("BWizrpZgg-w");
+        Media media = instagram.getMediaByCode("BWizrpZgg-w");
         assertEquals("pixar", media.getOwner().getUsername());
     }
 
     @Test
     public void testGetMediaByCode() throws Exception {
-        Media media = client.getMediaByCode("BHaRdodBouH");
+        Media media = instagram.getMediaByCode("BHaRdodBouH");
         assertEquals("kevin", media.getOwner().getUsername());
         assertTrue(checkMedia(media));
         System.out.println(media);
@@ -96,8 +98,8 @@ public class AnonymousInstaTest {
 
     @Test
     public void testGetMediaByCodeCarousel() throws Exception {
-        Media media = client.getMediaByCode("CBizCfxHdsk");
-        assertEquals("m.pechennikova", media.getOwner().getUsername());
+        Media media = instagram.getMediaByCode("CBizCfxHdsk");
+        assertEquals("pechennikova_m", media.getOwner().getUsername());
         assertTrue(checkMedia(media));
         assertEquals(4, media.getCarouselMedia().size());
         Iterator<CarouselResource> carouselIterator = media.getCarouselMedia().iterator();
@@ -115,7 +117,7 @@ public class AnonymousInstaTest {
 
     @Test
     public void testGetMediaByCodeVideoPost() throws Exception {
-        Media media = client.getMediaByCode("Bde90J7n6ba");
+        Media media = instagram.getMediaByCode("Bde90J7n6ba");
         assertEquals("corgillection", media.getOwner().getUsername());
         assertThat(media.getVideoUrl()).contains(".mp4");
         assertThat(media.getDisplayUrl()).contains(".jpg");
@@ -127,7 +129,7 @@ public class AnonymousInstaTest {
     @Test
     public void testGetLocationMediasById() throws Exception {
         String locationId = "17326249";
-        Location location = client.getLocationMediasById(locationId, 2);
+        Location location = instagram.getLocationMediasById(locationId, 2);
         Collection<Media> medias = location.getMediaRating().getMedia().getNodes();
         assertEquals(48, medias.size());
         for (Media media : medias) {
@@ -143,7 +145,7 @@ public class AnonymousInstaTest {
 
     @Test
     public void testGetMediasByTag() throws Exception {
-        Tag tag = client.getMediasByTag("Moscow", 2);
+        Tag tag = instagram.getMediasByTag("Moscow", 2);
         Collection<Media> list = tag.getMediaRating().getMedia().getNodes();
         assertTrue(list.size()>18);
         for (Media media : list) {
@@ -154,12 +156,12 @@ public class AnonymousInstaTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testGetMediasByTagError() throws Exception {
-        client.getMediasByTag("#HarryWright", 20);
+        instagram.getMediasByTag("#HarryWright", 20);
     }
 
     @Test
     public void testGetTopMediasByTag() throws Exception {
-        Tag tag = client.getMediasByTag("Sheremetyevo",1);
+        Tag tag = instagram.getMediasByTag("Sheremetyevo",1);
         Collection<Media> list = tag.getMediaRating().getTopPosts();
         assertEquals(9, list.size());
         for (Media media : list) {
@@ -170,7 +172,7 @@ public class AnonymousInstaTest {
 
     @Test
     public void testGetCommentsByMediaCode() throws Exception {
-        PageObject<Comment> comments= client.getCommentsByMediaCode("BHaRdodBouH", 2);
+        PageObject<Comment> comments= instagram.getCommentsByMediaCode("BHaRdodBouH", 2);
         Collection<Comment> list = comments.getNodes();
         assertTrue(list.size()>20);
         for (Comment comment : list) {
@@ -195,7 +197,7 @@ public class AnonymousInstaTest {
 
     @Test
     public void testPreviewComments() throws Exception {
-        Media media = client.getMediaByCode("Ba63OW3hAKq");
+        Media media = instagram.getMediaByCode("Ba63OW3hAKq");
         if (media.getCommentCount() > 0){
             Collection<Comment> comments = media.getCommentPreview().getNodes();
             assertTrue(comments.size() > 0);

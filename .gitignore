@@ -6,6 +6,5 @@ out
 .project
 .settings/
 /target/
-# credentials file and exemple files
+# credentials file need copy credentials_exemple.json
 **/credentials.json
-**/credentials_exemple.json

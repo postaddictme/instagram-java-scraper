@@ -1,5 +1,6 @@
 package me.postaddict.instagram.scraper;
 
+import me.postaddict.instagram.scraper.client.InstaClient;
 import me.postaddict.instagram.scraper.client.InstaClientFactory;
 import me.postaddict.instagram.scraper.cookie.CookieHashSet;
 import me.postaddict.instagram.scraper.cookie.DefaultCookieJar;
@@ -33,11 +34,12 @@ import static org.junit.Assert.assertTrue;
 
 public class AuthenticatedInstaTest {
 
-    private static AuthenticatedInsta client;
+    private static AuthenticatedInsta instagram;
 
     @BeforeClass
     public static void setUp() {
-        client = new InstaClientFactory(InstaClientFactory.InstaClientType.AUTHENTICATED).getClient();
+        InstaClient instaClient = new InstaClientFactory(InstaClientFactory.InstaClientType.AUTHENTICATED).getClient();
+        instagram = new Instagram(instaClient);
     }
 
     @Test(expected = InstagramAuthException.class)
@@ -50,14 +52,14 @@ public class AuthenticatedInstaTest {
                 .addInterceptor(new ErrorInterceptor())
                 .cookieJar(new DefaultCookieJar(new CookieHashSet()))
                 .build();
-        Instagram instagramClient = new Instagram(httpClient);
+        Instagram instagramClient = new Instagram(new InstaClient(httpClient));
         instagramClient.basePage();
         instagramClient.login("1", "2");
     }
 
     @Test
     public void testGetAccountByUsername() throws Exception {
-        Account account = client.getAccountByUsername("kevin");
+        Account account = instagram.getAccountByUsername("kevin");
         assertEquals("kevin", account.getUsername());
         assertTrue(checkAccount(account));
         System.out.println(account);
@@ -65,7 +67,7 @@ public class AuthenticatedInstaTest {
 
     @Test
     public void testGetTagByName() throws Exception {
-        Tag tag = client.getMediasByTag("corgi");
+        Tag tag = instagram.getMediasByTag("corgi");
         assertEquals("corgi", tag.getName());
         assertTrue(checkTag(tag));
         System.out.println(tag);
@@ -73,7 +75,7 @@ public class AuthenticatedInstaTest {
 
     @Test
     public void testGetMedias() throws Exception {
-        PageObject<Media> medias = client.getMedias("kevin", 2);
+        PageObject<Media> medias = instagram.getMedias("kevin", 2);
         Collection<Media> mediaList = medias.getNodes();
         assertEquals(2 * 12, mediaList.size());
         for (Media media : mediaList) {
@@ -84,7 +86,7 @@ public class AuthenticatedInstaTest {
 
     @Test
     public void testGetMediaByUrl() throws Exception {
-        Media media = client.getMediaByUrl("https://www.instagram.com/p/BHaRdodBouH");
+        Media media = instagram.getMediaByUrl("https://www.instagram.com/p/BHaRdodBouH");
         assertEquals("kevin", media.getOwner().getUsername());
         assertTrue(checkMedia(media));
         System.out.println(media);
@@ -92,7 +94,7 @@ public class AuthenticatedInstaTest {
 
     @Test
     public void testGetMediaByCode() throws Exception {
-        Media media = client.getMediaByCode("BHaRdodBouH");
+        Media media = instagram.getMediaByCode("BHaRdodBouH");
         assertEquals("kevin", media.getOwner().getUsername());
         assertTrue(checkMedia(media));
         System.out.println(media);
@@ -100,7 +102,7 @@ public class AuthenticatedInstaTest {
 
     @Test
     public void testGetLocationMediasById() throws Exception {
-        Location location = client.getLocationMediasById("17326249", 1);
+        Location location = instagram.getLocationMediasById("17326249", 1);
         Collection<Media> list = location.getMediaRating().getMedia().getNodes();
         assertEquals(12, list.size());
         for (Media media : list) {
@@ -111,7 +113,7 @@ public class AuthenticatedInstaTest {
 
     @Test
     public void testGetMediasByTag() throws Exception {
-        Tag tag = client.getMediasByTag("Moscow", 2);
+        Tag tag = instagram.getMediasByTag("Moscow", 2);
         Collection<Media> list = tag.getMediaRating().getMedia().getNodes();
         assertEquals(2 * 12, list.size());
         for (Media media : list) {
@@ -122,7 +124,7 @@ public class AuthenticatedInstaTest {
 
     @Test
     public void testGetTopMediasByTag() throws Exception {
-        Tag tag = client.getMediasByTag("Sheremetyevo", 1);
+        Tag tag = instagram.getMediasByTag("Sheremetyevo", 1);
         Collection<Media> list = tag.getMediaRating().getTopPosts();
         assertEquals(9, list.size());
         for (Media media : list) {
@@ -133,7 +135,7 @@ public class AuthenticatedInstaTest {
 
     @Test
     public void testGetCommentsByMediaCode() throws Exception {
-        PageObject<Comment> comments = client.getCommentsByMediaCode("BHaRdodBouH", 2);
+        PageObject<Comment> comments = instagram.getCommentsByMediaCode("BHaRdodBouH", 2);
         Collection<Comment> list = comments.getNodes();
         assertEquals(2 * 12, list.size());
         for (Comment comment : list) {
@@ -158,7 +160,7 @@ public class AuthenticatedInstaTest {
 
     @Test
     public void testPreviewComments() throws Exception {
-        Media media = client.getMediaByCode("");
+        Media media = instagram.getMediaByCode("");
         System.out.println(media);
         if (media.getCommentCount() > 0) {
             assertTrue(media.getCommentPreview().getNodes().size() > 0);
@@ -172,52 +174,52 @@ public class AuthenticatedInstaTest {
 
     @Test
     public void testLikeMediaByCode() throws Exception {
-        client.likeMediaByCode("PASTE_HERE_MEDIA_CODE");
+        instagram.likeMediaByCode("PASTE_HERE_MEDIA_CODE");
     }
 
     @Test
     public void testUnlikeMediaByCode() throws Exception {
-        client.unlikeMediaByCode("PASTE_HERE_MEDIA_CODE");
+        instagram.unlikeMediaByCode("PASTE_HERE_MEDIA_CODE");
     }
 
     @Test
     public void testFollowAccountByUsername() throws Exception {
-        client.followAccountByUsername("PASTE_HERE_USERNAME");
+        instagram.followAccountByUsername("PASTE_HERE_USERNAME");
     }
 
     @Test
     public void testUnfollowAccountByUsername() throws Exception {
-        client.unfollowAccountByUsername("PASTE_HERE_USERNAME");
+        instagram.unfollowAccountByUsername("PASTE_HERE_USERNAME");
     }
 
     @Test
     public void testAddMediaComment() throws Exception {
-        ActionResponse<Comment> comment = client.addMediaComment("PASTE_HERE_MEDIA_CODE", "PASTE_COMMENT_TEXT");
+        ActionResponse<Comment> comment = instagram.addMediaComment("PASTE_HERE_MEDIA_CODE", "PASTE_COMMENT_TEXT");
         System.out.println(comment);
     }
 
     @Test
     public void testDeleteMediaComment() throws Exception {
-        client.deleteMediaComment("PASTE_HERE_MEDIA_CODE", "PASTE_COMMENT_ID");
+        instagram.deleteMediaComment("PASTE_HERE_MEDIA_CODE", "PASTE_COMMENT_ID");
     }
 
     @Test
     public void testGetMediaLikes() throws Exception {
-        PageObject<Account> likes = client.getMediaLikes("BaKLiFugkQa", 2);
+        PageObject<Account> likes = instagram.getMediaLikes("BaKLiFugkQa", 2);
         assertThat(likes).isNotNull();
         assertThat(likes.getNodes().size()).isEqualTo(400);
     }
 
     @Test
     public void testGetAllMediaLikes() throws Exception {
-        PageObject<Account> likes = client.getMediaLikes("BcfiQOhBSLc", Integer.MAX_VALUE);
+        PageObject<Account> likes = instagram.getMediaLikes("BcfiQOhBSLc", Integer.MAX_VALUE);
         assertThat(likes).isNotNull();
         assertThat(likes.getNodes().size()).isGreaterThan(700);
     }
 
     @Test
     public void testGetActivityFeed() throws Exception {
-        ActivityFeed activityFeed = client.getActivityFeed();
+        ActivityFeed activityFeed = instagram.getActivityFeed();
         assertThat(activityFeed).isNotNull();
         assertThat(activityFeed.getCount()).isGreaterThan(3);
         assertThat(activityFeed.getActivities().size()).isGreaterThan(3);
@@ -225,15 +227,15 @@ public class AuthenticatedInstaTest {
 
     @Test
     public void testFollows() throws Exception {
-        Account account = client.getAccountByUsername("kevin");
-        PageObject<Account> follows = client.getFollows(account.getId(), 2);
+        Account account = instagram.getAccountByUsername("kevin");
+        PageObject<Account> follows = instagram.getFollows(account.getId(), 2);
         assertTrue(follows.getNodes().size() > 390);
     }
 
     @Test
     public void testFollowers() throws Exception {
-        Account account = client.getAccountByUsername("kevin");
-        PageObject<Account> followers = client.getFollowers(account.getId(), 1);
+        Account account = instagram.getAccountByUsername("kevin");
+        PageObject<Account> followers = instagram.getFollowers(account.getId(), 1);
         assertEquals(200, followers.getNodes().size());
     }
 

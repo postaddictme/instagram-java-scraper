@@ -18,35 +18,40 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class InstaClientFactory {
+    private final InstaClientType instaClientType;
     private OkHttpClient httpClient;
-    private Instagram instaClient;
-    private InstaClientType instaClientType;
+
+    private final InstaClient instaClient;
+    private Instagram instagram;
 
 
     public InstaClientFactory(InstaClientType instaClientType) {
         this.instaClientType = instaClientType;
+        this.instaClient = new InstaClient(this.httpClient);
+        this.instagram = new Instagram(instaClient);
     }
 
-    public Instagram getClient() {
-        UserAgent userAgent = UserAgent.randomUserAgent();
-        // TODO: 29.05.2020: Add logger
-        System.out.println(String.format("User Agent: [%s] %s", userAgent, userAgent.userAgentValue));
-        // TODO: 29.05.2020: Add logger
-        System.out.println("Instagram Client Type: " + instaClientType);
-
+    public InstaClient getClient() {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         // TODO: 08.05.2020: Move to config
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE);
+
+        // TODO: 29.05.2020: Add logger
+        System.out.println(String.format("Initial '%s' Instagram Client...", instaClientType));
+        UserAgent userAgent = UserAgent.randomUserAgent();
+        // TODO: 29.05.2020: Add logger
+        System.out.println(String.format("User Agent: [%s] %s", userAgent, userAgent.userAgentValue));
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addNetworkInterceptor(loggingInterceptor)
                 .addInterceptor(new FakeBrowserInterceptor(userAgent.userAgentValue))
                 // TODO: 08.05.2020: Move to config
                 .connectTimeout(120, TimeUnit.SECONDS)
+                // TODO: 08.05.2020: Move to config
                 .readTimeout(120, TimeUnit.SECONDS)
                 .addInterceptor(new ErrorInterceptor());
 
-        switch (instaClientType) {
+        switch (this.instaClientType) {
             case STATELESS:
                 break;
             case ANONYMOUS:
@@ -59,8 +64,8 @@ public class InstaClientFactory {
         }
 
         httpClient = builder.build();
-        instaClient = new Instagram(httpClient);
-        instaClient = getBasePage();
+        instaClient.setHttpClient(httpClient);
+        instagram = getBasePage();
         return instaClient;
     }
 
@@ -68,7 +73,7 @@ public class InstaClientFactory {
         try {
             Credentials credentials = new Credentials();
             // TODO: 10.06.2020: Add logger
-            System.out.println(String.format("User: %s/ %s", credentials.getLogin(), credentials.getPassword()));
+            System.out.println(String.format("%nUser: %s/ %s", credentials.getLogin(), credentials.getPassword()));
             return new Credentials();
         } catch (IOException e) {
             String message = String.format("Can not create credentials:%n%s", e);
@@ -78,19 +83,20 @@ public class InstaClientFactory {
 
     private Instagram getBasePage() {
         try {
-            instaClient.basePage();
+            instagram.basePage();
 
             if (instaClientType == InstaClientType.AUTHENTICATED) {
                 Credentials credentials = getCredentials();
-                instaClient.login(credentials.getLogin(), credentials.getEncPassword());
-                instaClient.basePage();
+                Thread.sleep(10000L);
+                instagram.login(credentials.getLogin(), credentials.getEncPassword());
+                instagram.basePage();
             }
 
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             String message = String.format("Can not get base page data:%n%s", e);
             throw new InstagramException(message, ErrorType.UNKNOWN_ERROR);
         }
-        return instaClient;
+        return instagram;
     }
 
     public enum InstaClientType {

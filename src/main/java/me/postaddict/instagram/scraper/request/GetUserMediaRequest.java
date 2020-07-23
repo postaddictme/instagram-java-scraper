@@ -2,6 +2,7 @@ package me.postaddict.instagram.scraper.request;
 
 import me.postaddict.instagram.scraper.Endpoint;
 import me.postaddict.instagram.scraper.Instagram;
+import me.postaddict.instagram.scraper.client.InstaClient;
 import me.postaddict.instagram.scraper.mapper.Mapper;
 import me.postaddict.instagram.scraper.model.Media;
 import me.postaddict.instagram.scraper.model.PageInfo;
@@ -15,8 +16,8 @@ import java.io.InputStream;
 public class GetUserMediaRequest extends PaginatedRequest<PageObject<Media>, UserMediaListParameter> {
     private long pageCount = 0;
 
-    public GetUserMediaRequest(OkHttpClient httpClient, Mapper mapper, DelayHandler delayHandler) {
-        super(httpClient, mapper, delayHandler);
+    public GetUserMediaRequest(InstaClient instaClient, Mapper mapper, DelayHandler delayHandler) {
+        super(instaClient, mapper, delayHandler);
     }
 
     @Override
