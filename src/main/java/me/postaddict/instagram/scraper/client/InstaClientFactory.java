@@ -2,6 +2,7 @@ package me.postaddict.instagram.scraper.client;
 
 import me.postaddict.instagram.scraper.ErrorType;
 import me.postaddict.instagram.scraper.Instagram;
+import me.postaddict.instagram.scraper.Logger;
 import me.postaddict.instagram.scraper.cookie.CookieHashSet;
 import me.postaddict.instagram.scraper.cookie.DefaultCookieJar;
 import me.postaddict.instagram.scraper.exception.InstagramException;
@@ -24,6 +25,7 @@ public class InstaClientFactory {
     private final InstaClient instaClient;
     private Instagram instagram;
 
+    private static final Logger LOGGER = Logger.getInstance();
 
     public InstaClientFactory(InstaClientType instaClientType) {
         this.instaClientType = instaClientType;
@@ -36,11 +38,9 @@ public class InstaClientFactory {
         // TODO: 08.05.2020: Move to config
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE);
 
-        // TODO: 29.05.2020: Add logger
-        System.out.println(String.format("Initial '%s' Instagram Client...", instaClientType));
+        LOGGER.info(String.format("Initial '%s' Instagram Client...", instaClientType));
         UserAgent userAgent = UserAgent.randomUserAgent();
-        // TODO: 29.05.2020: Add logger
-        System.out.println(String.format("User Agent: [%s] %s", userAgent, userAgent.userAgentValue));
+        LOGGER.info(String.format("User Agent: [%s] %s", userAgent, userAgent.userAgentValue));
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addNetworkInterceptor(loggingInterceptor)
@@ -72,8 +72,7 @@ public class InstaClientFactory {
     private Credentials getCredentials() {
         try {
             Credentials credentials = new Credentials();
-            // TODO: 10.06.2020: Add logger
-            System.out.println(String.format("%nUser: %s/ %s", credentials.getLogin(), credentials.getPassword()));
+            LOGGER.info(String.format("User: %s/ %s", credentials.getLogin(), credentials.getPassword()));
             return new Credentials();
         } catch (IOException e) {
             String message = String.format("Can not create credentials:%n%s", e);

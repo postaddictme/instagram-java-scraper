@@ -34,6 +34,7 @@ import static org.junit.Assert.assertTrue;
 
 public class AuthenticatedInstaTest {
 
+    private static final Logger LOGGER = Logger.getInstance();
     private static AuthenticatedInsta instagram;
 
     @BeforeClass
@@ -62,7 +63,7 @@ public class AuthenticatedInstaTest {
         Account account = instagram.getAccountByUsername("kevin");
         assertEquals("kevin", account.getUsername());
         assertTrue(checkAccount(account));
-        System.out.println(account);
+        LOGGER.info(account);
     }
 
     @Test
@@ -70,7 +71,7 @@ public class AuthenticatedInstaTest {
         Tag tag = instagram.getMediasByTag("corgi");
         assertEquals("corgi", tag.getName());
         assertTrue(checkTag(tag));
-        System.out.println(tag);
+        LOGGER.info(tag);
     }
 
     @Test
@@ -81,7 +82,7 @@ public class AuthenticatedInstaTest {
         for (Media media : mediaList) {
             assertTrue(checkMedia(media));
         }
-        System.out.println(mediaList);
+        LOGGER.info(mediaList);
     }
 
     @Test
@@ -89,7 +90,7 @@ public class AuthenticatedInstaTest {
         Media media = instagram.getMediaByUrl("https://www.instagram.com/p/BHaRdodBouH");
         assertEquals("kevin", media.getOwner().getUsername());
         assertTrue(checkMedia(media));
-        System.out.println(media);
+        LOGGER.info(media);
     }
 
     @Test
@@ -97,7 +98,7 @@ public class AuthenticatedInstaTest {
         Media media = instagram.getMediaByCode("BHaRdodBouH");
         assertEquals("kevin", media.getOwner().getUsername());
         assertTrue(checkMedia(media));
-        System.out.println(media);
+        LOGGER.info(media);
     }
 
     @Test
@@ -108,7 +109,7 @@ public class AuthenticatedInstaTest {
         for (Media media : list) {
             assertTrue(checkMedia(media));
         }
-        System.out.println(list);
+        LOGGER.info(list);
     }
 
     @Test
@@ -119,7 +120,7 @@ public class AuthenticatedInstaTest {
         for (Media media : list) {
             assertTrue(checkMedia(media));
         }
-        System.out.println(list);
+        LOGGER.info(list);
     }
 
     @Test
@@ -130,7 +131,7 @@ public class AuthenticatedInstaTest {
         for (Media media : list) {
             assertTrue(checkMedia(media));
         }
-        System.out.println(list);
+        LOGGER.info(list);
     }
 
     @Test
@@ -141,7 +142,7 @@ public class AuthenticatedInstaTest {
         for (Comment comment : list) {
             assertTrue(checkComment(comment));
         }
-        System.out.println(list);
+        LOGGER.info(list);
     }
 
     @Test
@@ -161,7 +162,7 @@ public class AuthenticatedInstaTest {
     @Test
     public void testPreviewComments() throws Exception {
         Media media = instagram.getMediaByCode("");
-        System.out.println(media);
+        LOGGER.info(media);
         if (media.getCommentCount() > 0) {
             assertTrue(media.getCommentPreview().getNodes().size() > 0);
             for (Comment comment : media.getCommentPreview().getNodes()) {
@@ -195,7 +196,7 @@ public class AuthenticatedInstaTest {
     @Test
     public void testAddMediaComment() throws Exception {
         ActionResponse<Comment> comment = instagram.addMediaComment("PASTE_HERE_MEDIA_CODE", "PASTE_COMMENT_TEXT");
-        System.out.println(comment);
+        LOGGER.info(comment);
     }
 
     @Test
@@ -238,5 +239,4 @@ public class AuthenticatedInstaTest {
         PageObject<Account> followers = instagram.getFollowers(account.getId(), 1);
         assertEquals(200, followers.getNodes().size());
     }
-
 }

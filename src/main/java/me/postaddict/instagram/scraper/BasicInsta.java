@@ -18,9 +18,11 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
 public abstract class BasicInsta {
+    private static final Logger LOGGER = Logger.getInstance();
     protected final InstaClient instaClient;
     protected final DelayHandler delayHandler = new DefaultDelayHandler();
     protected final Mapper mapper = new ModelMapper();
+
 
     public BasicInsta(InstaClient instaClient) {
         this.instaClient = instaClient;
@@ -35,6 +37,7 @@ public abstract class BasicInsta {
     }
 
     private String getCSRFToken() {
+        LOGGER.debug("Get CSRF Token from cookies");
         for (Cookie cookie : instaClient.getHttpClient().cookieJar().loadForRequest(HttpUrl.parse(Endpoint.BASE_URL))) {
             if ("csrftoken".equals(cookie.name())) {
                 return cookie.value();
@@ -79,17 +82,13 @@ public abstract class BasicInsta {
     }
 
     public Response executeHttpRequest(Request request) throws IOException {
-        // TODO: 08.05.2020: Add LOGGER
-        System.out.println(String.format("%nRequest >>>"));
-        System.out.println(String.format("%s: %s", Utils.getCurrentTime(), request.url()));
-        System.out.println(String.format("headers:%n%s", request.headers()));
+        LOGGER.debug("Request >>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        LOGGER.info(request.url());
+        LOGGER.debug(String.format("headers:%n%s", request.headers()));
 
         Response response = instaClient.getHttpClient().newCall(request).execute();
-        // TODO: 08.05.2020: Add LOGGER
-        System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-        if (delayHandler != null) {
-            delayHandler.onEachRequest();
-        }
+        LOGGER.debug("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+        delayHandler.onEachRequest();
         return response;
     }
 }

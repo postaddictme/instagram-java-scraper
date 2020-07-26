@@ -1,5 +1,6 @@
 package me.postaddict.instagram.scraper.cookie;
 
+import me.postaddict.instagram.scraper.Logger;
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
 import okhttp3.HttpUrl;
@@ -12,6 +13,8 @@ import java.util.List;
 public class DefaultCookieJar implements CookieJar {
 
     private final CookieCache cache;
+    private static final Logger LOGGER = Logger.getInstance();
+
 
     public DefaultCookieJar(CookieCache cache) {
         this.cache = cache;
@@ -33,8 +36,7 @@ public class DefaultCookieJar implements CookieJar {
                 cookies.add(cookie);
             }
         }
-        System.out.println(String.format("%nCookies:"));
-        System.out.println(StringUtils.join(cookies, "\r\n"));
+        LOGGER.debug("Cookies:\r\n" + StringUtils.join(cookies, "\r\n"));
         return cookies;
     }
 
