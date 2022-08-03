@@ -8,12 +8,12 @@ public class Endpoint {
     public static final String BASE_URL = "https://www.instagram.com";
     public static final String LOGIN_URL = "https://www.instagram.com/accounts/login/ajax/";
     public static final String MEDIA_LINK = "https://www.instagram.com/p/{{code}}";
-    public static final String ACCOUNT_JSON_INFO = "https://www.instagram.com/{{username}}/?__a=1";
+    public static final String ACCOUNT_JSON_INFO = "https://www.instagram.com/{{username}}/?__a=1&__d=dis";
     public static final String ACCOUNT_MEDIAS = "https://instagram.com/graphql/query/?query_id=17888483320059182&id={{userId}}&first=30&after={{maxId}}";
-    public static final String TAG_JSON_INFO = "https://www.instagram.com/explore/tags/{{tag_name}}/?__a=1";
-    public static final String MEDIA_JSON_INFO = "https://www.instagram.com/p/{{code}}/?__a=1";
-    public static final String MEDIA_JSON_BY_LOCATION_ID = "https://www.instagram.com/explore/locations/{{facebookLocationId}}/?__a=1&max_id={{maxId}}";
-    public static final String MEDIA_JSON_BY_TAG = "https://www.instagram.com/explore/tags/{{tag}}/?__a=1&max_id={{maxId}}";
+    public static final String TAG_JSON_INFO = "https://www.instagram.com/explore/tags/{{tag_name}}/?__a=1&__d=dis";
+    public static final String MEDIA_JSON_INFO = "https://www.instagram.com/p/{{code}}/?__a=1&__d=dis";
+    public static final String MEDIA_JSON_BY_LOCATION_ID = "https://www.instagram.com/explore/locations/{{facebookLocationId}}/?__a=1&__d=dis&max_id={{maxId}}";
+    public static final String MEDIA_JSON_BY_TAG = "https://www.instagram.com/explore/tags/{{tag}}/?__a=1&__d=dis&max_id={{maxId}}";
     public static final String GENERAL_SEARCH = "https://www.instagram.com/web/search/topsearch/?query={{query}}";
     public static final String ACCOUNT_JSON_INFO_BY_ID = "https://www.instagram.com/graphql/query/?query_id=17880160963012870&id={{userId}}&first=1";
     public static final String LAST_COMMENTS_BY_CODE = "ig_shortcode({{code}}){comments.last({{count}}){count,nodes{id,created_at,text,user{id,profile_pic_url,username,follows{count},followed_by{count},biography,full_name,media{count},is_private,external_url,is_verified}},page_info}}";
@@ -27,7 +27,7 @@ public class Endpoint {
     public static final String FOLLOWERS_URL = "https://www.instagram.com/graphql/query/?query_id=17851374694183129&variables={\"id\": {{userId}}, \"first\": {{count}}, \"after\": \"{{endCursor}}\"}";
     public static final String FOLLOW_ACCOUNT = "https://www.instagram.com/web/friendships/{{userId}}/follow/";
     public static final String UNFOLLOW_ACCOUNT = "https://www.instagram.com/web/friendships/{{userId}}/unfollow/";
-    public static final String ACTIVITY_FEED = "https://www.instagram.com/accounts/activity/?__a=1";
+    public static final String ACTIVITY_FEED = "https://www.instagram.com/accounts/activity/?__a=1&__d=dis";
     public static final String ACTIVITY_MARK_CHECKED = "https://www.instagram.com/web/activity/mark_checked/";
     public static final String USERNAME = "{{username}}";
     public static final String USER_ID = "{{userId}}";
@@ -135,12 +135,12 @@ public class Endpoint {
         return FOLLOW_ACCOUNT
                 .replace(USER_ID, String.valueOf(userId));
     }
-    
+
     public static String getUnfollowAccountLink(long userId) {
         return UNFOLLOW_ACCOUNT
                 .replace(USER_ID, String.valueOf(userId));
     }
-    
+
     public static String getFollowsLinkVariables(long userId, int count, String endCursor) {
         return FOLLOWS_URL
                 .replace(USER_ID, String.valueOf(userId))
