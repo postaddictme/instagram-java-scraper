@@ -175,7 +175,7 @@ public class Instagram implements AuthenticatedInsta {
             throw new IllegalArgumentException("Media URL not matches regexp: "+urlRegexp+" current value: "+url);
         }
         Request request = new Request.Builder()
-                .url(url + "/?__a=1")
+                .url(url + "/?__a=1&__d=dis")
                 .build();
 
         Response response = executeHttpRequest(request);
